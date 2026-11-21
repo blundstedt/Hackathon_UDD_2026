@@ -1,0 +1,170 @@
+AMANO PROPS - STYLE GUIDE (Town Starter MegaKit v1.1.4)
+=========================================================
+
+1. SCALE
+   - 1 unit = 1 meter. Storey height 3.0 m, door 1.0 x 2.2-2.3 m, sidewalk 0.15 m high, car 1.6-1.9 m wide,
+     city bus 10 m long, street lamp 4-6 m.
+2. GRID
+   - Road, sidewalk, parking and rail tiles: 4 x 4 m (= 2 x 2 cells of the 2 m grid = one Terrain Kit tile).
+   - Walls 2 x 3 m centered on the grid line, floors 2 x 2 m (top at z = 0), Shopfront_Wide and Wall_Garage_Door
+     are 4 m wide. Roof slopes span one 2 m cell and rise 1.5 m.
+   - Road_Transition_Country joins a 4 m city road to the 3 m country road of the Low Poly Terrain Kit.
+   - Facade kit (v1.1.1): Facade_* walls 2 x 3 m, Facade_Storefront_Big 4.1 m, Fence_Brick_Pillar sections every 2 m
+     (one pillar each), Column_Classic 4 m + Portico_Pediment 6.46 m, Curb_Corner = one 4 x 4 m tile.
+   - Assembly pieces (v1.1.1): walls 2 x 3 m CENTERED on the grid line (0.31 m thick), outer corners on the grid
+     points, Floor_Stair_Opening = 2 x 4 m (two cells), storey height 3.0 m (the assembly guide is included in Complete / Pro).
+3. ORIGINS AND ORIENTATION
+   - Origin on the ground at the center of the footprint; front faces -Y in Blender.
+   - Road_Straight runs along X; Road_Corner joins the +X and -Y edges; Road_T branches towards -Y;
+     Road_End is entered from -X. Sidewalk curbs face -Y (Sidewalk_Corner: -Y and +X).
+   - Wall items: back on the wall plane. Moving parts: separate child objects, pivot on the hinge or hub.
+4. PALETTES
+   - ONE texture: Textures/props_palette.png, 16 x 16 cells of 16 px (256 x 256 px).
+   - Every face is UV-mapped to the CENTER of one cell: no texture painting.
+   - Row 5 holds the light colors; the emission map lights them in engines that support it.
+   - Classic (day), Night (dark blue, windows lit), Pastel (cosy), Winter (snow): same UVs, swap the palette AND
+     the matching emission map.
+   - Colors are only ever ADDED; rows 8-15 are reserved for free updates.
+5. STYLE
+   - Low poly, flat shaded, small bevels; 12 to 440 faces per asset in the full pack (design limit: 2,500).
+   - Objects only: no characters, no drivers (tinted opaque windows), no real brands or vehicle models, no
+     readable text: signs use generic pictograms (scissors, cup, burger, fuel drop, cart, cross, star...).
+6. NAMING
+   - Family_Variant (Road_Corner, Wall_Brick_Window, Car_Taxi, Street_Lamp_Classic...).
+   - Existing file names, scales and pivots never change in updates.
+
+PALETTE TABLE (index -> name -> color -> cell column,row)
+    0  asphalt        #55585E  0,0
+    1  asphalt_dark   #45474C  1,0
+    2  asphalt_light  #6A6D73  2,0
+    3  line_white     #E8E8E0  3,0
+    4  line_yellow    #E8D27A  4,0
+    5  curb           #8F939A  5,0
+    6  sidewalk       #B4B0A8  6,0
+    7  sidewalk_dark  #9A968E  7,0
+    8  paving         #C2B8A6  8,0
+    9  paving_red     #A8705A  9,0
+   10  grass          #79B24E  10,0
+   11  grass_dark     #5F9A42  11,0
+   12  dirt           #8A6A48  12,0
+   13  gravel         #9A948A  13,0
+   14  rail_steel     #7A7E86  14,0
+   15  sleeper        #5A4636  15,0
+   16  brick          #A4523E  0,1
+   17  brick_dark     #7E3A2C  1,1
+   18  brick_light    #C06A50  2,1
+   19  plaster        #E6DCC8  3,1
+   20  plaster_yellow #E8C878  4,1
+   21  plaster_blue   #9CC0D0  5,1
+   22  plaster_pink   #E0A8A0  6,1
+   23  plaster_green  #A8C8A0  7,1
+   24  siding_white   #E8E8E2  8,1
+   25  siding_blue    #7EA0C0  9,1
+   26  siding_green   #8AAE88  10,1
+   27  siding_yellow  #E4CC84  11,1
+   28  concrete       #A8A8A4  12,1
+   29  concrete_dark  #7C7C7A  13,1
+   30  stone          #9A9288  14,1
+   31  trim           #F2F0EA  15,1
+   32  roof_red       #A8463A  0,2
+   33  roof_dark      #4A4A52  1,2
+   34  roof_brown     #7A5440  2,2
+   35  roof_green     #4E7458  3,2
+   36  roof_flat      #6E6E70  4,2
+   37  wood           #9A6A44  5,2
+   38  wood_dark      #5E4232  6,2
+   39  wood_light     #C09868  7,2
+   40  metal          #8A9098  8,2
+   41  metal_dark     #4A4E56  9,2
+   42  metal_light    #C4C8CE  10,2
+   43  black          #1E1E22  11,2
+   44  white          #F0F0EC  12,2
+   45  chrome         #D0D4DA  13,2
+   46  rubber         #26262A  14,2
+   47  rust           #8A4A2A  15,2
+   48  red            #C83A32  0,3
+   49  red_dark       #8E2622  1,3
+   50  orange         #E8803A  2,3
+   51  yellow         #F0C838  3,3
+   52  taxi_yellow    #F2B830  4,3
+   53  green          #4A9A4A  5,3
+   54  green_dark     #2E6A3E  6,3
+   55  teal           #3A9A96  7,3
+   56  blue           #3A6AB0  8,3
+   57  blue_dark      #24406E  9,3
+   58  blue_light     #8AB8E0  10,3
+   59  purple         #7A4A9A  11,3
+   60  pink           #E888A8  12,3
+   61  cream          #F0E2C0  13,3
+   62  brown          #7A5236  14,3
+   63  grey           #8A8A8E  15,3
+   64  leaf           #5A9A3E  0,4
+   65  leaf_dark      #3E7A32  1,4
+   66  leaf_light     #8AC05A  2,4
+   67  leaf_yellow    #C8B040  3,4
+   68  bark           #6A4A34  4,4
+   69  birch          #E0DCD0  5,4
+   70  hedge          #4A8A3A  6,4
+   71  flower_red     #D84A4A  7,4
+   72  flower_yellow  #F0D040  8,4
+   73  flower_white   #F4F0E8  9,4
+   74  flower_purple  #9A5AC8  10,4
+   75  flower_pink    #F08AB8  11,4
+   76  palm           #6AA040  12,4
+   77  soil           #5A4030  13,4
+   78  water          #4A90B8  14,4
+   79  pine           #2E6A3A  15,4
+   80  lamp_glow      #FFF0C0  0,5
+   81  neon_pink      #FF4AA8  1,5
+   82  neon_blue      #4AD8FF  2,5
+   83  neon_green     #6AFF7A  3,5
+   84  neon_yellow    #FFE040  4,5
+   85  neon_red       #FF3A3A  5,5
+   86  light_red      #FF2A20  6,5
+   87  light_amber    #FFB020  7,5
+   88  light_green    #40FF70  8,5
+   89  headlight      #FFF8E0  9,5
+   90  taillight      #E01818  10,5
+   91  siren_blue     #3A7AFF  11,5
+   92  screen         #9AE0FF  12,5
+   93  fire_glow      #FF8A28  13,5
+   94  led_white      #F4F8FF  14,5
+   95  sign_glow      #F8F4E8  15,5
+   96  glass          #8AB8CC  0,6
+   97  glass_dark     #3A4A58  1,6
+   98  window         #9AC4D8  2,6
+   99  window_b       #A8C8D4  3,6
+  100  shop_window    #B0D0DC  4,6
+  101  car_glass      #2E3A46  5,6
+  102  mirror         #C0D0D8  6,6
+  103  glass_green    #6A9A8A  7,6
+  104  sign_red       #C8282A  8,6
+  105  sign_blue      #2A5AB0  9,6
+  106  sign_green     #2A8A4A  10,6
+  107  sign_yellow    #F0C020  11,6
+  108  sign_white     #F0F0EC  12,6
+  109  hazard_orange  #F07A20  13,6
+  110  hazard_black   #2A2A2A  14,6
+  111  sign_brown     #7A4A2A  15,6
+  112  fabric_red     #B83A3A  0,7
+  113  fabric_green   #3A8A5A  1,7
+  114  fabric_blue    #3A6AB0  2,7
+  115  fabric_white   #EEE8DC  3,7
+  116  leather        #6A3A2A  4,7
+  117  seat           #4A4A50  5,7
+  118  bread          #D0A050  6,7
+  119  food_red       #C83A2A  7,7
+  120  food_green     #5AA040  8,7
+  121  cardboard      #B08A5A  9,7
+  122  paper          #EEEAE0  10,7
+  123  plastic_white  #EEEEEE  11,7
+  124  plastic_blue   #3A7AC8  12,7
+  125  plastic_green  #4A9A5A  13,7
+  126  plastic_red    #D04040  14,7
+  127  dumpster       #3E6A4A  15,7
+  128  sky_day_town   #BFD4F3  0,8
+  129  sky_night_town #191F38  1,8
+  130  sky_day_horizon #A2CFF2  2,8
+  131  sky_day_zenith #2A78D4  3,8
+  132  sky_day_mid    #5EA6E8  4,8
+  133  brick_tan      #C8945C  5,8

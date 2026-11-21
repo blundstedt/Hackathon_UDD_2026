@@ -3,12 +3,16 @@ guid: d68b69ef4fb06e64497cfb5397b68fad
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
+<<<<<<< Updated upstream
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: PropsPalette
     second: {fileID: 2100000, guid: 418da087d51988541bbaf5a278a078c8, type: 2}
+=======
+  externalObjects: {}
+>>>>>>> Stashed changes
   materials:
     materialImportMode: 2
     materialName: 0
