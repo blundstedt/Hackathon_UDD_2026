@@ -1,0 +1,15 @@
+Low Poly Town Starter MegaKit - License
+
+Copyright (c) 2026 Amano007
+
+You are granted a non-exclusive, worldwide, perpetual license to use and modify
+these assets in any number of personal or commercial projects (games, apps,
+films, renders, prototypes), with or without attribution.
+
+You may NOT:
+  - resell, share or redistribute the assets, modified or not, on their own or as
+    part of another asset pack, template or library;
+  - claim the assets as your own original creation;
+  - use the assets to train machine-learning models.
+
+Credit is appreciated but not required.
