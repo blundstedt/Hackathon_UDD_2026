@@ -12,7 +12,7 @@ namespace Hackaton.Player
         private float comboWindow = 1f;
         [SerializeField] private MeleeAttackStep first = new(.35f, new Knockback(2f, 0f, .16f, .02f));
         [SerializeField] private MeleeAttackStep second = new(.35f, new Knockback(3f, 0f, .20f, .04f));
-        [SerializeField] private MeleeAttackStep finisher = new(.35f, new Knockback(15f, 8f, .8f, .15f));
+        [SerializeField] private MeleeAttackStep finisher = new(.35f, new Knockback(15f, 8f, .8f, .15f, true));
         private int step;
         private int nextStep;
         private float lastAttack;

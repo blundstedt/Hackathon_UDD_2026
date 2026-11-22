@@ -209,3 +209,4 @@ MonoBehaviour:
       vertical: 7
       duration: 0.65
       recovery: 0.12
+      large: 1

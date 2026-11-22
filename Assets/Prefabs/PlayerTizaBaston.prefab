@@ -281,6 +281,7 @@ MonoBehaviour:
       vertical: 8
       duration: 0.8
       recovery: 0.15
+      large: 1
 --- !u!1 &6666564182979779313 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6636118059322378322, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}

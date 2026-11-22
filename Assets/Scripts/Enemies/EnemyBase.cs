@@ -51,6 +51,9 @@ namespace Hackaton.Enemies
         private NavMeshAgent agent;
         private CharacterController body;
         private CharacterImpactMotion impact;
+        private LargeKnockback launch;
+        private bool navigatingAfterLaunch;
+        private bool previousUpdateRotation;
         private float verticalSpeed;
         private Collider[] candidates = new Collider[32];
         private Vector3 lastSeen;
@@ -63,6 +66,7 @@ namespace Hackaton.Enemies
         {
             agent = GetComponent<NavMeshAgent>();
             body = GetComponent<CharacterController>();
+            launch = LargeKnockback.For(body);
             patrolPath = new NavMeshPath();
             agent.speed = moveSpeed;
             agent.stoppingDistance = .05f;
@@ -79,6 +83,13 @@ namespace Hackaton.Enemies
                     if (body.isGrounded) body.enabled = false;
                 }
                 return;
+            }
+            if (launch.Active) return;
+            if (navigatingAfterLaunch)
+            {
+                navigatingAfterLaunch = false;
+                agent.updateRotation = previousUpdateRotation;
+                ResumeNavigation();
             }
             if (impact.Active)
             {
@@ -200,7 +211,23 @@ namespace Hackaton.Enemies
 
         public override void ApplyKnockback(Knockback hit, Vector3 direction)
         {
-            if (State == EnemyState.Dead || !body.enabled || (hit.horizontal <= 0f && hit.vertical <= 0f)) return;
+            if (State == EnemyState.Dead || (!body.enabled && !launch.Active)) return;
+            if (hit.horizontal <= 0f && hit.vertical <= 0f) return;
+            if (hit.large && launch.isActiveAndEnabled)
+            {
+                if (!navigatingAfterLaunch)
+                {
+                    StopMoving();
+                    previousUpdateRotation = agent.updateRotation;
+                    agent.updatePosition = agent.updateRotation = false;
+                    navigatingAfterLaunch = true;
+                }
+                impact = default;
+                verticalSpeed = 0f;
+                launch.Launch(hit, direction);
+                return;
+            }
+            if (launch.Active) return;
             if (!impact.Active)
             {
                 StopMoving();
@@ -241,6 +268,7 @@ namespace Hackaton.Enemies
         private void Die(Transform source)
         {
             State = EnemyState.Dead;
+            launch.KeepFallen();
             StopMoving();
             agent.enabled = false;
             // An airborne corpse can finish falling while the usual death and despawn run.
@@ -267,7 +295,7 @@ namespace Hackaton.Enemies
 
         protected virtual void OnDeath()
         {
-            if (visual != null) visual.LieDown();
+            if (visual != null && !launch.Active) visual.LieDown();
         }
 
         private IEnumerator RemoveCorpse()
