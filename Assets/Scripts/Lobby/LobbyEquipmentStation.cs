@@ -20,7 +20,6 @@ namespace Hackaton.Lobby
         [SerializeField] private PlayerView player;
         [SerializeField] private EquipmentOption[] options;
         [SerializeField, Min(0.5f)] private float interactionDistance = 3.1f;
-        [SerializeField] private GameObject reticle;
         [SerializeField] private Text prompt;
 
         private PlayerInputReader input;
@@ -43,9 +42,6 @@ namespace Hackaton.Lobby
         {
             bool nearby = input.HasControl
                 && (transform.position - player.transform.position).sqrMagnitude <= stationReach * stationReach;
-            if (reticle.activeSelf != nearby)
-                reticle.SetActive(nearby);
-
             var target = nearby ? FindTarget() : null;
             if (target != null && target != equipped && Keyboard.current?.eKey.wasPressedThisFrame == true)
                 Equip(target);
