@@ -76,13 +76,30 @@ namespace Hackaton.Player
             Changed?.Invoke();
         }
 
-        internal void CopyFrom(PlayerStats previous)
+        public readonly struct Snapshot
         {
-            Health = previous.Health;
-            Money = previous.Money;
-            Level = previous.Level;
-            Experience = previous.Experience;
+            public readonly int health, money, level, experience;
+
+            internal Snapshot(PlayerStats stats)
+            {
+                health = stats.Health;
+                money = stats.Money;
+                level = stats.Level;
+                experience = stats.Experience;
+            }
+        }
+
+        internal Snapshot Capture() => new Snapshot(this);
+
+        internal void Restore(Snapshot snapshot)
+        {
+            Health = snapshot.health;
+            Money = snapshot.money;
+            Level = snapshot.level;
+            Experience = snapshot.experience;
             Changed?.Invoke();
         }
+
+        internal void CopyFrom(PlayerStats previous) => Restore(previous.Capture());
     }
 }

@@ -1102,6 +1102,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1979286412117399132}
+  - component: {fileID: 6551115449244132578}
+  - component: {fileID: 8012642570747081298}
   m_Layer: 0
   m_Name: Piso 3
   m_TagString: Untagged
@@ -1126,6 +1128,41 @@ Transform:
   - {fileID: 7553629467684617988}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6551115449244132578
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047536774999129210}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 2.1, y: 1.59, z: 18.91}
+--- !u!114 &8012642570747081298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047536774999129210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 3
 --- !u!1 &1190586339025407004
 GameObject:
   m_ObjectHideFlags: 0
@@ -1482,6 +1519,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4273682713176895151}
+  - component: {fileID: 1624129606052463938}
+  - component: {fileID: 8522286230718438740}
   m_Layer: 0
   m_Name: Piso 4
   m_TagString: Untagged
@@ -1506,6 +1545,41 @@ Transform:
   - {fileID: 5591176798836664769}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1624129606052463938
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373962371220387545}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 1.42, y: 2.05, z: 18.91}
+--- !u!114 &8522286230718438740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373962371220387545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 4
 --- !u!1 &1382167089356646407
 GameObject:
   m_ObjectHideFlags: 0
@@ -2944,6 +3018,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2450061208588818243}
+  - component: {fileID: 9057267637079250036}
+  - component: {fileID: 9069360854575667069}
   m_Layer: 0
   m_Name: Piso 6
   m_TagString: Untagged
@@ -2968,6 +3044,41 @@ Transform:
   - {fileID: 6901425465834840957}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &9057267637079250036
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338196339312233861}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 1.42, y: 2.51, z: 18.91}
+--- !u!114 &9069360854575667069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338196339312233861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 6
 --- !u!1 &2341156906869010992
 GameObject:
   m_ObjectHideFlags: 0
@@ -4237,6 +4348,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4903872998017348285}
+  - component: {fileID: 4509475976146067600}
+  - component: {fileID: 730353767370975719}
   m_Layer: 0
   m_Name: Piso 7
   m_TagString: Untagged
@@ -4261,6 +4374,41 @@ Transform:
   - {fileID: 2044425473016909080}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4509475976146067600
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363287658469111941}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 2.1, y: 2.51, z: 18.91}
+--- !u!114 &730353767370975719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363287658469111941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 7
 --- !u!1 &3385732354377329305
 GameObject:
   m_ObjectHideFlags: 0
@@ -4536,6 +4684,7 @@ Transform:
   - {fileID: 1441061983394786323}
   - {fileID: 6561509072305470768}
   - {fileID: 1918581738552015526}
+  - {fileID: 3684547004202039472}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2049776670258914227
@@ -4550,7 +4699,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df9f0675ed234be4592e2d99ec0e65ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TowerFloorPanel
-  highestUnlockedFloor: 1
   digits:
   - {fileID: 1444763491990499173}
   - {fileID: 4800033598986964146}
@@ -4564,6 +4712,8 @@ MonoBehaviour:
   - {fileID: 3923634324955693733}
   illuminated: {fileID: 8133348906608402135, guid: 711a7d820e28d6e4e9d3cf46e62bcbd0, type: 2}
   inactive: {fileID: -5670739481556558282, guid: 711a7d820e28d6e4e9d3cf46e62bcbd0, type: 2}
+  cabin: {fileID: 2168958964967558898}
+  sessionPrefab: {fileID: 2955261675028580761, guid: 2e1fb970cab4275489746b65a9bb2c13, type: 3}
 --- !u!1 &3749202309548854913
 GameObject:
   m_ObjectHideFlags: 0
@@ -4940,6 +5090,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1301639553590605905}
+  - component: {fileID: 165681028739092847}
+  - component: {fileID: 2877941007232618193}
   m_Layer: 0
   m_Name: Piso 0
   m_TagString: Untagged
@@ -4964,6 +5116,41 @@ Transform:
   - {fileID: 1900490490997032615}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &165681028739092847
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3994136219760903027}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 1.42, y: 1.13, z: 18.91}
+--- !u!114 &2877941007232618193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3994136219760903027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 0
 --- !u!1 &4163999709254366007
 GameObject:
   m_ObjectHideFlags: 0
@@ -5682,6 +5869,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8450994446808831254}
+  - component: {fileID: 4919126071721120723}
+  - component: {fileID: 635352129361925642}
   m_Layer: 0
   m_Name: Piso 9
   m_TagString: Untagged
@@ -5706,6 +5895,41 @@ Transform:
   - {fileID: 8383759149856395715}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4919126071721120723
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4861014962257440419}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 2.1, y: 2.97, z: 18.91}
+--- !u!114 &635352129361925642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4861014962257440419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 9
 --- !u!1 &4875248055479426706
 GameObject:
   m_ObjectHideFlags: 0
@@ -5895,6 +6119,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7029879518038560243}
+  - component: {fileID: 7010810700757130401}
+  - component: {fileID: 6850071012330065406}
   m_Layer: 0
   m_Name: Piso 2
   m_TagString: Untagged
@@ -5919,6 +6145,41 @@ Transform:
   - {fileID: 7626947770246916614}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7010810700757130401
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5165272450473180795}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 1.42, y: 1.59, z: 18.91}
+--- !u!114 &6850071012330065406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5165272450473180795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 2
 --- !u!1 &5238048505616129839
 GameObject:
   m_ObjectHideFlags: 0
@@ -6725,6 +6986,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7281207545919119532}
+  - component: {fileID: 8825735855499731318}
+  - component: {fileID: 6282178055703092314}
   m_Layer: 0
   m_Name: Piso 1
   m_TagString: Untagged
@@ -6749,6 +7012,41 @@ Transform:
   - {fileID: 353733384829147416}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8825735855499731318
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6199629492228955332}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 2.1, y: 1.13, z: 18.91}
+--- !u!114 &6282178055703092314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6199629492228955332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 1
 --- !u!1 &6222052830019664118
 GameObject:
   m_ObjectHideFlags: 0
@@ -7386,6 +7684,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1441061983394786323}
+  - component: {fileID: 6646920353705887943}
+  - component: {fileID: 5039258797072175644}
   m_Layer: 0
   m_Name: Recepcionista - Tiza con peluca
   m_TagString: Untagged
@@ -7414,6 +7714,39 @@ Transform:
   - {fileID: 9195125492977006056}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6646920353705887943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492909410196793319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 342d9e49ba3ac684587178d0295074a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorSecretary
+--- !u!65 &5039258797072175644
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6492909410196793319}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.08, y: 1.45, z: 0.88}
+  m_Center: {x: 0, y: 1.55, z: 0}
 --- !u!1 &6569388298248531899
 GameObject:
   m_ObjectHideFlags: 0
@@ -8564,6 +8897,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6502544404843550736}
+  - component: {fileID: 5074136407881080951}
+  - component: {fileID: 777733717021665985}
   m_Layer: 0
   m_Name: Piso 5
   m_TagString: Untagged
@@ -8588,6 +8923,41 @@ Transform:
   - {fileID: 3691616756035145906}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &5074136407881080951
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391626765452577865}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 2.1, y: 2.05, z: 18.91}
+--- !u!114 &777733717021665985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391626765452577865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 5
 --- !u!1 &7405619271708506803
 GameObject:
   m_ObjectHideFlags: 0
@@ -9245,6 +9615,59 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7709996299825313633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3684547004202039472}
+  - component: {fileID: 2168958964967558898}
+  m_Layer: 0
+  m_Name: Zona de embarque
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3684547004202039472
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7709996299825313633}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4177748184693289665}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2168958964967558898
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7709996299825313633}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.35, y: 5.7, z: 4.42}
+  m_Center: {x: 0, y: 2.9, z: 17.12}
 --- !u!1 &7935325754092827737
 GameObject:
   m_ObjectHideFlags: 0
@@ -10168,6 +10591,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5908780957907882375}
+  - component: {fileID: 6416100619719177876}
+  - component: {fileID: 1611170402226084108}
   m_Layer: 0
   m_Name: Piso 8
   m_TagString: Untagged
@@ -10192,6 +10617,41 @@ Transform:
   - {fileID: 7231201692224754729}
   m_Father: {fileID: 4177748184693289665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6416100619719177876
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8364309359310899340}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.56, y: 0.425, z: 0.09}
+  m_Center: {x: 1.42, y: 2.97, z: 18.91}
+--- !u!114 &1611170402226084108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8364309359310899340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 2049776670258914227}
+  destination: 8
 --- !u!1 &8418230415367488915
 GameObject:
   m_ObjectHideFlags: 0

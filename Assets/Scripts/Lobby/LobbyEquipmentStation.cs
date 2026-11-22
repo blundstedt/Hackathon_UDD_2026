@@ -1,5 +1,6 @@
 using System;
 using Hackaton.Player;
+using Hackaton.Progression;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -36,6 +37,14 @@ namespace Hackaton.Lobby
                 float offset = Vector3.Distance(transform.position, option.target.bounds.center);
                 stationReach = Mathf.Max(stationReach, offset + interactionDistance);
             }
+        }
+
+        private void Start()
+        {
+            if (!FloorSession.Instance || !player.TryGetComponent<FloorPlayer>(out var participant)) return;
+            var saved = FloorSession.Instance.Equipment(participant.Id);
+            var option = Array.Find(options, candidate => candidate.playerPrefab == saved);
+            if (option != null && option != equipped) Equip(option);
         }
 
         private void Update()
@@ -97,6 +106,11 @@ namespace Hackaton.Lobby
             replacement.GetComponent<PlayerStats>().CopyFrom(previous.GetComponent<PlayerStats>());
             Destroy(staging);
 
+            if (FloorSession.Instance && previous.TryGetComponent<FloorPlayer>(out var participant))
+            {
+                replacement.GetComponent<FloorPlayer>().SetIdentity(participant.Id);
+                FloorSession.Instance.Equip(participant.Id, option.playerPrefab);
+            }
             previous.gameObject.SetActive(false);
             player = replacement;
             input = replacement.GetComponent<PlayerInputReader>();
