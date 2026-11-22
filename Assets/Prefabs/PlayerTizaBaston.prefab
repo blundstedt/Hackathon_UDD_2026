@@ -135,7 +135,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4632304012390071422, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}
       propertyPath: m_Name
-      value: PlayerTiza
+      value: PlayerTizaBaston
       objectReference: {fileID: 0}
     - target: {fileID: 6537653933668342281, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}
       propertyPath: m_IsActive
@@ -197,6 +197,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4632304012390071422, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6951401669264599305}
+    - targetCorrespondingSourceObject: {fileID: 4632304012390071422, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7977133869713211172}
     - targetCorrespondingSourceObject: {fileID: 6636118059322378322, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4654201021915248975}
@@ -241,6 +244,20 @@ MonoBehaviour:
   obstructionLayers:
     serializedVersion: 2
     m_Bits: 51
+--- !u!114 &7977133869713211172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4671746903330615005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7daa706ff36fe134da30d79ff63db134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Player.BastonAttack
+  melee_damage_multiplier: 1
+  staffLength: 1.55
 --- !u!1 &6666564182979779313 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6636118059322378322, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}
