@@ -6,8 +6,8 @@ namespace Hackaton.Player
     [DisallowMultipleComponent]
     public sealed class PlayerStatsHud : MonoBehaviour
     {
-        private static readonly Color Violet = new Color32(207, 166, 255, 255);
-        private static readonly Color Green = new Color32(113, 236, 151, 255);
+        internal static readonly Color LevelColor = new Color32(207, 166, 255, 255);
+        internal static readonly Color MoneyColor = new Color32(113, 236, 151, 255);
         private static readonly Color Red = new Color32(201, 53, 67, 255);
         private static readonly Color Track = new Color32(32, 26, 40, 225);
         private PlayerStats stats;
@@ -32,13 +32,13 @@ namespace Hackaton.Player
             scaler.matchWidthOrHeight = 0.5f;
 
             var summary = Panel(canvas.transform, "Resumen", Vector2.one, new Vector2(-22, -18), new Vector2(196, 68));
-            level = Label(summary, "Nivel", 27, Violet, TextAnchor.UpperRight);
-            money = Label(summary, "Dinero", 23, Green, TextAnchor.LowerRight);
+            level = Label(summary, "Nivel", 27, LevelColor, TextAnchor.UpperRight);
+            money = Label(summary, "Dinero", 23, MoneyColor, TextAnchor.LowerRight);
 
             var health = Panel(canvas.transform, "Salud", Vector2.zero, new Vector2(22, 48), new Vector2(320, 24));
             var xp = Panel(canvas.transform, "Experiencia", Vector2.zero, new Vector2(22, 22), new Vector2(320, 20));
             healthFill = Bar(health, Red);
-            xpFill = Bar(xp, Violet);
+            xpFill = Bar(xp, LevelColor);
             if (attack != null)
             {
                 var track = Panel(canvas.transform, "Recarga", Vector2.one * .5f, new Vector2(0, -16), new Vector2(34, 3));

@@ -1,4 +1,5 @@
 using Hackaton.Combat;
+using Hackaton.Player;
 using UnityEngine;
 
 namespace Hackaton.Enemies
@@ -16,6 +17,14 @@ namespace Hackaton.Enemies
             FloatingDamage.Show(point, damage, damageFont);
             hideAt = Time.time + visibleDuration;
             gameObject.SetActive(healthFraction > 0f);
+        }
+
+        internal void ShowReward(Vector3 point, int money, int experience, string prefix)
+        {
+            string green = ColorUtility.ToHtmlStringRGB(PlayerStatsHud.MoneyColor);
+            string violet = ColorUtility.ToHtmlStringRGB(PlayerStatsHud.LevelColor);
+            FloatingDamage.ShowReward(point, $"<color=#{green}>{prefix}${money}</color>\n" +
+                $"<color=#{violet}>+{experience} EXP</color>", damageFont);
         }
 
         private void LateUpdate()

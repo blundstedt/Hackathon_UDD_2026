@@ -63,13 +63,13 @@ namespace Hackaton.Player
                 {
                     var stats = nearby.GetComponentInParent<HitReceiver>();
                     if (stats == null || IsOwner(nearby) || !struck.Add(stats)) continue;
-                    stats.ReceiveHit(damage, nearby.ClosestPoint(point), nearby.bounds.center - point, 4f);
+                    stats.ReceiveHit(damage, nearby.ClosestPoint(point), nearby.bounds.center - point, 4f, owner);
                 }
             }
             else
             {
                 var stats = collider.GetComponentInParent<HitReceiver>();
-                if (stats != null) stats.ReceiveHit(damage, point, velocity.normalized, 2f);
+                if (stats != null) stats.ReceiveHit(damage, point, velocity.normalized, 2f, owner);
             }
             Destroy(gameObject);
         }

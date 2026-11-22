@@ -117,7 +117,7 @@ namespace Hackaton.Player
                 if (Physics.Linecast(origin, point, out var obstacle, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)
                     && !obstacle.transform.IsChildOf(stats.transform) && !obstacle.transform.IsChildOf(transform)) continue;
                 struck.Add(stats);
-                stats.ReceiveHit(damage, point, direction, push);
+                stats.ReceiveHit(damage, point, direction, push, transform);
             }
         }
     }
