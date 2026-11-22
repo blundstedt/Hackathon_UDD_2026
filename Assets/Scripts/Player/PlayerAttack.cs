@@ -3,18 +3,24 @@ using UnityEngine;
 
 namespace Hackaton.Player
 {
+    // Apply the attack on top of PlayerView's locomotion pose for this frame.
+    [DefaultExecutionOrder(100)]
     public abstract class PlayerAttack : MonoBehaviour
     {
         protected abstract float Cooldown { get; }
         private PlayerInputReader input;
-        private PlayerView view;
+        protected abstract float ImpactTime { get; }
+        protected PlayerView View { get; private set; }
+        private float startedAt;
+        private bool animating;
+        private bool impactPending;
         private float readyAt;
         public float RemainingFraction => Mathf.Clamp01((readyAt - Time.time) / Cooldown);
 
         protected void Awake()
         {
             input = GetComponent<PlayerInputReader>();
-            view = GetComponent<PlayerView>();
+            View = GetComponent<PlayerView>();
         }
 
         protected void Update()
@@ -24,21 +30,73 @@ namespace Hackaton.Player
 
         public bool TryAttack()
         {
-            if (!isActiveAndEnabled || Time.time < readyAt) return false;
-            readyAt = Time.time + Cooldown;
-            var pivot = view.AimPivot;
-            Vector3 direction = pivot.forward;
-            if (view.Mode == PlayerView.CameraMode.Behind)
+            if (!isActiveAndEnabled || impactPending || Time.time < readyAt) return false;
+            startedAt = Time.time;
+            readyAt = startedAt + Cooldown;
+            animating = impactPending = true;
+            return true;
+        }
+
+        protected virtual void OnDisable()
+        {
+            animating = impactPending = false;
+        }
+
+        protected void LateUpdate()
+        {
+            if (!animating) return;
+            float elapsed = Time.time - startedAt;
+            bool impact = impactPending && elapsed >= ImpactTime;
+            Animate(impact ? ImpactTime : elapsed);
+            if (impact)
             {
-                Ray ray = view.ViewCamera.ViewportPointToRay(new Vector3(.5f, .5f));
+                impactPending = false;
+                ResolveImpact();
+            }
+            else if (elapsed >= Cooldown)
+                animating = false;
+        }
+
+        protected abstract void Animate(float elapsed);
+
+        protected static float Blend(float time, float from, float to) =>
+            Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(from, to, time));
+
+        protected void Swing(float time, float windupTime, float restTime,
+            Vector3 windup, Vector3 contact, Vector3 windupAngles, Vector3 contactAngles)
+        {
+            float swing = Blend(time, windupTime, ImpactTime);
+            float recovery = 1f - Blend(time, ImpactTime, restTime);
+            float anticipation = Blend(time, 0f, windupTime) * (1f - swing);
+            MoveRightHand(windup * anticipation + contact * (swing * recovery),
+                windupAngles * anticipation + contactAngles * (swing * recovery));
+        }
+
+        protected void MoveRightHand(Vector3 offset, Vector3 angles)
+        {
+            var hand = View.RightHand;
+            var frame = View.HandFrame.rotation;
+            hand.position += frame * offset;
+            hand.rotation = frame * Quaternion.Euler(angles) * Quaternion.Inverse(frame) * hand.rotation;
+        }
+
+        protected virtual Vector3 AttackOrigin => View.AimPivot.position;
+
+        private void ResolveImpact()
+        {
+            var pivot = View.AimPivot;
+            Vector3 direction = pivot.forward;
+            Vector3 origin = AttackOrigin;
+            if (View.Mode == PlayerView.CameraMode.Behind || origin != pivot.position && View.Mode == PlayerView.CameraMode.FirstPerson)
+            {
+                Ray ray = View.ViewCamera.ViewportPointToRay(new Vector3(.5f, .5f));
                 float distance = 80f;
                 foreach (var hit in Physics.RaycastAll(ray, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                     if (!hit.transform.IsChildOf(transform)) distance = Mathf.Min(distance, hit.distance);
-                Vector3 aim = ray.GetPoint(distance) - pivot.position;
+                Vector3 aim = ray.GetPoint(distance) - origin;
                 if (Vector3.Dot(aim, pivot.forward) > 0) direction = aim.normalized;
             }
-            Attack(pivot.position, direction);
-            return true;
+            Attack(origin, direction);
         }
 
         protected abstract void Attack(Vector3 origin, Vector3 direction);

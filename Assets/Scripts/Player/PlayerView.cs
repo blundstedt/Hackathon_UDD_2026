@@ -78,6 +78,9 @@ namespace Hackaton.Player
             }
         }
 
+        internal Transform RightHand => sharedFirstPersonHand;
+        internal Transform LeftHand => sharedFirstPersonSupportHand;
+        internal Transform HandFrame => Mode == CameraMode.FirstPerson ? cameraPivot : transform;
         internal Transform AimPivot => cameraPivot;
         internal Camera ViewCamera => playerCamera;
 
