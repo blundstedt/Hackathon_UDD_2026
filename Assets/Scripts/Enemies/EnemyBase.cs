@@ -8,7 +8,7 @@ using UnityEngine.AI;
 namespace Hackaton.Enemies
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider))]
+    [RequireComponent(typeof(NavMeshAgent), typeof(CharacterController))]
     public class EnemyBase : HitReceiver
     {
         public enum EnemyState { Idle, Chase, Attack, Search, Dead }
@@ -16,6 +16,7 @@ namespace Hackaton.Enemies
         [Header("Health and movement")]
         [SerializeField, Min(1)] private int maxHealth = 100;
         [SerializeField, Min(.1f)] private float moveSpeed = 3.5f;
+        [SerializeField, Min(.01f)] private float impactGravity = 20f;
 
         [SerializeField, Min(1)] private float patrolRadius = 9f;
 
@@ -48,7 +49,9 @@ namespace Hackaton.Enemies
         protected int AttackDamage => damage;
 
         private NavMeshAgent agent;
-        private CapsuleCollider body;
+        private CharacterController body;
+        private CharacterImpactMotion impact;
+        private float verticalSpeed;
         private Collider[] candidates = new Collider[32];
         private Vector3 lastSeen;
         private float nextSense;
@@ -59,7 +62,7 @@ namespace Hackaton.Enemies
         protected virtual void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
-            body = GetComponent<CapsuleCollider>();
+            body = GetComponent<CharacterController>();
             patrolPath = new NavMeshPath();
             agent.speed = moveSpeed;
             agent.stoppingDistance = .05f;
@@ -68,7 +71,22 @@ namespace Hackaton.Enemies
 
         protected virtual void Update()
         {
-            if (State == EnemyState.Dead || Time.time < nextSense) return;
+            if (State == EnemyState.Dead)
+            {
+                if (body.enabled)
+                {
+                    impact.Move(body, Vector3.zero, ref verticalSpeed, impactGravity, Time.deltaTime);
+                    if (body.isGrounded) body.enabled = false;
+                }
+                return;
+            }
+            if (impact.Active)
+            {
+                impact.Move(body, Vector3.zero, ref verticalSpeed, impactGravity, Time.deltaTime);
+                if (impact.Active) return;
+                ResumeNavigation();
+            }
+            if (Time.time < nextSense) return;
             nextSense = Time.time + senseInterval;
 
             Transform target = FindVisibleTarget();
@@ -180,15 +198,38 @@ namespace Hackaton.Enemies
         // Variants implement only the effect of an attack that is already in range and visible.
         protected virtual void PerformAttack(Transform target) { }
 
-        public override void ReceiveHit(int amount, Vector3 point, Vector3 direction, float push)
-            => ApplyDamage(amount, point);
+        public override void ApplyKnockback(Knockback hit, Vector3 direction)
+        {
+            if (State == EnemyState.Dead || !body.enabled || (hit.horizontal <= 0f && hit.vertical <= 0f)) return;
+            if (!impact.Active)
+            {
+                StopMoving();
+                // Keep the simulated agent at its last safe position while the capsule handles collisions.
+                agent.updatePosition = false;
+                verticalSpeed = 0f;
+            }
+            impact.Begin(hit, direction, ref verticalSpeed);
+        }
 
-        public override void ReceiveHit(int amount, Vector3 point, Vector3 direction, float push, Transform source)
-            => ApplyDamage(amount, point, source);
+        private void ResumeNavigation()
+        {
+            var filter = new NavMeshQueryFilter { agentTypeID = agent.agentTypeID, areaMask = agent.areaMask };
+            if (NavMesh.SamplePosition(transform.position, out var ground, agent.height, filter))
+                agent.Warp(ground.position);
+            else if (agent.isOnNavMesh)
+            {
+                // A launch may clear the walkable boundary. Rejoin it at the closest reachable edge.
+                Vector3 safe = agent.nextPosition;
+                if (NavMesh.Raycast(safe, transform.position, out var edge, filter)) safe = edge.position;
+                agent.Warp(safe);
+            }
+            agent.updatePosition = true;
+            nextSense = 0f;
+        }
 
-        public void TakeDamage(int amount) => ApplyDamage(amount, transform.position + Vector3.up * eyeHeight);
+        public void TakeDamage(int amount) => ApplyDamage(amount, transform.position + Vector3.up * eyeHeight, null);
 
-        private void ApplyDamage(int amount, Vector3 point, Transform source = null)
+        protected override void ApplyDamage(int amount, Vector3 point, Transform source)
         {
             if (amount <= 0 || State == EnemyState.Dead) return;
             int received = Mathf.Min(amount, Health);
@@ -202,7 +243,9 @@ namespace Hackaton.Enemies
             State = EnemyState.Dead;
             StopMoving();
             agent.enabled = false;
-            body.enabled = false;
+            // An airborne corpse can finish falling while the usual death and despawn run.
+            body.enabled = impact.Active && !body.isGrounded;
+            verticalSpeed = Mathf.Min(0f, verticalSpeed);
             StopAllCoroutines();
             var killer = source != null ? source.GetComponentInParent<PlayerStats>() : null;
             foreach (var player in FindObjectsByType<PlayerStats>())

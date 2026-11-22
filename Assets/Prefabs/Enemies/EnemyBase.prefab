@@ -121,7 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9106136917699105882}
   - component: {fileID: 1933373277020329380}
-  - component: {fileID: 443437182205036318}
+  - component: {fileID: 7410368241577693421}
   - component: {fileID: 3649530704887330194}
   m_Layer: 0
   m_Name: EnemyBase
@@ -169,8 +169,8 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!136 &443437182205036318
-CapsuleCollider:
+--- !u!143 &7410368241577693421
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -184,13 +184,15 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
+  serializedVersion: 3
   m_Height: 2
-  m_Direction: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0
+  m_SkinWidth: 0.04
+  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &3649530704887330194
 MonoBehaviour:
@@ -206,6 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Enemies.EnemyBase
   maxHealth: 100
   moveSpeed: 3.5
+  impactGravity: 20
   detectionRange: 14
   viewAngle: 110
   eyeHeight: 1.5

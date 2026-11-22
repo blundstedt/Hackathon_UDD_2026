@@ -16,7 +16,7 @@ namespace Hackaton.Player
         internal bool CanReceiveRewards => isActiveAndEnabled && !trainingDummy;
         public bool IsTargetable => isActiveAndEnabled && !trainingDummy && Health > 0;
 
-        public override void ReceiveHit(int damage, Vector3 point, Vector3 direction, float push)
+        protected override void ApplyDamage(int damage, Vector3 point, Transform source)
         {
             if (trainingDummy)
             {
@@ -24,8 +24,12 @@ namespace Hackaton.Player
                 return;
             }
             TakeDamage(damage);
-            if (TryGetComponent<PlayerMovement>(out var movement) && movement.isActiveAndEnabled)
-                movement.Push(direction, push);
+        }
+
+        public override void ApplyKnockback(Knockback impact, Vector3 direction)
+        {
+            if (IsTargetable && TryGetComponent<PlayerMovement>(out var movement) && movement.isActiveAndEnabled)
+                movement.Push(impact, direction);
         }
 
         public int Health { get; private set; } = MaxHealth;
