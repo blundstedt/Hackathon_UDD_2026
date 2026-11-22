@@ -13,6 +13,7 @@ namespace Hackaton.Player
         [SerializeField] private bool trainingDummy;
         [SerializeField] private Font damageFont;
 
+        internal bool CanReceiveRewards => isActiveAndEnabled && !trainingDummy;
         public bool IsTargetable => isActiveAndEnabled && !trainingDummy && Health > 0;
 
         public override void ReceiveHit(int damage, Vector3 point, Vector3 direction, float push)

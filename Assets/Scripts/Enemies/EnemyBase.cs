@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Hackaton.Combat;
+using Hackaton.Player;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,7 +17,10 @@ namespace Hackaton.Enemies
         [SerializeField, Min(1)] private int maxHealth = 100;
         [SerializeField, Min(.1f)] private float moveSpeed = 3.5f;
 
+        [SerializeField, Min(1)] private float patrolRadius = 9f;
+
         [Header("Perception")]
+        [SerializeField, Min(0)] private float proximityRange = 2.5f;
         [SerializeField, Min(.1f)] private float detectionRange = 14f;
         [SerializeField, Range(0, 360)] private float viewAngle = 110f;
         [SerializeField, Min(0)] private float eyeHeight = 1.5f;
@@ -28,6 +32,12 @@ namespace Hackaton.Enemies
         [SerializeField, Min(0)] private int damage = 10;
         [SerializeField, Min(.1f)] private float attackRange = 1.6f;
         [SerializeField, Min(.05f)] private float attackInterval = 1f;
+
+        [Header("Rewards per player")]
+        [SerializeField, Min(0)] private int moneyReward = 10;
+        [SerializeField, Min(0)] private int experienceReward = 10;
+        [SerializeField, Min(0)] private int killerBonusMoney;
+        [SerializeField, Min(0)] private int killerBonusExperience;
 
         [Header("Presentation")]
         [SerializeField] private EnemyVisual visual;
@@ -43,11 +53,14 @@ namespace Hackaton.Enemies
         private Vector3 lastSeen;
         private float nextSense;
         private float nextAttack;
+        private float nextPatrolAttempt;
+        private NavMeshPath patrolPath;
 
         protected virtual void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
             body = GetComponent<CapsuleCollider>();
+            patrolPath = new NavMeshPath();
             agent.speed = moveSpeed;
             agent.stoppingDistance = .05f;
             Health = maxHealth;
@@ -66,6 +79,10 @@ namespace Hackaton.Enemies
                 {
                     State = EnemyState.Attack;
                     StopMoving();
+                    Vector3 facing = Vector3.ProjectOnPlane(lastSeen - transform.position, Vector3.up);
+                    if (facing.sqrMagnitude > .001f)
+                        transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                            Quaternion.LookRotation(facing), agent.angularSpeed * senseInterval);
                     if (Time.time >= nextAttack)
                     {
                         nextAttack = Time.time + attackInterval;
@@ -80,25 +97,43 @@ namespace Hackaton.Enemies
                 return;
             }
 
-            if (State == EnemyState.Chase || State == EnemyState.Attack)
-                State = MoveTo(lastSeen) ? EnemyState.Search : EnemyState.Idle;
-            else if (State == EnemyState.Search && SearchFinished())
+            bool lostTarget = State == EnemyState.Chase || State == EnemyState.Attack;
+            State = EnemyState.Search;
+            if (lostTarget && MoveTo(lastSeen)) return;
+            if (Time.time >= nextPatrolAttempt && agent.isOnNavMesh && SearchFinished())
+                PickPatrolDestination();
+        }
+
+        private void PickPatrolDestination()
+        {
+            nextPatrolAttempt = Time.time + .5f;
+            var filter = new NavMeshQueryFilter { agentTypeID = agent.agentTypeID, areaMask = agent.areaMask };
+            for (int attempt = 0; attempt < 6; attempt++)
             {
-                StopMoving();
-                State = EnemyState.Idle;
+                Vector2 offset = UnityEngine.Random.insideUnitCircle * patrolRadius;
+                Vector3 sample = transform.position + new Vector3(offset.x, 0f, offset.y);
+                if (!NavMesh.SamplePosition(sample, out var hit, agent.height, filter)
+                    || (hit.position - transform.position).sqrMagnitude < 1f
+                    || !agent.CalculatePath(hit.position, patrolPath)
+                    || patrolPath.status != NavMeshPathStatus.PathComplete) continue;
+
+                agent.isStopped = false;
+                agent.SetPath(patrolPath);
+                return;
             }
         }
 
         protected virtual Transform FindVisibleTarget()
         {
             Vector3 eye = transform.position + Vector3.up * eyeHeight;
+            float range = Mathf.Max(detectionRange, proximityRange);
             int count;
-            while ((count = Physics.OverlapSphereNonAlloc(eye, detectionRange, candidates,
+            while ((count = Physics.OverlapSphereNonAlloc(eye, range, candidates,
                        targetLayers, QueryTriggerInteraction.Ignore)) == candidates.Length)
                 Array.Resize(ref candidates, candidates.Length * 2);
 
             Transform nearest = null;
-            float best = detectionRange * detectionRange;
+            float best = range * range;
             for (int i = 0; i < count; i++)
             {
                 Collider candidate = candidates[i];
@@ -109,7 +144,8 @@ namespace Hackaton.Enemies
                 float distance = offset.sqrMagnitude;
                 if (distance > best) continue;
                 Vector3 horizontal = Vector3.ProjectOnPlane(offset, Vector3.up);
-                if (Vector3.Angle(transform.forward, horizontal) > viewAngle * .5f) continue;
+                if (distance > proximityRange * proximityRange && (distance > detectionRange * detectionRange
+                    || Vector3.Angle(transform.forward, horizontal) > viewAngle * .5f)) continue;
                 if (Physics.Linecast(eye, candidate.bounds.center, out var hit, sightLayers,
                         QueryTriggerInteraction.Ignore) && !hit.transform.IsChildOf(owner.transform)) continue;
 
@@ -147,24 +183,41 @@ namespace Hackaton.Enemies
         public override void ReceiveHit(int amount, Vector3 point, Vector3 direction, float push)
             => ApplyDamage(amount, point);
 
+        public override void ReceiveHit(int amount, Vector3 point, Vector3 direction, float push, Transform source)
+            => ApplyDamage(amount, point, source);
+
         public void TakeDamage(int amount) => ApplyDamage(amount, transform.position + Vector3.up * eyeHeight);
 
-        private void ApplyDamage(int amount, Vector3 point)
+        private void ApplyDamage(int amount, Vector3 point, Transform source = null)
         {
             if (amount <= 0 || State == EnemyState.Dead) return;
             int received = Mathf.Min(amount, Health);
             Health -= received;
             if (healthBar != null) healthBar.ShowHit(point, received, (float)Health / maxHealth);
-            if (Health == 0) Die();
+            if (Health == 0) Die(source);
         }
 
-        private void Die()
+        private void Die(Transform source)
         {
             State = EnemyState.Dead;
             StopMoving();
             agent.enabled = false;
             body.enabled = false;
             StopAllCoroutines();
+            var killer = source != null ? source.GetComponentInParent<PlayerStats>() : null;
+            foreach (var player in FindObjectsByType<PlayerStats>())
+            {
+                if (!player.CanReceiveRewards) continue;
+                player.RewardDefeat(moneyReward, experienceReward);
+                if (player == killer && (killerBonusMoney > 0 || killerBonusExperience > 0))
+                {
+                    player.RewardDefeat(killerBonusMoney, killerBonusExperience);
+                    if (healthBar != null) healthBar.ShowReward(transform.position + Vector3.up * 2.8f,
+                        killerBonusMoney, killerBonusExperience, "Bono: ");
+                }
+            }
+            if (healthBar != null) healthBar.ShowReward(transform.position + Vector3.up * 1.8f,
+                moneyReward, experienceReward, "");
             OnDeath();
             StartCoroutine(RemoveCorpse());
         }
