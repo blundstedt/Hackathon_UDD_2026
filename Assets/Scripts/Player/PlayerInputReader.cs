@@ -17,6 +17,7 @@ namespace Hackaton.Player
         public Vector2 Move => HasControl ? move.ReadValue<Vector2>() : Vector2.zero;
         public Vector2 Look => HasControl && !skipLook ? look.ReadValue<Vector2>() : Vector2.zero;
         public bool AttackPressed => HasControl && !skipLook && attack.WasPressedThisFrame();
+        public bool InteractPressed => HasControl && Keyboard.current?.eKey.wasPressedThisFrame == true;
         public bool JumpPressed => HasControl && jump.WasPressedThisFrame();
         public bool SprintHeld => HasControl && sprint.IsPressed();
 
