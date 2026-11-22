@@ -14,6 +14,9 @@ namespace Hackaton.Player
         private PlayerInputReader input;
         private float verticalSpeed;
 
+        internal float WalkSpeed => walkSpeed;
+        internal float SprintSpeed => sprintSpeed;
+
         private void Awake()
         {
             controller = GetComponent<CharacterController>();

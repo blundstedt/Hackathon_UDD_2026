@@ -28,7 +28,18 @@ namespace Hackaton.Player
         private ShadowCastingMode[] normalShadowModes;
         private Vector3 followPosition;
         private Vector3 followVelocity;
-        private bool thirdPerson;
+        internal enum CameraMode { FirstPerson, Behind, Front }
+        internal CameraMode Mode { get; private set; }
+        private CharacterController controller;
+        private PlayerMovement movement;
+        private float stridePhase;
+        private float bobAmplitude;
+        private float airOffset;
+        private float breathPhase;
+        private float breathAmplitude;
+        private float lastFallSpeed;
+        private float landingAmplitude;
+        private float landingTime;
         private SharedHandPose mainHand;
         private SharedHandPose supportHand;
 
@@ -51,10 +62,13 @@ namespace Hackaton.Player
 
             public bool Contains(Transform target) => IsConfigured && target.IsChildOf(hand);
 
-            public void FollowCamera()
+            public void Apply(bool thirdPerson, Vector3 offset)
             {
-                if (IsConfigured)
-                    hand.SetPositionAndRotation(cameraPose.position, cameraPose.rotation);
+                if (!IsConfigured) return;
+                if (thirdPerson)
+                    hand.SetLocalPositionAndRotation(restPosition + hand.parent.InverseTransformVector(offset), restRotation);
+                else
+                    hand.SetPositionAndRotation(cameraPose.position + offset, cameraPose.rotation);
             }
 
             public void Restore()
@@ -65,7 +79,6 @@ namespace Hackaton.Player
         }
 
         internal Camera ViewCamera => playerCamera;
-        internal bool IsThirdPerson => thirdPerson;
 
         internal void MatchCamera(PlayerView previous)
         {
@@ -76,17 +89,27 @@ namespace Hackaton.Player
             playerCamera.farClipPlane = previous.playerCamera.farClipPlane;
         }
 
-        internal void SetThirdPerson(bool enabled)
+        internal void SetCameraMode(CameraMode mode)
         {
-            if (enabled)
-                UseThirdPerson();
+            Mode = mode;
+            bool external = mode != CameraMode.FirstPerson;
+            SetCharacterVisibility(external);
+            if (external)
+            {
+                Vector3 target = cameraPivot.position - transform.up * 0.35f;
+                followPosition = GetFollowPosition(target);
+                followVelocity = Vector3.zero;
+            }
             else
-                UseFirstPerson();
+                playerCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            if (isActiveAndEnabled) ApplyHandPoses();
         }
 
         private void Awake()
         {
             input = GetComponent<PlayerInputReader>();
+            controller = GetComponent<CharacterController>();
+            movement = GetComponent<PlayerMovement>();
             characterRenderers = characterVisual.GetComponentsInChildren<Renderer>(true);
             normalShadowModes = new ShadowCastingMode[characterRenderers.Length];
             for (int i = 0; i < characterRenderers.Length; i++)
@@ -96,11 +119,13 @@ namespace Hackaton.Player
             supportHand = new SharedHandPose(sharedFirstPersonSupportHand, firstPersonSupportHandPose);
         }
 
-        private void OnEnable() => UseFirstPerson();
+        private void OnEnable() => SetCameraMode(CameraMode.FirstPerson);
 
         private void OnDisable()
         {
-            UseFirstPerson();
+            stridePhase = bobAmplitude = airOffset = 0f;
+            breathPhase = breathAmplitude = lastFallSpeed = landingAmplitude = landingTime = 0f;
+            SetCameraMode(CameraMode.FirstPerson);
             SetCharacterVisibility(true);
         }
 
@@ -108,13 +133,11 @@ namespace Hackaton.Player
         {
             var keyboard = Keyboard.current;
             if (input.HasControl && keyboard != null && keyboard.vKey.wasPressedThisFrame)
-                SetThirdPerson(!thirdPerson);
+                CycleCamera();
 
-            if (!thirdPerson)
-            {
-                FollowFirstPersonHandPoses();
-                return;
-            }
+            UpdateHandMotion();
+            ApplyHandPoses();
+            if (Mode == CameraMode.FirstPerson) return;
 
             Vector3 target = cameraPivot.position - transform.up * 0.35f;
             Vector3 desiredPosition = GetFollowPosition(target);
@@ -128,27 +151,21 @@ namespace Hackaton.Player
             playerCamera.transform.SetPositionAndRotation(safePosition, rotation);
         }
 
-        private void UseFirstPerson()
+        private void CycleCamera()
         {
-            thirdPerson = false;
-            playerCamera.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            FollowFirstPersonHandPoses();
-            SetCharacterVisibility(false);
-        }
-
-        private void UseThirdPerson()
-        {
-            thirdPerson = true;
-            Vector3 target = cameraPivot.position - transform.up * 0.35f;
-            followPosition = GetFollowPosition(target);
-            followVelocity = Vector3.zero;
-            SetCharacterVisibility(true);
+            SetCameraMode(Mode switch
+            {
+                CameraMode.FirstPerson => CameraMode.Behind,
+                CameraMode.Behind => CameraMode.Front,
+                _ => CameraMode.FirstPerson
+            });
         }
 
         private Vector3 GetFollowPosition(Vector3 target)
         {
             float pitch = Mathf.DeltaAngle(0f, cameraPivot.localEulerAngles.x);
-            Quaternion orbit = transform.rotation * Quaternion.Euler(Mathf.Clamp(pitch + 19f, -30f, 55f), 0f, 0f);
+            float yaw = Mode == CameraMode.Front ? 180f : 0f;
+            Quaternion orbit = transform.rotation * Quaternion.Euler(Mathf.Clamp(pitch + 19f, -30f, 55f), yaw, 0f);
             Vector3 desiredPosition = target + orbit * (Vector3.back * followDistance);
             return ConstrainToClearPath(target, desiredPosition);
         }
@@ -197,11 +214,49 @@ namespace Hackaton.Player
             }
         }
 
-        private void FollowFirstPersonHandPoses()
+        private void UpdateHandMotion()
         {
-            if (!isActiveAndEnabled) return;
-            mainHand.FollowCamera();
-            supportHand.FollowCamera();
+            bool moving = controller.enabled && movement.isActiveAndEnabled;
+            Vector3 velocity = moving ? controller.velocity : Vector3.zero;
+            float speed = new Vector2(velocity.x, velocity.z).magnitude;
+            float walk = Mathf.Clamp01(speed / Mathf.Max(0.01f, movement.WalkSpeed));
+            float run = Mathf.InverseLerp(movement.WalkSpeed, movement.SprintSpeed, speed);
+            bool grounded = moving && controller.isGrounded;
+            float targetAmplitude = grounded ? walk * Mathf.Lerp(0.025f, 0.052f, run) : 0f;
+            float blend = 1f - Mathf.Exp(-12f * Time.deltaTime);
+            bobAmplitude = Mathf.Lerp(bobAmplitude, targetAmplitude, blend);
+            float frequency = walk * Mathf.Lerp(1.55f, 2.35f, run);
+            if (grounded)
+                stridePhase = Mathf.Repeat(stridePhase + frequency * Time.deltaTime * 2f * Mathf.PI, 2f * Mathf.PI);
+
+            // Lag on ascent, float on descent. A long fall can never wind up extra displacement.
+            float targetAir = grounded ? 0f : Mathf.Clamp(-velocity.y * 0.012f, -0.065f, 0.085f);
+            airOffset = Mathf.Lerp(airOffset, targetAir, blend);
+
+            float idle = grounded ? 1f - Mathf.SmoothStep(0f, 1f, speed / 0.5f) : 0f;
+            breathAmplitude = Mathf.Lerp(breathAmplitude, 0.009f * idle, blend);
+            breathPhase = Mathf.Repeat(breathPhase + Time.deltaTime * (2f * Mathf.PI / 4f), 2f * Mathf.PI);
+
+            // The controller loses its downward velocity on contact, so sample it while airborne.
+            if (grounded && lastFallSpeed > 1.5f)
+            {
+                landingAmplitude = 0.11f * Mathf.InverseLerp(1.5f, 14f, lastFallSpeed);
+                landingTime = 0f;
+            }
+            lastFallSpeed = moving && !grounded ? Mathf.Max(0f, -velocity.y) : 0f;
+            landingTime = Mathf.Min(1f, landingTime + Time.deltaTime);
+        }
+
+        private void ApplyHandPoses()
+        {
+            bool thirdPerson = Mode != CameraMode.FirstPerson;
+            Vector3 up = thirdPerson ? transform.up : cameraPivot.up;
+            float rebound = -landingAmplitude * Mathf.Exp(-10f * landingTime) * Mathf.Sin(22f * landingTime);
+            float height = airOffset + bobAmplitude * Mathf.Sin(stridePhase) + breathAmplitude * Mathf.Sin(breathPhase) + rebound;
+            Vector3 offset = up * height;
+            // Keep both grips together, including when equipment replaces one of the hand roots.
+            mainHand.Apply(thirdPerson, offset);
+            supportHand.Apply(thirdPerson, offset);
         }
     }
 }
