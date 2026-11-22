@@ -64,6 +64,26 @@ namespace Hackaton.Player
             }
         }
 
+        internal Camera ViewCamera => playerCamera;
+        internal bool IsThirdPerson => thirdPerson;
+
+        internal void MatchCamera(PlayerView previous)
+        {
+            cameraPivot.localRotation = previous.cameraPivot.localRotation;
+            playerCamera.clearFlags = previous.playerCamera.clearFlags;
+            playerCamera.fieldOfView = previous.playerCamera.fieldOfView;
+            playerCamera.nearClipPlane = previous.playerCamera.nearClipPlane;
+            playerCamera.farClipPlane = previous.playerCamera.farClipPlane;
+        }
+
+        internal void SetThirdPerson(bool enabled)
+        {
+            if (enabled)
+                UseThirdPerson();
+            else
+                UseFirstPerson();
+        }
+
         private void Awake()
         {
             input = GetComponent<PlayerInputReader>();
@@ -88,12 +108,7 @@ namespace Hackaton.Player
         {
             var keyboard = Keyboard.current;
             if (input.HasControl && keyboard != null && keyboard.vKey.wasPressedThisFrame)
-            {
-                if (thirdPerson)
-                    UseFirstPerson();
-                else
-                    UseThirdPerson();
-            }
+                SetThirdPerson(!thirdPerson);
 
             if (!thirdPerson)
             {
