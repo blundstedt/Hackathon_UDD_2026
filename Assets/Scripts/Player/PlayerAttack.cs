@@ -10,6 +10,7 @@ namespace Hackaton.Player
     {
         protected abstract float Cooldown { get; }
         private PlayerInputReader input;
+        private CharacterController controller;
         protected abstract float ImpactTime { get; }
         protected PlayerView View { get; private set; }
         private float startedAt;
@@ -20,6 +21,7 @@ namespace Hackaton.Player
 
         protected void Awake()
         {
+            controller = GetComponent<CharacterController>();
             input = GetComponent<PlayerInputReader>();
             View = GetComponent<PlayerView>();
         }
@@ -31,7 +33,7 @@ namespace Hackaton.Player
 
         public bool TryAttack()
         {
-            if (!isActiveAndEnabled || impactPending || Time.time < readyAt) return false;
+            if (!isActiveAndEnabled || (controller != null && !controller.enabled) || impactPending || Time.time < readyAt) return false;
             startedAt = Time.time;
             OnAttackStarted();
             readyAt = startedAt + Cooldown;
@@ -47,6 +49,11 @@ namespace Hackaton.Player
         protected void LateUpdate()
         {
             if (!animating) return;
+            if (controller != null && !controller.enabled)
+            {
+                animating = impactPending = false;
+                return;
+            }
             float elapsed = Time.time - startedAt;
             bool impact = impactPending && elapsed >= ImpactTime;
             Animate(impact ? ImpactTime : elapsed);
@@ -119,7 +126,7 @@ namespace Hackaton.Player
                 if (Physics.Linecast(origin, point, out var obstacle, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)
                     && !obstacle.transform.IsChildOf(stats.transform) && !obstacle.transform.IsChildOf(transform)) continue;
                 struck.Add(stats);
-                Vector3 away = Vector3.ProjectOnPlane(stats.transform.position - transform.position, Vector3.up);
+                Vector3 away = Vector3.ProjectOnPlane((impact.large ? point : stats.transform.position) - transform.position, Vector3.up);
                 stats.ReceiveHit(damage, point, away.sqrMagnitude > .0001f ? away : transform.forward, impact, transform);
             }
         }

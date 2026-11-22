@@ -5,7 +5,7 @@ namespace Hackaton.Player
 {
     public sealed class SlapAttack : PlayerAttack
     {
-        [SerializeField] private MeleeAttackStep slap = new(.45f, new Knockback(12f, 7f, .65f, .12f));
+        [SerializeField] private MeleeAttackStep slap = new(.45f, new Knockback(12f, 7f, .65f, .12f, true));
         protected override float Cooldown => slap.cooldown;
         protected override float ImpactTime => .16f;
 

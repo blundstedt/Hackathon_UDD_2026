@@ -15,8 +15,11 @@ namespace Hackaton.Combat
         [Min(0), Tooltip("Extra time grounded before movement resumes.")]
         public float recovery;
 
-        public Knockback(float horizontal, float vertical, float duration, float recovery)
+        public bool large;
+
+        public Knockback(float horizontal, float vertical, float duration, float recovery, bool large = false)
         {
+            this.large = large;
             this.horizontal = horizontal;
             this.vertical = vertical;
             this.duration = duration;

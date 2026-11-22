@@ -119,6 +119,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 74205952342990}
   - component: {fileID: 9106136917699105882}
   - component: {fileID: 1933373277020329380}
   - component: {fileID: 7410368241577693421}
@@ -130,6 +131,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &74205952342990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627624820087497930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e42783e450d401da5fe1d61b587d652, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Combat.LargeKnockback
+  horizontalForce: 0.26
+  verticalForce: 0.92
 --- !u!4 &9106136917699105882
 Transform:
   m_ObjectHideFlags: 0

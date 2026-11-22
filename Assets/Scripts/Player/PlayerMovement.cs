@@ -15,9 +15,18 @@ namespace Hackaton.Player
         private PlayerInputReader input;
         private float verticalSpeed;
         private CharacterImpactMotion impact;
+        private LargeKnockback launch;
 
         internal void Push(Knockback hit, Vector3 direction)
         {
+            if (hit.large && launch.isActiveAndEnabled)
+            {
+                impact = default;
+                verticalSpeed = 0f;
+                launch.Launch(hit, direction);
+                return;
+            }
+            if (launch.Active) return;
             impact.Begin(hit, direction, ref verticalSpeed);
         }
 
@@ -27,6 +36,7 @@ namespace Hackaton.Player
         private void Awake()
         {
             controller = GetComponent<CharacterController>();
+            launch = LargeKnockback.For(controller);
             input = GetComponent<PlayerInputReader>();
         }
 

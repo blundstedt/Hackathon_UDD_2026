@@ -139,8 +139,11 @@ namespace Hackaton.Player
             if (input.HasControl && keyboard != null && keyboard.vKey.wasPressedThisFrame)
                 CycleCamera();
 
-            UpdateHandMotion();
-            ApplyHandPoses();
+            if (controller.enabled)
+            {
+                UpdateHandMotion();
+                ApplyHandPoses();
+            }
             if (Mode == CameraMode.FirstPerson) return;
 
             Vector3 target = cameraPivot.position - transform.up * 0.35f;
