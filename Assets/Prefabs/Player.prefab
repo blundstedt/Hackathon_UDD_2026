@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 2583908622377253570}
   - component: {fileID: 6036015852569043003}
   - component: {fileID: 8304523997848004444}
+  - component: {fileID: 31820261010002}
+  - component: {fileID: 31820261010001}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -320,3 +322,28 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6636118059322378322}
   m_Enabled: 1
+--- !u!114 &31820261010001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4632304012390071422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e391678607f2488188601eb4aae22dea, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &31820261010002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4632304012390071422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9ae6b328a04a0cbe4ceaca4e21a787, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  hudFont: {fileID: 12800000, guid: ff798ff5433396e449a39f3132aae3e0, type: 3}
