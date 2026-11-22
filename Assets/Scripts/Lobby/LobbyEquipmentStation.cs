@@ -82,7 +82,7 @@ namespace Hackaton.Lobby
         {
             var previous = player;
             var previousTransform = previous.transform;
-            bool wasThirdPerson = previous.IsThirdPerson;
+            var cameraMode = previous.Mode;
 
             // Configure the replacement before its movement and input components enable.
             var staging = new GameObject("Equipment staging");
@@ -102,8 +102,7 @@ namespace Hackaton.Lobby
             equipped = option;
             shownOption = null;
             replacement.gameObject.SetActive(true);
-            if (wasThirdPerson)
-                replacement.SetThirdPerson(true);
+            replacement.SetCameraMode(cameraMode);
 
             Destroy(previous.gameObject);
         }
