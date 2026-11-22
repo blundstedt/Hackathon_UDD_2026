@@ -39201,6 +39201,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8065484818186546287, guid: 5477dc01225ea3847957b7de03880b44, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -49526,7 +49530,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365287013}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: 19f36ff17cb11b546857c6b11f9d216d, type: 2}
 --- !u!1001 &1366494796
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58425,8 +58429,8 @@ Transform:
   m_GameObject: {fileID: 1599322916}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.045, z: 0}
-  m_LocalScale: {x: 1.74, y: 0.009, z: 1.74}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 865290780}
@@ -58456,6 +58460,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: dc57691f3a9f4054cb6cdd6de92d8d4b, type: 2}
+  - {fileID: 2100000, guid: 4fe010ffcd3c8644796e66a2ca1d0a36, type: 2}
   - {fileID: 2100000, guid: c1c11420b57fad14ba82126ce55527f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -58487,7 +58493,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1599322916}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: b7083544dafef2c499977d0ebb74d84f, type: 2}
 --- !u!1001 &1602505875
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -62019,7 +62025,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1683284199}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: b5fd1450b432b384da6b410e4b67e20b, type: 2}
 --- !u!1001 &1683291638
 PrefabInstance:
   m_ObjectHideFlags: 0
