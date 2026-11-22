@@ -28,7 +28,7 @@
 - Author: V VenCreations
 - Source: https://assetstore.unity.com/packages/3d/environments/simplepoly-city-low-poly-assets-58899
 - License: Standard Unity Asset Store EULA
-- Usage: Non-interactive buildings for blocks 1, 3, 4, 6, 7, 8, and 9 of the urban lobby.
+- Usage: Building exteriors for blocks 1, 3, 4, 6, 7, 8, and 9 of the urban lobby.
 
 ## Low poly Road Pack - Created with FastMesh Asset
 - Author: FM Fast Mesh
@@ -53,3 +53,9 @@
 - Source: https://github.com/danhhong/Dangrek
 - License: SIL Open Font License 1.1
 - Usage: Typeface for in-game text.
+
+## Low Poly Living Room Pack (71 Models) - Cozy Interior Furniture & Props
+- Author: The PolynestLab
+- Source: https://assetstore.unity.com/packages/3d/props/interior/low-poly-living-room-pack-71-models-cozy-interior-furniture-prop-320366
+- License: Standard Unity Asset Store EULA
+- Usage: Furniture, books, and decorative props in the urban lobby bookshop and clothing store.
