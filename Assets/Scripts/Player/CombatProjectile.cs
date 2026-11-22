@@ -1,3 +1,4 @@
+using Hackaton.Combat;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -57,17 +58,17 @@ namespace Hackaton.Player
                 var effect = Instantiate(splash, point, Quaternion.identity);
                 effect.transform.localScale = Vector3.one * (2 * blastRadius);
                 Destroy(effect, .18f);
-                var struck = new HashSet<PlayerStats>();
+                var struck = new HashSet<HitReceiver>();
                 foreach (var nearby in Physics.OverlapSphere(point, blastRadius, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                 {
-                    var stats = nearby.GetComponentInParent<PlayerStats>();
+                    var stats = nearby.GetComponentInParent<HitReceiver>();
                     if (stats == null || IsOwner(nearby) || !struck.Add(stats)) continue;
                     stats.ReceiveHit(damage, nearby.ClosestPoint(point), nearby.bounds.center - point, 4f);
                 }
             }
             else
             {
-                var stats = collider.GetComponentInParent<PlayerStats>();
+                var stats = collider.GetComponentInParent<HitReceiver>();
                 if (stats != null) stats.ReceiveHit(damage, point, velocity.normalized, 2f);
             }
             Destroy(gameObject);
