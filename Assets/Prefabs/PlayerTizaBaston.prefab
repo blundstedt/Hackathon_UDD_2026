@@ -258,6 +258,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Player.BastonAttack
   melee_damage_multiplier: 1
   staffLength: 1.55
+  baseDamage: 10
+  comboWindow: 1
+  first:
+    cooldown: 0.35
+    impact:
+      horizontal: 2
+      vertical: 0
+      duration: 0.16
+      recovery: 0.02
+  second:
+    cooldown: 0.35
+    impact:
+      horizontal: 3
+      vertical: 0
+      duration: 0.20
+      recovery: 0.04
+  finisher:
+    cooldown: 0.35
+    impact:
+      horizontal: 15
+      vertical: 8
+      duration: 0.8
+      recovery: 0.15
 --- !u!1 &6666564182979779313 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6636118059322378322, guid: d1ef1b354ff2b9e4cbc981658a53ebd6, type: 3}

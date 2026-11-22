@@ -1,3 +1,4 @@
+using Hackaton.Combat;
 using UnityEngine;
 
 namespace Hackaton.Player
@@ -13,12 +14,11 @@ namespace Hackaton.Player
         private CharacterController controller;
         private PlayerInputReader input;
         private float verticalSpeed;
-        private Vector3 knockback;
+        private CharacterImpactMotion impact;
 
-        internal void Push(Vector3 direction, float strength)
+        internal void Push(Knockback hit, Vector3 direction)
         {
-            knockback += Vector3.ProjectOnPlane(direction, Vector3.up).normalized * strength;
-            verticalSpeed = Mathf.Max(verticalSpeed, strength * .5f);
+            impact.Begin(hit, direction, ref verticalSpeed);
         }
 
         internal float WalkSpeed => walkSpeed;
@@ -33,29 +33,21 @@ namespace Hackaton.Player
         private void OnDisable()
         {
             verticalSpeed = 0f;
-            knockback = Vector3.zero;
+            impact = default;
         }
 
         private void Update()
         {
             if (!controller.enabled) return;
 
-            bool grounded = controller.isGrounded;
-            if (grounded && verticalSpeed < 0f) verticalSpeed = -2f;
-            if (grounded && input.JumpPressed)
+            if (!impact.Active && controller.isGrounded && input.JumpPressed)
                 verticalSpeed = Mathf.Sqrt(2f * gravity * jumpHeight);
 
             Vector2 direction = Vector2.ClampMagnitude(input.Move, 1f);
             // Look turns the root in yaw only, so movement stays horizontal even looking up/down.
             Vector3 velocity = (transform.right * direction.x + transform.forward * direction.y)
                 * (input.SprintHeld ? sprintSpeed : walkSpeed);
-            verticalSpeed -= gravity * Time.deltaTime;
-            velocity += knockback;
-            knockback = Vector3.MoveTowards(knockback, Vector3.zero, 16f * Time.deltaTime);
-            velocity.y = verticalSpeed;
-            CollisionFlags flags = controller.Move(velocity * Time.deltaTime);
-            if ((flags & CollisionFlags.Above) != 0 && verticalSpeed > 0f) verticalSpeed = 0f;
-            if ((flags & CollisionFlags.Below) != 0 && verticalSpeed < 0f) verticalSpeed = -2f;
+            impact.Move(controller, velocity, ref verticalSpeed, gravity, Time.deltaTime);
         }
     }
 }

@@ -1,10 +1,12 @@
+using Hackaton.Combat;
 using UnityEngine;
 
 namespace Hackaton.Player
 {
     public sealed class SlapAttack : PlayerAttack
     {
-        protected override float Cooldown => .45f;
+        [SerializeField] private MeleeAttackStep slap = new(.45f, new Knockback(12f, 7f, .65f, .12f));
+        protected override float Cooldown => slap.cooldown;
         protected override float ImpactTime => .16f;
 
         protected override void Animate(float elapsed)
@@ -16,7 +18,7 @@ namespace Hackaton.Player
 
         protected override void Attack(Vector3 origin, Vector3 direction)
         {
-            Strike(origin, direction, 2f, .35f, 0, 7f);
+            Strike(origin, direction, 2f, .35f, 0, slap.impact);
         }
     }
 }

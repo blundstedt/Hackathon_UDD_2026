@@ -202,3 +202,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3155120676b059a4ab6e9250468cd0dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Player.SlapAttack
+  slap:
+    cooldown: 0.45
+    impact:
+      horizontal: 12
+      vertical: 7
+      duration: 0.65
+      recovery: 0.12
