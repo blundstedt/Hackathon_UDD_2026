@@ -1,3 +1,4 @@
+using Hackaton.Combat;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,10 +50,10 @@ namespace Hackaton.Player
             var center = origin + direction * (reach * .5f);
             var halfSize = new Vector3(width, .48f, reach * .5f);
             var targets = Physics.OverlapBox(center, halfSize, rotation, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
-            var struck = new HashSet<PlayerStats>();
+            var struck = new HashSet<HitReceiver>();
             foreach (var collider in targets)
             {
-                var stats = collider.GetComponentInParent<PlayerStats>();
+                var stats = collider.GetComponentInParent<HitReceiver>();
                 if (stats == null || stats.transform == transform || struck.Contains(stats)) continue;
                 Vector3 point = collider.ClosestPoint(origin);
                 if (Physics.Linecast(origin, point, out var obstacle, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)

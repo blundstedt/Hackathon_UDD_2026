@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Hackaton.Player
+namespace Hackaton.Combat
 {
     public sealed class FloatingDamage : MonoBehaviour
     {

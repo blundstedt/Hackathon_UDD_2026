@@ -1,10 +1,11 @@
+using Hackaton.Combat;
 using System;
 using UnityEngine;
 
 namespace Hackaton.Player
 {
     [DisallowMultipleComponent]
-    public sealed class PlayerStats : MonoBehaviour
+    public sealed class PlayerStats : HitReceiver, IPlayerTarget
     {
         public const int MaxHealth = 100;
         public const int MaxLevel = 18;
@@ -12,7 +13,9 @@ namespace Hackaton.Player
         [SerializeField] private bool trainingDummy;
         [SerializeField] private Font damageFont;
 
-        internal void ReceiveHit(int damage, Vector3 point, Vector3 direction, float push)
+        public bool IsTargetable => isActiveAndEnabled && !trainingDummy && Health > 0;
+
+        public override void ReceiveHit(int damage, Vector3 point, Vector3 direction, float push)
         {
             if (trainingDummy)
             {
