@@ -94,6 +94,7 @@ namespace Hackaton.Lobby
             replacement.transform.SetPositionAndRotation(previousTransform.position, previousTransform.rotation);
             replacement.name = previous.name;
             replacement.MatchCamera(previous);
+            replacement.GetComponent<PlayerStats>().CopyFrom(previous.GetComponent<PlayerStats>());
             Destroy(staging);
 
             previous.gameObject.SetActive(false);
