@@ -78,6 +78,7 @@ namespace Hackaton.Player
             }
         }
 
+        internal Transform AimPivot => cameraPivot;
         internal Camera ViewCamera => playerCamera;
 
         internal void MatchCamera(PlayerView previous)

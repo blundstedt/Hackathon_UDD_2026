@@ -10,12 +10,13 @@ namespace Hackaton.Player
     {
         [SerializeField] private InputActionAsset inputActions;
         private InputActionAsset ownedActions;
-        private InputAction move, look, jump, sprint;
+        private InputAction move, look, jump, sprint, attack;
         private bool skipLook;
 
         public bool HasControl => isActiveAndEnabled && Application.isFocused && Cursor.lockState == CursorLockMode.Locked;
         public Vector2 Move => HasControl ? move.ReadValue<Vector2>() : Vector2.zero;
         public Vector2 Look => HasControl && !skipLook ? look.ReadValue<Vector2>() : Vector2.zero;
+        public bool AttackPressed => HasControl && !skipLook && attack.WasPressedThisFrame();
         public bool JumpPressed => HasControl && jump.WasPressedThisFrame();
         public bool SprintHeld => HasControl && sprint.IsPressed();
 
@@ -24,6 +25,7 @@ namespace Hackaton.Player
             // Private copy: enabling one player never changes the shared project actions.
             ownedActions = Instantiate(inputActions);
             ownedActions.bindingMask = InputBinding.MaskByGroup("Keyboard&Mouse");
+            attack = ownedActions.FindAction("Player/Attack", true);
             move = ownedActions.FindAction("Player/Move", true);
             look = ownedActions.FindAction("Player/Look", true);
             jump = ownedActions.FindAction("Player/Jump", true);

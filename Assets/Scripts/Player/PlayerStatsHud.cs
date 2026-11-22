@@ -13,11 +13,16 @@ namespace Hackaton.Player
         private PlayerStats stats;
         [SerializeField] private Font hudFont;
         private Text level, money;
+        private PlayerAttack attack;
+        private RectTransform cooldownFill;
         private RectTransform healthFill, xpFill;
 
         private void Awake()
         {
+            if (!enabled) return;
             stats = GetComponent<PlayerStats>();
+            foreach (var candidate in GetComponents<PlayerAttack>())
+                if (candidate.enabled) attack = candidate;
             var canvas = new GameObject("Atributos", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
             canvas.transform.SetParent(transform, false);
             canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
@@ -34,6 +39,11 @@ namespace Hackaton.Player
             var xp = Panel(canvas.transform, "Experiencia", Vector2.zero, new Vector2(22, 22), new Vector2(320, 20));
             healthFill = Bar(health, Red);
             xpFill = Bar(xp, Violet);
+            if (attack != null)
+            {
+                var track = Panel(canvas.transform, "Recarga", Vector2.one * .5f, new Vector2(0, -16), new Vector2(34, 3));
+                cooldownFill = Bar(track, Color.white);
+            }
         }
 
         private void OnEnable()
@@ -43,6 +53,14 @@ namespace Hackaton.Player
         }
 
         private void OnDisable() => stats.Changed -= Refresh;
+
+        private void LateUpdate()
+        {
+            if (cooldownFill == null) return;
+            float remaining = attack.RemainingFraction;
+            cooldownFill.parent.gameObject.SetActive(remaining > 0);
+            cooldownFill.anchorMax = new Vector2(remaining, 1f);
+        }
 
         private void Refresh()
         {

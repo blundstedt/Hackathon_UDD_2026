@@ -9,6 +9,21 @@ namespace Hackaton.Player
         public const int MaxHealth = 100;
         public const int MaxLevel = 18;
 
+        [SerializeField] private bool trainingDummy;
+        [SerializeField] private Font damageFont;
+
+        internal void ReceiveHit(int damage, Vector3 point, Vector3 direction, float push)
+        {
+            if (trainingDummy)
+            {
+                if (damage > 0) FloatingDamage.Show(point, damage, damageFont);
+                return;
+            }
+            TakeDamage(damage);
+            if (TryGetComponent<PlayerMovement>(out var movement) && movement.isActiveAndEnabled)
+                movement.Push(direction, push);
+        }
+
         public int Health { get; private set; } = MaxHealth;
         public int Money { get; private set; }
         public int Level { get; private set; } = 1;
@@ -18,7 +33,7 @@ namespace Hackaton.Player
 
         public void TakeDamage(int amount)
         {
-            if (amount <= 0 || Health == 0) return;
+            if (trainingDummy || amount <= 0 || Health == 0) return;
             Health = Math.Max(0, Health - amount);
             Changed?.Invoke();
         }

@@ -402,19 +402,42 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7977133869713211172, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1685754207745737146, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1201648855338704003}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4671746903330615005, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8140923167552987673}
   m_SourcePrefab: {fileID: 100100000, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
 --- !u!4 &4292718377582309305 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1685754207745737146, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
   m_PrefabInstance: {fileID: 3240282876941151747}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7791980613801001182 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4671746903330615005, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
+  m_PrefabInstance: {fileID: 3240282876941151747}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8140923167552987673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7791980613801001182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1512b1fd912e1d64fb0f1e1dcbefe30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Player.ResorteraAttack
+  range_damage_multiplier: 1
+  projectile: {fileID: 6786890431363438198, guid: b367ed632cf64c64bafad6e6a0ff8b1a, type: 3}
 --- !u!4 &8704322420596009147 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6069791286587311800, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
