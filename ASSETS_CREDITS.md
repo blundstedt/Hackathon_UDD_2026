@@ -41,3 +41,15 @@
 - Source: https://assetstore.unity.com/packages/3d/vehicles/low-poly-free-vehicles-pack-228368
 - License: Standard Unity Asset Store EULA
 - Usage: Parked police cars and military HMMWVs behind the urban lobby road closures.
+
+## Plates, Bowls & Mugs Pack
+- Author: RS Robot Skeleton
+- Source: https://assetstore.unity.com/packages/3d/props/interior/plates-bowls-mugs-pack-146682
+- License: Standard Unity Asset Store EULA
+- Usage: 3D tableware props.
+
+## Dangrek
+- Author: The Dangrek Project Authors
+- Source: https://github.com/danhhong/Dangrek
+- License: SIL Open Font License 1.1
+- Usage: Typeface for in-game text.
