@@ -16,6 +16,8 @@ namespace Hackaton.Lobby
         [Header("Iluminación nocturna")]
         [SerializeField] private Light sun;
         [SerializeField] private Material nightSky;
+        [SerializeField] private Volume nightVolume;
+        [SerializeField] private Light[] cityLamps = System.Array.Empty<Light>();
         [SerializeField, Min(0f)] private float moonIntensity = 0.32f;
         [SerializeField] private Color moonColor = new(0.59f, 0.72f, 1f);
         [SerializeField] private Color nightAmbientSky = new(0.24f, 0.30f, 0.43f);
@@ -39,7 +41,11 @@ namespace Hackaton.Lobby
             SceneManager.activeSceneChanged -= OnActiveSceneChanged;
             if (ControlsActiveScene)
             {
-                if (IsNight) RestoreDaylight();
+                if (IsNight)
+                {
+                    RestoreDaylight();
+                    SetCityLighting(false);
+                }
                 IsNight = false;
                 initialized = false;
             }
@@ -78,6 +84,7 @@ namespace Hackaton.Lobby
             if (!ControlsActiveScene) return;
 
             elapsedSeconds = 0f;
+            SetCityLighting(night);
             if (IsNight == night) return;
 
             IsNight = night;
@@ -97,6 +104,13 @@ namespace Hackaton.Lobby
             {
                 RestoreDaylight();
             }
+        }
+
+        private void SetCityLighting(bool night)
+        {
+            if (nightVolume != null) nightVolume.weight = night ? 1f : 0f;
+            foreach (var lamp in cityLamps)
+                if (lamp != null) lamp.enabled = night;
         }
 
         private void RestoreDaylight()

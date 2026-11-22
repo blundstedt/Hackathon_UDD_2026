@@ -31,9 +31,9 @@ namespace Hackaton.Player
             scaler.referenceResolution = new Vector2(1280, 720);
             scaler.matchWidthOrHeight = 0.5f;
 
-            var summary = Panel(canvas.transform, "Resumen", Vector2.one, new Vector2(-22, -18), new Vector2(196, 68));
-            level = Label(summary, "Nivel", 27, Violet, TextAnchor.UpperRight);
-            money = Label(summary, "Dinero", 23, Green, TextAnchor.LowerRight);
+            var summary = Panel(canvas.transform, "Resumen", Vector2.one, new Vector2(-12, -8), new Vector2(196, 57));
+            level = Label(summary, "Nivel", 27, Violet, 0, 34);
+            money = Label(summary, "Dinero", 23, Green, 27, 30);
 
             var health = Panel(canvas.transform, "Salud", Vector2.zero, new Vector2(22, 48), new Vector2(320, 24));
             var xp = Panel(canvas.transform, "Experiencia", Vector2.zero, new Vector2(22, 22), new Vector2(320, 20));
@@ -102,13 +102,14 @@ namespace Hackaton.Player
             return fill;
         }
 
-        private Text Label(RectTransform parent, string name, int size, Color color, TextAnchor alignment)
+        private Text Label(RectTransform parent, string name, int size, Color color, float top, float height)
         {
-            var rect = Child(parent, name);
+            var rect = Panel(parent, name, Vector2.one, new Vector2(0, -top), new Vector2(parent.rect.width, height));
             var label = rect.gameObject.AddComponent<Text>();
             label.font = hudFont;
             label.fontSize = size;
-            label.alignment = alignment;
+            label.alignment = TextAnchor.MiddleRight;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
             label.color = color;
             label.raycastTarget = false;
             var outline = rect.gameObject.AddComponent<Outline>();
