@@ -25,7 +25,10 @@ namespace Hackaton.Player
                 if (candidate.enabled) attack = candidate;
             var canvas = new GameObject("Atributos", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
             canvas.transform.SetParent(transform, false);
-            canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var hudCanvas = canvas.GetComponent<Canvas>();
+            hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var room = Hackaton.Multiplayer.CampaignRoom.Current;
+            if (room) room.HideHudDuringIntro(hudCanvas);
             var scaler = canvas.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1280, 720);

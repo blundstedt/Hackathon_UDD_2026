@@ -28,6 +28,12 @@ namespace Hackaton.Multiplayer
         private readonly Dictionary<ulong, int> colors = new();
         private NetworkManager manager;
         private FloorSession campaign;
+        [SerializeField] private CampaignIntro introPrefab;
+        private CampaignIntro intro;
+        public bool IntroBlocking => intro && intro.Blocking;
+        internal bool LocalAvatarReady => online ? NetworkTiza.Local && NetworkTiza.Local.View : campaign && campaign.PlayerCount > 0;
+        internal void HideHudDuringIntro(Canvas canvas) { if (intro) intro.HideHud(canvas); }
+        internal void CoverIntro() { if (intro) intro.Cover(); }
         private ISession session;
         private int slot;
         private bool host, closing, loading, online, quitting;
@@ -59,6 +65,7 @@ namespace Hackaton.Multiplayer
             online = network;
             slot = index;
             campaign = Instantiate(campaignPrefab);
+            intro = Instantiate(introPrefab, campaign.transform);
             if (saved != null) campaign.Restore(saved, avatars);
             campaign.Progress.Changed += OnProgress;
             if (!online) return;
@@ -94,6 +101,7 @@ namespace Hackaton.Multiplayer
                 }
                 Save();
                 Tell(null);
+                intro.ConfirmEntry();
                 if (local) await SceneManager.LoadSceneAsync(Lobby);
                 else StartTravel(Lobby);
             }
@@ -113,6 +121,7 @@ namespace Hackaton.Multiplayer
                 Tell("Conectando con el host…");
                 Attach(await MultiplayerService.Instance.JoinSessionByCodeAsync(code));
                 if (!manager.IsConnectedClient) throw new IOException("El host ha cerrado la conexión.");
+                intro.ConfirmEntry();
                 Tell(null);
             }
             catch (Exception ex) { await Failed(ex); }
@@ -270,6 +279,7 @@ namespace Hackaton.Multiplayer
         {
             if (closing) return;
             closing = true;
+            if (intro) intro.Cancel();
             try
             {
                 if (session != null)
