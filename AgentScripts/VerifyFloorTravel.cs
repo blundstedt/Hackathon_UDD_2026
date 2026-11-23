@@ -160,6 +160,11 @@ public static class VerifyFloorTravel
         Press(Button(1)); Press(Button(1));
         await Until(()=>Hint.text=="Esperando jugadores... 3/4","No se mostró 3/4");
         Check(!Session.Traveling,"Espera 3/4 sin carga duplicada");
+        var lateJoin = Join("incorporación");
+        await Until(() => Hint.text == "Esperando jugadores... 3/5", "No contó al jugador que se incorporó durante la espera");
+        lateJoin.gameObject.SetActive(false);
+        await Until(() => Hint.text == "Esperando jugadores... 3/4", "No descontó la baja durante la espera");
+        Check(!Session.Traveling, "Altas y bajas conservan la solicitud mientras falta un jugador");
         Move(Local, Panel.transform.TransformPoint(new Vector3(0,0.2f,9)));
         await Until(()=>Hint.text!="Esperando jugadores... 3/4","No se canceló la espera");
         Board(extras[2]); Board(Local);
