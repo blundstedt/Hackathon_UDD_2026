@@ -1,123 +1,62 @@
 using System;
+using Hackaton.Multiplayer;
 using Hackaton.Player;
 using Hackaton.Progression;
-using Hackaton.Multiplayer;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace Hackaton.Lobby
 {
     [DisallowMultipleComponent]
     public sealed class LobbyEquipmentStation : MonoBehaviour
     {
-        [Serializable]
-        private sealed class EquipmentOption
-        {
-            public string label;
-            public Collider target;
-            public PlayerView playerPrefab;
-        }
-
         [SerializeField] private PlayerView player;
-        [SerializeField] private EquipmentOption[] options;
-        [SerializeField, Min(0.5f)] private float interactionDistance = 3.1f;
-        [SerializeField] private Text prompt;
+        [SerializeField] private WeaponCatalog catalog;
+        [SerializeField, Min(.5f)] private float interactionDistance = 4f;
 
-        private PlayerInputReader input;
-        private EquipmentOption equipped;
-        private EquipmentOption shownOption;
-        private float stationReach;
-
-        private void Awake()
-        {
-            input = player.GetComponent<PlayerInputReader>();
-            equipped = options[0];
-            foreach (var option in options)
-            {
-                float offset = Vector3.Distance(transform.position, option.target.bounds.center);
-                stationReach = Mathf.Max(stationReach, offset + interactionDistance);
-            }
-        }
+        private PlayerView equipped;
+        private bool Online => CampaignRoom.Current && CampaignRoom.Current.IsOnline;
+        internal WeaponCatalog Catalog => catalog;
+        internal FloorPlayer LocalPlayer => Online ? NetworkTiza.Local?.Player :
+            player ? player.GetComponent<FloorPlayer>() : null;
+        internal PlayerView Equipped => Online && NetworkTiza.Local
+            ? CampaignRoom.Current.Avatars[NetworkTiza.Local.Equipped] : equipped;
 
         private void Start()
         {
-            if (CampaignRoom.Current && CampaignRoom.Current.IsOnline) return;
-            if (!FloorSession.Instance || !player.TryGetComponent<FloorPlayer>(out var participant)) return;
+            if (Online || !FloorSession.Instance) return;
+            var participant = LocalPlayer;
+            if (!participant) return;
             var saved = FloorSession.Instance.Equipment(participant.Id);
-            var option = Array.Find(options, candidate => candidate.playerPrefab == saved);
-            if (option != null && option != equipped) Equip(option);
+            if (saved) Equip(saved);
         }
 
-        private void Update()
+        internal bool InRange(FloorPlayer participant) => participant &&
+            (participant.BodyCenter - transform.position).sqrMagnitude <= interactionDistance * interactionDistance;
+
+        public bool CanEquip(FloorPlayer participant, PlayerView prefab) =>
+            FloorSession.Instance && !FloorSession.Instance.Traveling && InRange(participant) &&
+            catalog.Find(prefab)?.CanEquip == true;
+
+        public void SelectWeapon(PlayerView prefab)
         {
-            if (CampaignRoom.Current && CampaignRoom.Current.IsOnline)
+            if (prefab == Equipped || !CanEquip(LocalPlayer, prefab)) return;
+            if (Online)
             {
-                var peer = NetworkTiza.Local;
-                if (!peer || !peer.View) { ShowPrompt(null); return; }
-                player = peer.View;
-                input = player.GetComponent<PlayerInputReader>();
-                equipped = Array.Find(options, o => o.playerPrefab == CampaignRoom.Current.Avatars[peer.Equipped]);
+                int index = Array.IndexOf(CampaignRoom.Current.Avatars, prefab);
+                if (index >= 0) NetworkTiza.Local.EquipRpc(index);
             }
-            bool nearby = input && input.HasControl
-                && (transform.position - player.transform.position).sqrMagnitude <= stationReach * stationReach;
-            var target = nearby ? FindTarget() : null;
-            if (target != null && target != equipped && Keyboard.current?.eKey.wasPressedThisFrame == true)
-            {
-                if (NetworkTiza.Local) NetworkTiza.Local.EquipRpc(Array.IndexOf(CampaignRoom.Current.Avatars, target.playerPrefab));
-                else Equip(target);
-            }
-
-            ShowPrompt(target);
+            else Equip(prefab);
         }
 
-        private EquipmentOption FindTarget()
-        {
-            var camera = player.ViewCamera;
-            var ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-            float reach = Vector3.Distance(ray.origin, player.transform.position) + interactionDistance;
-            float closest = reach;
-            EquipmentOption target = null;
-
-            foreach (var hit in Physics.RaycastAll(ray, reach, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide))
-            {
-                if (hit.distance >= closest || hit.transform.IsChildOf(player.transform))
-                    continue;
-
-                var candidate = Array.Find(options, option => option.target == hit.collider);
-                if (candidate == null && hit.collider.isTrigger)
-                    continue;
-
-                closest = hit.distance;
-                target = candidate;
-            }
-
-            if (target == null)
-                return null;
-
-            var position = player.transform.position;
-            Vector3 nearest = target.target.ClosestPoint(position);
-            return (nearest - position).sqrMagnitude <= interactionDistance * interactionDistance ? target : null;
-        }
-
-        public bool CanEquip(FloorPlayer participant, PlayerView prefab)
-        {
-            var option = Array.Find(options, o => o.playerPrefab == prefab);
-            return participant && option != null &&
-                Vector3.Distance(option.target.ClosestPoint(participant.BodyCenter), participant.BodyCenter) <= interactionDistance + .3f;
-        }
-
-        private void Equip(EquipmentOption option)
+        private void Equip(PlayerView prefab)
         {
             var previous = player;
             var previousTransform = previous.transform;
             var cameraMode = previous.Mode;
-
-            // Configure the replacement before its movement and input components enable.
             var staging = new GameObject("Equipment staging");
             staging.SetActive(false);
             staging.transform.SetParent(transform, false);
-            var replacement = Instantiate(option.playerPrefab, staging.transform);
+            var replacement = Instantiate(prefab, staging.transform);
             replacement.gameObject.SetActive(false);
             replacement.transform.SetParent(previousTransform.parent, false);
             replacement.transform.SetPositionAndRotation(previousTransform.position, previousTransform.rotation);
@@ -129,30 +68,14 @@ namespace Hackaton.Lobby
             if (FloorSession.Instance && previous.TryGetComponent<FloorPlayer>(out var participant))
             {
                 replacement.GetComponent<FloorPlayer>().SetIdentity(participant.Id);
-                FloorSession.Instance.Equip(participant.Id, option.playerPrefab);
+                FloorSession.Instance.Equip(participant.Id, prefab);
             }
             previous.gameObject.SetActive(false);
             player = replacement;
-            input = replacement.GetComponent<PlayerInputReader>();
-            equipped = option;
-            shownOption = null;
+            equipped = prefab;
             replacement.gameObject.SetActive(true);
             replacement.SetCameraMode(cameraMode);
-
             Destroy(previous.gameObject);
-        }
-
-        private void ShowPrompt(EquipmentOption option)
-        {
-            if (prompt.gameObject.activeSelf != (option != null))
-                prompt.gameObject.SetActive(option != null);
-
-            if (option == null || option == shownOption)
-                return;
-
-            prompt.text = option == equipped ? option.label + " equipado" : "[E] Equipar " + option.label;
-            shownOption = option;
         }
     }
 }
-

@@ -21,8 +21,9 @@ namespace Hackaton.Multiplayer
         private Page page, previous;
         private Action confirmed;
         private bool local;
-        private static bool menuOpen;
-        public static bool CapturesInput => menuOpen || (CampaignRoom.Current && CampaignRoom.Current.IntroBlocking);
+        private static bool pageCapturesInput;
+        public static bool CapturesInput => pageCapturesInput || Hackaton.Lobby.WeaponShopMenu.CapturesInput ||
+            (CampaignRoom.Current && CampaignRoom.Current.IntroBlocking);
 
         private void Start()
         {
@@ -50,11 +51,12 @@ namespace Hackaton.Multiplayer
         private void Show(Page next)
         {
             page = next;
-            menuOpen = next != Page.Hidden;
+            pageCapturesInput = next != Page.Hidden;
             background.SetActive(SceneManager.GetActiveScene().name == CampaignRoom.Menu);
             for (int i = 0; i < pages.Length; i++) pages[i].SetActive(i == (int)next);
-            Cursor.lockState = CapturesInput ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = CapturesInput;
+            bool showCursor = pageCapturesInput || room.IntroBlocking;
+            Cursor.lockState = showCursor ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = showCursor;
             Message(null);
             if (next == Page.Slots) RefreshSlots();
             if (next == Page.Pause) roomCode.text = string.IsNullOrEmpty(room.Code) ? "Partida local" : room.Code;
@@ -138,7 +140,7 @@ namespace Hackaton.Multiplayer
         }
         private void Update()
         {
-            if (room.IntroBlocking || room.Busy || Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
+            if (room.IntroBlocking || Hackaton.Lobby.WeaponShopMenu.CapturesInput || room.Busy || Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
             if (page == Page.Hidden) Show(Page.Pause);
             else if (page == Page.Pause) Resume();
             else if (page != Page.Home) Back();

@@ -13,6 +13,9 @@ namespace Hackaton.Lobby
         [SerializeField, Min(0.1f)] private float radius = 8.48f;
         [SerializeField] private float openHeight = 0.32f;
 
+        private WeaponShopMenu shop;
+        [SerializeField] private WeaponShopMenu shopPrefab;
+        [SerializeField] private LobbyEquipmentStation station;
         private float progress;
         private readonly RaycastHit[] hits = new RaycastHit[32];
 
@@ -32,7 +35,14 @@ namespace Hackaton.Lobby
             if (near && offset.sqrMagnitude > 0.01f)
                 head.rotation = Quaternion.LookRotation(offset);
 
-            bool show = near && progress > 0.75f && player.HasControl && IsAimedAt(camera, player.transform);
+            bool show = near && progress > 0.75f && player.HasControl &&
+                station.InRange(station.LocalPlayer) && IsAimedAt(camera, player.transform);
+            if (show && player.InteractPressed)
+            {
+                if (!shop) shop = Instantiate(shopPrefab, transform);
+                shop.Open(station);
+                show = false;
+            }
             if (prompt.gameObject.activeSelf != show)
                 prompt.gameObject.SetActive(show);
         }
