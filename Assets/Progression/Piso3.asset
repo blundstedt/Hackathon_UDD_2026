@@ -20,4 +20,4 @@ MonoBehaviour:
   requiredItem: {fileID: 11400000, guid: 85baac8c3b853f34798a752c20d868bd, type: 2}
   experience: 60
   money: 30
-  rewardItem: {fileID: 11400000, guid: b2bec24502d190e4d81677e6def41394, type: 2}
+  rewardItem: {fileID: 11400000, guid: a8659d5c8996444bb2e67a7ba1568aa0, type: 2}

@@ -65,9 +65,9 @@ public static class VerifyFloorTravel
         throw new Exception("El controlador no puede llegar a la caja por la pradera");
     }
 
-    private static void Board(FloorPlayer player)
+    private static void Board(FloorPlayer player, TowerFloorPanel panel = null)
     {
-        var zone = Panel.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
+        var zone = (panel ? panel : Panel).transform.Find("Zona de embarque").GetComponent<BoxCollider>();
         Move(player,zone.transform.TransformPoint(new Vector3(zone.center.x+1.4f,0.2f,zone.center.z)));
     }
 
@@ -241,12 +241,47 @@ public static class VerifyFloorTravel
         Move(Local,secretary.transform.position+secretary.transform.forward*2.5f);
         Check(secretary.Prompt(Session)=="Presiona E para entregar el objeto","Llave pendiente de entrega");
         Check(Press(secretary)=="¡Piso 2 desbloqueado!" && Session.Progress.State(2)==FloorState.Available,"Entrega efectiva");
-        Check(Press(secretary)=="Este piso ya está desbloqueado","Entrega duplicada rechazada");
+        Check(!Press(secretary).Contains("¡Piso") && Session.Progress.State(3)==FloorState.Locked,"Entrega duplicada rechazada");
         var serialized = new SerializedObject(Panel);
         var digit = (Renderer)serialized.FindProperty("digits").GetArrayElementAtIndex(2).objectReferenceValue;
         Check(digit.sharedMaterial==serialized.FindProperty("illuminated").objectReferenceValue,"Botón 2 actualizado por evento");
         Board(Local);
-        Check(Press(Button(2))=="Piso 2 aún no implementado" && !Session.Traveling,"Destino sin escena protegido");
+        Press(Button(2)); await Arrive(2);
+        var entry=GameObject.Find("Ascensor del atrio").GetComponent<TowerFloorPanel>();
+        var entryZone=entry.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
+        Check(entryZone.bounds.Contains(Local.BodyCenter) && Local.GetComponent<BastonAttack>().enabled,
+            "Llegada al atrio en la cabina con el equipo del lobby");
+        int beforeMoney=Local.Stats.Money;
+        Board(Local,entry); Press(entry.transform.Find("Piso 0").GetComponent<FloorButton>());
+        await Arrive(0);
+        Check(Session.Progress.State(2)==FloorState.Available && Local.Stats.Money==beforeMoney,"Salida temprana del atrio");
+        Board(Local); Press(Button(2)); await Arrive(2);
+        var diamond=Object.FindAnyObjectByType<FloorObjective>();
+        var floor2=Session.Current;
+        var exit=GameObject.Find("Ascensor de las recompensas").GetComponent<TowerFloorPanel>();
+        var companion=Join("explorador");
+        float ground=diamond.transform.parent.position.y;
+        Move(Local,new Vector3(diamond.transform.position.x,ground+.1f,diamond.transform.position.z-2.4f));
+        int EarnedXp(PlayerStats s)=>50*(s.Level-1)*s.Level+s.Experience;
+        int beforeXp=EarnedXp(Local.Stats);
+        Check(Press(diamond).Contains("Nivel completado") && floor2.rewardItem && !Session.Traveling,"El diamante completa el piso 2 y entrega la llave del piso 3");
+        Check(Local.Stats.Money==beforeMoney+floor2.money && EarnedXp(Local.Stats)==beforeXp+floor2.experience &&
+            companion.Stats.Money==floor2.money && EarnedXp(companion.Stats)==floor2.experience,"Premio compartido del piso 2");
+        Check(Press(diamond)=="Nivel completado" && Local.Stats.Money==beforeMoney+floor2.money &&
+            Session.Progress.State(3)==FloorState.Locked,"Diamante de un solo cobro y requisito del piso 3 cumplido");
+        Board(Local,exit);
+        Press(exit.transform.Find("Piso 0").GetComponent<FloorButton>());
+        await Until(()=>Hint.text=="Esperando jugadores... 1/2","La cabina final debe esperar al grupo");
+        Board(companion,exit); await Arrive(0);
+        Check(Local.Stats.Money==beforeMoney+floor2.money && EarnedXp(Local.Stats)==beforeXp+floor2.experience,
+            "Saldo y EXP del diamante de vuelta en el lobby");
+        secretary=Secretary; Move(Local,secretary.transform.position+secretary.transform.forward*2.5f);
+        Check(Press(secretary).Contains("¡Piso 3") && Session.Progress.State(3)==FloorState.Available && Session.Progress.State(9)==FloorState.Locked,"La llave del piso 2 desbloquea el piso 3 en recepción");
+        var next=Session.Progress.Get(3);
+        Check(next.rewardItem && next.rewardItem==Session.Progress.Get(9).requiredItem &&
+            Session.Progress.Get(9).prerequisite==next,"El piso 3 entrega la llave para ir al piso 9");
+        if (string.IsNullOrEmpty(next.sceneName))
+            Check(Session.TravelBlock(3)=="Piso 3 aún no implementado","Sin viaje a una escena pendiente");
         return string.Join("\n",checks);
     }
 }

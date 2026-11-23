@@ -1,14 +1,21 @@
+using UnityEngine;
+
 namespace Hackaton.Progression
 {
-    /// <summary>Objetivo de prueba. Un encuentro futuro puede llamar directamente a CompleteCurrent.</summary>
+    /// <summary>Canjea la recompensa definida en el catÃ¡logo del piso en curso.</summary>
     public sealed class FloorObjective : FloorInteraction
     {
+        [SerializeField] private string actionPrompt;
+        [SerializeField] private string completedPrompt;
+
         public override string Prompt(FloorSession session)
         {
             var floor = session.Current;
             bool completed = floor && session.Progress.State(floor.number) == FloorState.Completed;
+            string configured = completed ? completedPrompt : actionPrompt;
+            if (!string.IsNullOrEmpty(configured)) return configured;
             if (floor && floor.rewardItem)
-                return completed ? "Entrega la llave en recepción · vuelve al lobby con el botón 0" : "[E] Recoger la llave";
+                return completed ? "Entrega la llave en recepciÃ³n Â· vuelve al lobby con el botÃ³n 0" : "[E] Recoger la llave";
             return completed ? "Nivel completado" : "[E] Completar nivel";
         }
 
