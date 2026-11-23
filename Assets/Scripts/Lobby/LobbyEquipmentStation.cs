@@ -16,14 +16,17 @@ namespace Hackaton.Lobby
         private PlayerView equipped;
         private bool Online => CampaignRoom.Current && CampaignRoom.Current.IsOnline;
         internal WeaponCatalog Catalog => catalog;
-        internal FloorPlayer LocalPlayer => Online ? NetworkTiza.Local?.Player : player.GetComponent<FloorPlayer>();
+        internal FloorPlayer LocalPlayer => Online ? NetworkTiza.Local?.Player :
+            player ? player.GetComponent<FloorPlayer>() : null;
         internal PlayerView Equipped => Online && NetworkTiza.Local
             ? CampaignRoom.Current.Avatars[NetworkTiza.Local.Equipped] : equipped;
 
         private void Start()
         {
             if (Online || !FloorSession.Instance) return;
-            var saved = FloorSession.Instance.Equipment(LocalPlayer.Id);
+            var participant = LocalPlayer;
+            if (!participant) return;
+            var saved = FloorSession.Instance.Equipment(participant.Id);
             if (saved) Equip(saved);
         }
 
