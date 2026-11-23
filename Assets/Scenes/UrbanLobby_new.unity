@@ -13419,13 +13419,58 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3234224182668891603, guid: ac027f276feee63419c669f1fbbd3e21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1314726603}
+    - targetCorrespondingSourceObject: {fileID: 3234224182668891603, guid: ac027f276feee63419c669f1fbbd3e21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1314726602}
   m_SourcePrefab: {fileID: 100100000, guid: ac027f276feee63419c669f1fbbd3e21, type: 3}
 --- !u!4 &1314726600 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 70953387160518010, guid: ac027f276feee63419c669f1fbbd3e21, type: 3}
   m_PrefabInstance: {fileID: 1314726599}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1314726601 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3234224182668891603, guid: ac027f276feee63419c669f1fbbd3e21, type: 3}
+  m_PrefabInstance: {fileID: 1314726599}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1314726602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314726601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd4b8f20af3539144aa89a295d56c45b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Lobby.CompletoCounter
+  items: {fileID: 11400000, guid: be721a32ce4c8e54393bb3de7e1285a9, type: 2}
+--- !u!65 &1314726603
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314726601}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.804, y: 0.40910697, z: 0.40999788}
+  m_Center: {x: 0, y: 0.1165145, z: 0}
 --- !u!1 &1317612637
 GameObject:
   m_ObjectHideFlags: 0

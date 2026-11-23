@@ -38,6 +38,7 @@ namespace Hackaton.Player
         }
 
         public int Health { get; private set; } = MaxHealth;
+        public int Completos { get; private set; }
         public int Money { get; private set; }
         public int Level { get; private set; } = 1;
         public int Experience { get; private set; }
@@ -56,6 +57,22 @@ namespace Hackaton.Player
             if (amount <= 0 || Health == MaxHealth) return;
             Health += Math.Min(amount, MaxHealth - Health);
             Changed?.Invoke();
+        }
+
+        internal bool BuyCompleto(int price)
+        {
+            if (price < 0 || Money < price || Completos == int.MaxValue) return false;
+            // The existing debit publishes the money and inventory change together.
+            Completos++;
+            return TrySpend(price);
+        }
+
+        internal bool EatCompleto(int healing)
+        {
+            if (Completos == 0 || Health <= 0 || Health >= MaxHealth || healing <= 0) return false;
+            Completos--;
+            Heal(healing);
+            return true;
         }
 
         public bool TrySpend(int cost)
@@ -84,10 +101,11 @@ namespace Hackaton.Player
         [Serializable]
         public struct Snapshot
         {
-            public int health, money, level, experience;
+            public int health, money, level, experience, completos;
 
             internal Snapshot(PlayerStats stats)
             {
+                completos = stats.Completos;
                 health = stats.Health;
                 money = stats.Money;
                 level = stats.Level;
@@ -99,6 +117,7 @@ namespace Hackaton.Player
 
         internal void Restore(Snapshot snapshot)
         {
+            Completos = Math.Max(0, snapshot.completos);
             Health = snapshot.health;
             Money = snapshot.money;
             Level = snapshot.level;

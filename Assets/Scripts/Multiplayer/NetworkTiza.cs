@@ -9,7 +9,7 @@ namespace Hackaton.Multiplayer
 {
     // NGO synchronizes this root. Each peer assembles the real authored avatar for its role.
     [DefaultExecutionOrder(250)]
-    public sealed class NetworkTiza : NetworkBehaviour
+    public sealed partial class NetworkTiza : NetworkBehaviour
     {
         public static NetworkTiza Local { get; private set; }
         private TizaIdentity identity;
@@ -39,6 +39,8 @@ namespace Hackaton.Multiplayer
             var staging = new GameObject("Montaje de Tiza");
             staging.SetActive(false);
             view = Instantiate(catalog[index], staging.transform);
+            inventory = view.GetComponent<PlayerInventory>();
+            if (IsServer) { activeSlot.Value = 1; biteEnds.Value = 0; }
             player = view.GetComponent<FloorPlayer>();
             view.gameObject.AddComponent<TizaBody>().Peer = this;
             foreach (var part in view.GetComponentsInChildren<Renderer>(true))
@@ -118,17 +120,18 @@ namespace Hackaton.Multiplayer
             if (!IsSpawned || !view) return;
             if (IsOwner) transform.SetPositionAndRotation(view.transform.position, view.transform.rotation);
             else view.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            if (IsServer && inventory) UpdateInventory();
             if (IsServer && statsDirty)
             {
                 statsDirty = false;
-                if (!IsOwner) SendStatsRpc(player.Stats.Health, player.Stats.Money, player.Stats.Level, player.Stats.Experience);
+                if (!IsOwner) SendStatsRpc(player.Stats.Health, player.Stats.Money, player.Stats.Level, player.Stats.Experience, player.Stats.Completos);
             }
         }
         [Rpc(SendTo.Owner, InvokePermission = RpcInvokePermission.Server)]
-        private void SendStatsRpc(int health, int money, int level, int experience)
+        private void SendStatsRpc(int health, int money, int level, int experience, int completos)
         {
             if (!IsServer && player) player.Stats.Restore(new PlayerStats.Snapshot {
-                health = health, money = money, level = level, experience = experience });
+                health = health, money = money, level = level, experience = experience, completos = completos });
         }
 
         public static void PublishCampaign()
