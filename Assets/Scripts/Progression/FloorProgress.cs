@@ -67,9 +67,7 @@ namespace Hackaton.Progression
             bool delivered = false;
             foreach (var floor in floors.Values)
             {
-                if (!floor.requiredItem) continue;
-                if (State(floor.number) == FloorState.Locked) return "Necesitas el objeto de desbloqueo";
-                delivered = true;
+                if (floor.requiredItem && State(floor.number) != FloorState.Locked) delivered = true;
             }
             return delivered ? "Este piso ya está desbloqueado" : "Necesitas el objeto de desbloqueo";
         }

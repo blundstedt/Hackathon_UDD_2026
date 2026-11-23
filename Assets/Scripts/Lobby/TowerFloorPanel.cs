@@ -10,6 +10,9 @@ public sealed class TowerFloorPanel : MonoBehaviour
     [SerializeField] private Material inactive;
     [SerializeField] private BoxCollider cabin;
     [SerializeField] private FloorSession sessionPrefab;
+    [Tooltip("Módulo que concede el premio al embarcar en la salida. Vacío en las cabinas de entrada.")]
+    [SerializeField] private FloorObjective exitReward;
+    public bool IsExit => exitReward != null;
     private FloorSession session;
     private FloorPlayer requester;
     private int pending = -1;
@@ -81,6 +84,8 @@ public sealed class TowerFloorPanel : MonoBehaviour
             return;
         }
         int destination = pending;
+        if (exitReward && destination == 0)
+            exitReward.Interact(requester);
         Cancel();
         session.Travel(destination);
     }
