@@ -35,6 +35,17 @@ namespace Hackaton.Progression
             }
         }
 
+        internal void NetworkCover()
+        {
+            StopAllCoroutines();
+            feedbackUntil = 0;
+            waiting = null;
+            prompt.text = "";
+            curtain.gameObject.SetActive(true);
+            curtain.alpha = 1;
+        }
+        internal void NetworkReveal() => StartCoroutine(Reveal());
+
         internal IEnumerator Cover()
         {
             feedbackUntil = 0;

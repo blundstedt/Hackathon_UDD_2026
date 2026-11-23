@@ -1,6 +1,7 @@
 using System;
 using Hackaton.Player;
 using Hackaton.Progression;
+using Hackaton.Multiplayer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -41,6 +42,7 @@ namespace Hackaton.Lobby
 
         private void Start()
         {
+            if (CampaignRoom.Current && CampaignRoom.Current.IsOnline) return;
             if (!FloorSession.Instance || !player.TryGetComponent<FloorPlayer>(out var participant)) return;
             var saved = FloorSession.Instance.Equipment(participant.Id);
             var option = Array.Find(options, candidate => candidate.playerPrefab == saved);
@@ -49,11 +51,22 @@ namespace Hackaton.Lobby
 
         private void Update()
         {
+            if (CampaignRoom.Current && CampaignRoom.Current.IsOnline)
+            {
+                var peer = NetworkTiza.Local;
+                if (!peer || !peer.View) { ShowPrompt(null); return; }
+                player = peer.View;
+                input = player.GetComponent<PlayerInputReader>();
+                equipped = Array.Find(options, o => o.playerPrefab == CampaignRoom.Current.Avatars[peer.Equipped]);
+            }
             bool nearby = input.HasControl
                 && (transform.position - player.transform.position).sqrMagnitude <= stationReach * stationReach;
             var target = nearby ? FindTarget() : null;
             if (target != null && target != equipped && Keyboard.current?.eKey.wasPressedThisFrame == true)
-                Equip(target);
+            {
+                if (NetworkTiza.Local) NetworkTiza.Local.EquipRpc(Array.IndexOf(CampaignRoom.Current.Avatars, target.playerPrefab));
+                else Equip(target);
+            }
 
             ShowPrompt(target);
         }
@@ -85,6 +98,13 @@ namespace Hackaton.Lobby
             var position = player.transform.position;
             Vector3 nearest = target.target.ClosestPoint(position);
             return (nearest - position).sqrMagnitude <= interactionDistance * interactionDistance ? target : null;
+        }
+
+        public bool CanEquip(FloorPlayer participant, PlayerView prefab)
+        {
+            var option = Array.Find(options, o => o.playerPrefab == prefab);
+            return participant && option != null &&
+                Vector3.Distance(option.target.ClosestPoint(participant.BodyCenter), participant.BodyCenter) <= interactionDistance + .3f;
         }
 
         private void Equip(EquipmentOption option)

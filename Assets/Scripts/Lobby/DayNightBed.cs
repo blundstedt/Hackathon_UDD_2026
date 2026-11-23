@@ -19,7 +19,10 @@ namespace Hackaton.Lobby
             var input = camera != null ? camera.GetComponentInParent<PlayerInputReader>() : null;
             bool canRest = input != null && input.HasControl && cycle.isActiveAndEnabled && CanInteract(camera, input.transform);
             if (canRest && Keyboard.current?.eKey.wasPressedThisFrame == true)
-                cycle.AdvancePhase();
+            {
+                if (Hackaton.Multiplayer.NetworkTiza.Local) Hackaton.Multiplayer.NetworkTiza.Local.RestRpc();
+                else cycle.AdvancePhase();
+            }
 
             if (canRest)
                 prompt.text = cycle.IsNight ? "[E] Dormir hasta el día" : "[E] Dormir hasta la noche";
@@ -27,6 +30,12 @@ namespace Hackaton.Lobby
                 prompt.gameObject.SetActive(canRest);
         }
 
+        internal bool TryRest(Vector3 position)
+        {
+            if (Vector3.Distance(interactionArea.ClosestPoint(position), position) > interactionDistance + .3f) return false;
+            cycle.AdvancePhase();
+            return true;
+        }
         private void OnDisable()
         {
             if (prompt != null) prompt.gameObject.SetActive(false);

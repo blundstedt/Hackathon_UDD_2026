@@ -1,4 +1,5 @@
 using Hackaton.Progression;
+using Hackaton.Multiplayer;
 using UnityEngine;
 
 /// <summary>Panel compartido por las cabinas. Una solicitud espera a todos los jugadores registrados.</summary>
@@ -16,6 +17,7 @@ public sealed class TowerFloorPanel : MonoBehaviour
     private FloorSession session;
     private FloorPlayer requester;
     private int pending = -1;
+    private string lastWait;
 
     private void Awake()
     {
@@ -78,9 +80,10 @@ public sealed class TowerFloorPanel : MonoBehaviour
         foreach (var player in session.Players)
             if (Contains(player)) aboard++;
 
-        if (aboard < session.PlayerCount)
+        int required = CampaignRoom.Current && CampaignRoom.Current.IsOnline ? CampaignRoom.Current.RequiredPlayers : session.PlayerCount;
+        if (aboard < required)
         {
-            session.Screen.WaitMessage($"Esperando jugadores... {aboard}/{session.PlayerCount}");
+            Wait($"Esperando jugadores... {aboard}/{required}");
             return;
         }
         int destination = pending;
@@ -95,6 +98,14 @@ public sealed class TowerFloorPanel : MonoBehaviour
         if (pending < 0) return;
         pending = -1;
         requester = null;
-        session.Screen.WaitMessage(null);
+        Wait(null);
+    }
+
+    private void Wait(string text)
+    {
+        if (text == lastWait) return;
+        lastWait = text;
+        if (NetworkTiza.Local && NetworkTiza.Local.IsServer) NetworkTiza.Local.WaitMessageRpc(text ?? "");
+        else session.Screen.WaitMessage(text);
     }
 }

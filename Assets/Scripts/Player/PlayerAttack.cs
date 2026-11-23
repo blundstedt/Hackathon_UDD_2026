@@ -33,6 +33,15 @@ namespace Hackaton.Player
 
         public bool TryAttack()
         {
+            var peer = Hackaton.Multiplayer.NetworkTiza.Local;
+            if (!peer || peer.View != View) return StartSwing();
+            if (!isActiveAndEnabled || !controller.enabled || impactPending || Time.time < readyAt) return false;
+            peer.AttackRpc(Mathf.DeltaAngle(0f, View.AimPivot.localEulerAngles.x));
+            return true;
+        }
+
+        internal bool StartSwing()
+        {
             if (!isActiveAndEnabled || (controller != null && !controller.enabled) || impactPending || Time.time < readyAt) return false;
             startedAt = Time.time;
             OnAttackStarted();

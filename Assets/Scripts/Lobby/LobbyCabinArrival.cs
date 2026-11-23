@@ -9,8 +9,27 @@ namespace Hackaton.Lobby
     {
         [SerializeField] private BoxCollider boardingZone;
 
+        internal bool TryArrival(out Pose pose)
+        {
+            pose = default;
+            if (!boardingZone) return false;
+            var zone = boardingZone.transform;
+            var size = boardingZone.size;
+            var facing = Quaternion.LookRotation(-zone.forward, Vector3.up);
+            for (int i = 0; i < 4; i++)
+            {
+                Vector3 position = boardingZone.center;
+                position.x += ((i % 2) - .5f) * size.x * .45f;
+                position.z += ((i / 2) - .5f) * size.z * .45f;
+                position.y -= size.y * .5f;
+                if (Hackaton.Multiplayer.CoopSpawn.TryPose(zone.TransformPoint(position), facing, out pose)) return true;
+            }
+            return false;
+        }
+
         private void Start()
         {
+            if (Hackaton.Multiplayer.CampaignRoom.Current && Hackaton.Multiplayer.CampaignRoom.Current.IsOnline) return;
             var session = FloorSession.Instance;
             if (!session || !session.Traveling || !boardingZone) return;
 

@@ -17,6 +17,13 @@ namespace Hackaton.Progression
             {
                 int currentSlot = slot++;
                 if (player.gameObject.scene != gameObject.scene) continue;
+                if (player.TryGetComponent<Hackaton.Multiplayer.TizaBody>(out var replica) && !replica.Peer.IsOwner)
+                {
+                    if (replica.Peer.IsServer && player.Stats.Health == 0)
+                        replica.Peer.RecoverRpc(transform.TransformPoint((currentSlot % 4 - 1.5f) * 1.25f, 0, 0), transform.rotation);
+                    if (replica.Peer.IsServer && player.Stats.Health == 0) player.Stats.Heal(PlayerStats.MaxHealth);
+                    continue;
+                }
                 if (player.Stats.Health > 0 && player.transform.position.y > -1.5f) continue;
 
                 // The existing knockback rig owns the body until it stands up on solid ground.

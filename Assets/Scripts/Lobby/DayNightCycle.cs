@@ -69,7 +69,8 @@ namespace Hackaton.Lobby
 
         private void Update()
         {
-            if (!ControlsActiveScene || !automatic) return;
+            if (!ControlsActiveScene || !automatic ||
+                (Hackaton.Multiplayer.CampaignRoom.Current && !Hackaton.Multiplayer.CampaignRoom.Current.IsAuthority)) return;
 
             elapsedSeconds += Time.deltaTime;
             float phaseSeconds = 60f * Mathf.Max(0.1f, IsNight ? nightMinutes : dayMinutes);

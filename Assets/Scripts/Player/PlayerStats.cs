@@ -28,6 +28,11 @@ namespace Hackaton.Player
 
         public override void ApplyKnockback(Knockback impact, Vector3 direction)
         {
+            if (IsTargetable && TryGetComponent<Hackaton.Multiplayer.TizaBody>(out var body) && body.Peer && body.Peer.IsServer && !body.Peer.IsOwner)
+            {
+                body.Peer.PushRpc(impact.horizontal, impact.vertical, impact.duration, impact.recovery, impact.large, direction);
+                return;
+            }
             if (IsTargetable && TryGetComponent<PlayerMovement>(out var movement) && movement.isActiveAndEnabled)
                 movement.Push(impact, direction);
         }
@@ -76,9 +81,10 @@ namespace Hackaton.Player
             Changed?.Invoke();
         }
 
-        public readonly struct Snapshot
+        [Serializable]
+        public struct Snapshot
         {
-            public readonly int health, money, level, experience;
+            public int health, money, level, experience;
 
             internal Snapshot(PlayerStats stats)
             {

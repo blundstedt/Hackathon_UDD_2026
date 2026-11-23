@@ -14,6 +14,7 @@ namespace Hackaton.Combat
 
         public void ReceiveHit(int damage, Vector3 point, Vector3 direction, Knockback impact, Transform source = null)
         {
+            if (Hackaton.Multiplayer.CampaignRoom.Current && !Hackaton.Multiplayer.CampaignRoom.Current.IsAuthority) return;
             if (damage > 0) ApplyDamage(damage, point, source);
             if (impact.horizontal > 0f || impact.vertical > 0f) ApplyKnockback(impact, direction);
         }
