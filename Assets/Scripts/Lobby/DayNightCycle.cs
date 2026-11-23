@@ -123,6 +123,7 @@ namespace Hackaton.Lobby
             RenderSettings.ambientGroundColor = daylight.Ground;
             RenderSettings.fogColor = daylight.Fog;
             RenderSettings.reflectionIntensity = daylight.ReflectionIntensity;
+            if (!sun) return;
             sun.color = daylight.SunColor;
             sun.intensity = daylight.SunIntensity;
         }

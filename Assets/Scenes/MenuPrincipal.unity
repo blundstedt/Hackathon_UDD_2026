@@ -5160,6 +5160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Multiplayer.CampaignRoom
   managerPrefab: {fileID: 5033662170238162938, guid: 0f61bb74452ff0a49bd48ff9dd210d43, type: 3}
   tizaPrefab: {fileID: 5860848478803853777, guid: d30d40c9778f526459870cacd9880618, type: 3}
+  introPrefab: {fileID: 3488954062893960209, guid: be07c1b6f409e1948b079547b5e4a238, type: 3}
   campaignPrefab: {fileID: 2955261675028580761, guid: 2e1fb970cab4275489746b65a9bb2c13, type: 3}
   avatars:
   - {fileID: 4610038549572552689, guid: 6a10eaa288be300448f62087712d812f, type: 3}

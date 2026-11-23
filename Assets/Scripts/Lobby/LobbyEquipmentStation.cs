@@ -59,7 +59,7 @@ namespace Hackaton.Lobby
                 input = player.GetComponent<PlayerInputReader>();
                 equipped = Array.Find(options, o => o.playerPrefab == CampaignRoom.Current.Avatars[peer.Equipped]);
             }
-            bool nearby = input.HasControl
+            bool nearby = input && input.HasControl
                 && (transform.position - player.transform.position).sqrMagnitude <= stationReach * stationReach;
             var target = nearby ? FindTarget() : null;
             if (target != null && target != equipped && Keyboard.current?.eKey.wasPressedThisFrame == true)
