@@ -5,12 +5,20 @@ namespace Hackaton.Progression
     /// <summary>Canjea la recompensa definida en el catálogo del piso en curso.</summary>
     public sealed class FloorObjective : FloorInteraction
     {
-        [SerializeField] private string actionPrompt = "[E] Completar nivel (prueba)";
-        [SerializeField] private string completedPrompt = "Nivel completado";
+        [SerializeField] private string actionPrompt;
+        [SerializeField] private string completedPrompt;
 
-        public override string Prompt(FloorSession session) =>
-            session.Current && session.Progress.State(session.Current.number) == FloorState.Completed ?
-                completedPrompt : actionPrompt;
+        public override string Prompt(FloorSession session)
+        {
+            var floor = session.Current;
+            bool completed = floor && session.Progress.State(floor.number) == FloorState.Completed;
+            string configured = completed ? completedPrompt : actionPrompt;
+            if (!string.IsNullOrEmpty(configured)) return configured;
+            if (floor && floor.rewardItem)
+                return completed ? "Entrega la llave en recepción · vuelve al lobby con el botón 0" : "[E] Recoger la llave";
+            return completed ? "Nivel completado" : "[E] Completar nivel";
+        }
+
         public override string Interact(FloorPlayer player) => FloorSession.Instance.CompleteCurrent(player);
     }
 }

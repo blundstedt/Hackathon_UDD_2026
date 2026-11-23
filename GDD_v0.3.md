@@ -83,7 +83,7 @@ Dentro de un nivel, el único destino del ascensor es el **0**. El equipo decide
 
 ### 3.5. Cómo conectar el siguiente mapa
 
-El botón 2 conduce a **Paraíso Celestial** al entregar la llave del piso 1 en recepción. El grupo llega en la cabina del atrio. En el templo, interactuar con el diamante entrega 45 de dinero y 90 EXP a cada participante y habilita el siguiente piso. La cabina junto al altar devuelve al grupo al lobby. La Llave del Laberinto es la recompensa de equipo del piso 3 y se entrega en recepción para abrir el piso 4. La escena del piso 3 se incorporará mediante un merge.
+El botón 2 conduce a **Paraíso Celestial** al entregar la llave del piso 1 en recepción. El grupo llega en la cabina del atrio. En el templo, interactuar con el diamante entrega 45 de dinero y 90 EXP a cada participante y la llave del piso 3, que se entrega en recepción. La cabina junto al altar devuelve al grupo al lobby. La campaña sigue 1 → 2 → 3 → 9 → 10. El piso 3 entrega la llave del piso 9, que se canjea en recepción.
 
 1. **Preparar la escena.** Colocar la cabina existente (`Assets/Progression/Ascensor.prefab`) y un punto de aparición seguro con `FloorSpawn` y el avatar habitual en primera persona. Añadir la escena a la lista de escenas del perfil de compilación.
 2. **Vincular el destino.** En `Assets/Progression/Piso2.asset`, asignar a `Scene Name` el nombre exacto de la escena. Para pisos posteriores, crear un `FloorData` con número único y añadirlo a `Floors` en `FloorSession.prefab`. Los botones existentes consultan el progreso por número de piso.

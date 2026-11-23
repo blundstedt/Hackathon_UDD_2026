@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorData
   number: 3
   displayName: Piso 3
-  sceneName: ""
+  sceneName: Piso3
   initiallyAvailable: 0
   prerequisite: {fileID: 11400000, guid: b73dd714192052d4e9be46d090b42ced, type: 2}
-  requiredItem: {fileID: 0}
-  experience: 120
-  money: 60
-  rewardItem: {fileID: 11400000, guid: 7c76dc12f4969ef439ff7c06f63d7348, type: 2}
+  requiredItem: {fileID: 11400000, guid: 85baac8c3b853f34798a752c20d868bd, type: 2}
+  experience: 60
+  money: 30
+  rewardItem: {fileID: 11400000, guid: a8659d5c8996444bb2e67a7ba1568aa0, type: 2}

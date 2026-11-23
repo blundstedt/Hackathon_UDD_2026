@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: Piso 4
   sceneName: 
   initiallyAvailable: 0
-  prerequisite: {fileID: 11400000, guid: 8643e0b8f0a00f444a77117ea00f15b1, type: 2}
-  requiredItem: {fileID: 11400000, guid: 7c76dc12f4969ef439ff7c06f63d7348, type: 2}
+  prerequisite: {fileID: 11400000, guid: b64525105365d5b45858dda7d4681d55, type: 2}
+  requiredItem: {fileID: 11400000, guid: b2bec24502d190e4d81677e6def41394, type: 2}
   experience: 0
   money: 0
   rewardItem: {fileID: 0}

@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Piso1.unity
     guid: b878b28ad8828c34eaca654f29112c6a
   - enabled: 1
+    path: Assets/Scenes/Piso3.unity
+    guid: b94e84281de90a94b9d52bcd3b76d8de
+  - enabled: 1
     path: Assets/Scenes/ParaisoCelestial.unity
     guid: 0a27dc3e3803de9459476b26d16b4434
   m_configObjects:
