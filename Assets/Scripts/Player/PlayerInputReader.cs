@@ -13,7 +13,8 @@ namespace Hackaton.Player
         private InputAction move, look, jump, sprint, attack;
         private bool skipLook;
 
-        public bool HasControl => isActiveAndEnabled && Application.isFocused && Cursor.lockState == CursorLockMode.Locked;
+        public bool HasControl => isActiveAndEnabled && !Hackaton.Multiplayer.SessionMenu.CapturesInput &&
+            Application.isFocused && Cursor.lockState == CursorLockMode.Locked;
         public Vector2 Move => HasControl ? move.ReadValue<Vector2>() : Vector2.zero;
         public Vector2 Look => HasControl && !skipLook ? look.ReadValue<Vector2>() : Vector2.zero;
         public bool AttackPressed => HasControl && !skipLook && attack.WasPressedThisFrame();
@@ -36,12 +37,14 @@ namespace Hackaton.Player
         private void OnEnable()
         {
             ownedActions.FindActionMap("Player", true).Enable();
-            CaptureCursor();
+            if (!Hackaton.Multiplayer.SessionMenu.CapturesInput) CaptureCursor();
         }
 
         private void Update()
         {
             skipLook = false;
+            if (Hackaton.Multiplayer.SessionMenu.CapturesInput) return;
+            if (Hackaton.Multiplayer.CampaignRoom.Current && Keyboard.current?.escapeKey.wasPressedThisFrame == true) return;
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
                 ReleaseCursor();
             else if (Application.isFocused && Cursor.lockState != CursorLockMode.Locked &&

@@ -24,7 +24,7 @@ namespace Hackaton.Player
         private void Update()
         {
             if (controller != null && !controller.enabled) return;
-            Vector2 delta = input.Look * mouseSensitivity;
+            Vector2 delta = input.Look * mouseSensitivity * Hackaton.Multiplayer.LocalGameSettings.Sensitivity;
             // Mouse delta is already displacement per frame; do not multiply by deltaTime.
             transform.Rotate(0f, delta.x, 0f, Space.Self);
             pitch = Mathf.Clamp(pitch - delta.y, -pitchLimit, pitchLimit);

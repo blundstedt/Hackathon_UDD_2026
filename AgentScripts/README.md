@@ -1,3 +1,5 @@
+El juego se inicia en **MenuPrincipal**. Para probar el multijugador, los slots y el menú de pausa, consulta [Partidas cooperativas](../NETWORKING.md). Las instrucciones que siguen documentan las pruebas del prototipo local anterior a esa integración.
+
 # Movimiento FPS básico
 
 Abrir `Assets/Scenes/MovementTest.unity` y pulsar Play. Si Game no tiene el foco, hacer clic en su vista.

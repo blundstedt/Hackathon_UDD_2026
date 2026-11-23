@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Hackaton.Player;
+using Hackaton.Multiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,43 @@ namespace Hackaton.Progression
         private readonly Dictionary<string, List<FloorData>> owed = new();
         private readonly Dictionary<string, PlayerView> equipment = new();
         private readonly HashSet<string> participants = new();
+
+        public CampaignSave Capture()
+        {
+            foreach (var player in active.Values) accounts[player.Id] = player.Stats.Capture();
+            var save = new CampaignSave();
+            Progress.Capture(save);
+            foreach (var pair in accounts)
+            {
+                var record = new CampaignSave.Account { id = pair.Key, stats = pair.Value,
+                    equipment = Equipment(pair.Key) ? Equipment(pair.Key).name : "" };
+                if (owed.TryGetValue(pair.Key, out var pending))
+                    foreach (var floor in pending) record.pendingRewards.Add(floor.number);
+                save.accounts.Add(record);
+            }
+            return save;
+        }
+
+        public void Restore(CampaignSave save, PlayerView[] avatars)
+        {
+            accounts.Clear();
+            equipment.Clear();
+            owed.Clear();
+            foreach (var record in save.accounts)
+            {
+                accounts[record.id] = record.stats;
+                var prefab = System.Array.Find(avatars, p => p && p.name == record.equipment);
+                if (prefab) equipment[record.id] = prefab;
+                foreach (int number in record.pendingRewards)
+                {
+                    if (!Progress.Get(number)) continue;
+                    if (!owed.TryGetValue(record.id, out var pending)) owed[record.id] = pending = new();
+                    pending.Add(Progress.Get(number));
+                }
+                if (active.TryGetValue(record.id, out var player)) player.Stats.Restore(record.stats);
+            }
+            Progress.Restore(save);
+        }
 
         public PlayerView Equipment(string id) => equipment.TryGetValue(id, out var prefab) ? prefab : null;
         internal void Equip(string id, PlayerView prefab) => equipment[id] = prefab;
@@ -81,7 +119,7 @@ namespace Hackaton.Progression
 
         public string CompleteCurrent(FloorPlayer player)
         {
-            if (Traveling || !IsActive(player) || !participants.Contains(player.Id)) return "No disponible";
+            if ((CampaignRoom.Current && !CampaignRoom.Current.IsAuthority) || Traveling || !IsActive(player) || !participants.Contains(player.Id)) return "No disponible";
             var floor = Current;
             if (!floor || floor.number == 0) return "No disponible";
             if (!Progress.Complete(floor, () => RewardParticipants(floor))) return "Nivel completado";
@@ -103,7 +141,7 @@ namespace Hackaton.Progression
         }
 
         public string Deliver(FloorPlayer player) =>
-            !Traveling && IsActive(player) && Current && Current.number == 0 ? Progress.Deliver() : "No disponible";
+            (!CampaignRoom.Current || CampaignRoom.Current.IsAuthority) && !Traveling && IsActive(player) && Current && Current.number == 0 ? Progress.Deliver() : "No disponible";
 
         // A null reason permits the trip. Recheck it immediately before the joint load.
         public string TravelBlock(int destination)
@@ -124,8 +162,16 @@ namespace Hackaton.Progression
         {
             if (Traveling || TravelBlock(destination) != null) return;
             Traveling = true;
+            if (CampaignRoom.Current && CampaignRoom.Current.IsOnline)
+            {
+                try { CampaignRoom.Current.StartTravel(Progress.Get(destination).sceneName); }
+                catch (System.Exception ex) { Traveling = false; screen.Notice(ex.Message); }
+                return;
+            }
             StartCoroutine(LoadScene(Progress.Get(destination).sceneName));
         }
+
+        internal void EndNetworkTravel() => Traveling = false;
 
         private IEnumerator LoadScene(string scene)
         {

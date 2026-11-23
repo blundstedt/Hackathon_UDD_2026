@@ -46,6 +46,19 @@ namespace Hackaton.Enemies
 
         public EnemyState State { get; private set; }
         public int Health { get; private set; }
+        internal void DisplayReplicaHealth(int value)
+        {
+            int damage = Health - value;
+            Health = value;
+            if (damage > 0 && healthBar)
+                healthBar.ShowHit(transform.position + Vector3.up * eyeHeight, damage, (float)value / maxHealth);
+            if (value == 0 && State != EnemyState.Dead)
+            {
+                State = EnemyState.Dead;
+                body.enabled = false;
+                if (visual) visual.LieDown();
+            }
+        }
         protected int AttackDamage => damage;
 
         private NavMeshAgent agent;
@@ -302,7 +315,8 @@ namespace Hackaton.Enemies
         {
             yield return new WaitForSeconds(2f);
             if (visual != null) yield return visual.FadeOut();
-            Destroy(gameObject);
+            if (TryGetComponent<Unity.Netcode.NetworkObject>(out var replica) && replica.IsSpawned) replica.Despawn();
+            else Destroy(gameObject);
         }
     }
 }

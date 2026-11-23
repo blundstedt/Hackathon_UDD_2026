@@ -83,7 +83,12 @@ namespace Hackaton.Progression
         {
             if (!session || session.Traveling || !input.enabled) return;
             var target = input.HasControl ? AimTarget() : null;
-            if (target && input.InteractPressed) session.Screen.Notice(target.Interact(this));
+            if (target && input.InteractPressed)
+            {
+                var peer = Hackaton.Multiplayer.NetworkTiza.Local;
+                if (peer && peer.Player == this) peer.Interact(target);
+                else session.Screen.Notice(target.Interact(this));
+            }
             session.Screen.Aim(target ? target.Prompt(session) : null);
         }
     }

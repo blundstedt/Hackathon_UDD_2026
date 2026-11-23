@@ -13,6 +13,7 @@ namespace Hackaton.Progression
 
         private void Start()
         {
+            if (Hackaton.Multiplayer.CampaignRoom.Current && Hackaton.Multiplayer.CampaignRoom.Current.IsOnline) return;
             var equipped = FloorSession.Instance.Equipment(playerId);
             var staging = new GameObject("Aparición");
             staging.SetActive(false);

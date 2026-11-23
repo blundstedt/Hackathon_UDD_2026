@@ -39,6 +39,30 @@ namespace Hackaton.Progression
 
         public FloorState State(int number) => states.TryGetValue(number, out var state) ? state : FloorState.Locked;
 
+        internal void Capture(Hackaton.Multiplayer.CampaignSave save)
+        {
+            foreach (var entry in states)
+            {
+                if (entry.Value == FloorState.Completed) save.completed.Add(entry.Key);
+                if (entry.Value == FloorState.Available) save.available.Add(entry.Key);
+            }
+            foreach (var entry in items)
+                for (int i = 0; i < entry.Value; i++) save.keys.Add(entry.Key.name);
+        }
+
+        internal void Restore(Hackaton.Multiplayer.CampaignSave save)
+        {
+            items.Clear();
+            foreach (var floor in floors.Values)
+            {
+                states[floor.number] = save.completed.Contains(floor.number) ? FloorState.Completed :
+                    save.available.Contains(floor.number) ? FloorState.Available : FloorState.Locked;
+                if (floor.rewardItem)
+                    items[floor.rewardItem] = save.keys.FindAll(key => key == floor.rewardItem.name).Count;
+            }
+            Changed?.Invoke();
+        }
+
         internal bool Complete(FloorData floor, Action grantPlayerRewards)
         {
             if (!floor || floor.number == 0 || State(floor.number) != FloorState.Available) return false;

@@ -185,7 +185,7 @@ En la escena temporal `Piso1`, el jugador apunta al pedestal «Completar nivel (
 
 De vuelta en el lobby, cualquier participante puede acercarse a **Recepcionista - Tiza con peluca**, apuntarle y pulsar **E**. La secretaria comprueba el inventario compartido, consume la llave y habilita el piso 2. El panel refleja el cambio de inmediato. Una segunda interacción confirma que el piso ya está desbloqueado.
 
-El progreso es común al equipo durante la partida. Las estadísticas y el equipamiento se conservan por jugador al cambiar de escena. Al cerrar el juego o detener Play se reinicia la partida.
+El progreso es común al equipo durante la partida. Las estadísticas y el equipamiento se conservan por jugador al cambiar de escena. El host conserva el progreso en uno de tres slots locales. Al continuar, el equipo comienza en el lobby con sus pisos, llaves, estadísticas y equipamiento. Cada sesión en línea genera un código nuevo.
 
 ## 7. Multijugador y comunicación
 
@@ -195,10 +195,9 @@ Los jugadores podrán comunicarse mediante **chat de voz por proximidad**, hacie
 
 Este sistema estará disponible para fomentar la interacción durante el combate y la exploración.
 
-**Embarque del grupo en el prototipo.** Tanto para subir como para volver, el ascensor espera a todos los jugadores activos. Si hay tres de cuatro dentro, muestra «Esperando jugadores... 3/4». Cuando entra el cuarto, comienza un único viaje. Si cambia la lista de participantes, se actualiza el conteo. Si quien pidió el viaje sale de la cabina o se desconecta durante la espera, se cancela la solicitud. Esta regla funciona con el registro local de la partida. La autoridad del servidor y la sincronización de escenas y recompensas entre equipos siguen pendientes.
+**Embarque del grupo en el prototipo.** Tanto para subir como para volver, el ascensor espera a todos los jugadores activos. Si hay tres de cuatro dentro, muestra «Esperando jugadores... 3/4». Cuando entra el cuarto, comienza un único viaje. Si cambia la lista de participantes, se actualiza el conteo. Si quien pidió el viaje sale de la cabina o se desconecta durante la espera, se cancela la solicitud. El host verifica el embarque y Netcode coordina el cambio de escena. El host concede los premios y comunica el progreso al equipo.
 
 **Pendiente:**
-- Definir la cantidad máxima de jugadores.
 - Determinar las reglas de cooperación y las posibles interacciones entre jugadores.
 - Definir los detalles de la comunicación por proximidad.
 
@@ -247,7 +246,7 @@ Se buscará una identidad artística coherente entre personajes, enemigos, armas
 | Armas específicas | Sin definir |
 | Enemigos y jefe final | Sin definir |
 | Cantidad de pisos | Sin definir |
-| Número de jugadores | Sin definir |
+| Número de jugadores | De 1 a 4 por partida. El host guarda y abre la sala a un máximo de tres invitados mientras el equipo está en el lobby |
 | Sistema de progresión posterior al boss | Sin definir |
 
 ## 10. Cómo usar este GDD con IA

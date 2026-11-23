@@ -22,6 +22,7 @@ namespace Hackaton.Paraiso
             foreach (var player in session.Players)
             {
                 if (player.gameObject.scene != gameObject.scene) continue;
+                if (player.TryGetComponent<Hackaton.Multiplayer.TizaBody>(out var body) && !body.Peer.IsOwner) continue;
                 if (!checkpoints.TryGetValue(player, out int latest))
                 {
                     checkpoints.Add(player, 0);
