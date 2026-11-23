@@ -23,6 +23,12 @@ namespace Hackaton.Player
             Destroy(gameObject, 5f);
         }
 
+        internal void SetTrajectory(float initialSpeed, float drop)
+        {
+            speed = initialSpeed;
+            gravity = drop;
+        }
+
         private void FixedUpdate()
         {
             Vector3 start = transform.position;

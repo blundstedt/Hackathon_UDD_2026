@@ -8,6 +8,10 @@ namespace Hackaton.Progression
         [SerializeField] private string actionPrompt;
         [SerializeField] private string completedPrompt;
 
+        internal event System.Action AvailabilityChanged;
+        private void OnEnable() => AvailabilityChanged?.Invoke();
+        private void OnDisable() => AvailabilityChanged?.Invoke();
+
         public override string Prompt(FloorSession session)
         {
             var floor = session.Current;
@@ -19,6 +23,7 @@ namespace Hackaton.Progression
             return completed ? "Nivel completado" : "[E] Completar nivel";
         }
 
-        public override string Interact(FloorPlayer player) => FloorSession.Instance.CompleteCurrent(player);
+        public override string Interact(FloorPlayer player) =>
+            isActiveAndEnabled ? FloorSession.Instance.CompleteCurrent(player) : "Objetivo bloqueado";
     }
 }

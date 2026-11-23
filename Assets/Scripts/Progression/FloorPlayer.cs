@@ -13,6 +13,7 @@ namespace Hackaton.Progression
         private readonly RaycastHit[] hits = new RaycastHit[32];
         private PlayerInputReader input;
         private PlayerView view;
+        private ElevatorHandPress handPress;
         private CharacterController body;
         private FloorSession session;
         private bool assignedIdentity;
@@ -60,6 +61,7 @@ namespace Hackaton.Progression
             Stats = GetComponent<PlayerStats>();
             input = GetComponent<PlayerInputReader>();
             view = GetComponent<PlayerView>();
+            handPress = GetComponent<ElevatorHandPress>();
             body = GetComponent<CharacterController>();
         }
 
@@ -114,11 +116,19 @@ namespace Hackaton.Progression
             var target = input.HasControl ? AimTarget() : null;
             if (target && input.InteractPressed)
             {
-                var peer = Hackaton.Multiplayer.NetworkTiza.Local;
-                if (peer && peer.Player == this) peer.Interact(target);
-                else session.Screen.Notice(target.Interact(this));
+                if (target is FloorButton button && handPress && view.Mode == PlayerView.CameraMode.FirstPerson)
+                    handPress.Begin(button);
+                else UseTarget(target);
             }
             session.Screen.Aim(target ? target.PromptFor(session, this) : null);
         }
+
+        internal void UseTarget(FloorInteraction target)
+        {
+            var peer = Hackaton.Multiplayer.NetworkTiza.Local;
+            if (peer && peer.Player == this) peer.Interact(target);
+            else session.Screen.Notice(target.Interact(this));
+        }
+
     }
 }

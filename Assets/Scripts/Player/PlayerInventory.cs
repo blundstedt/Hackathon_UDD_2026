@@ -54,6 +54,7 @@ namespace Hackaton.Player
         private int selected = 1;
         private double localEnd;
         public int Selected => peer && !peer.IsOwner ? peer.ActiveSlot : selected;
+        internal bool Eating => peer ? peer.BiteRemaining > 0 : localEnd > 0;
         internal InventoryItems Items => items;
         internal bool CanEat => stats.Completos > 0 && stats.Health > 0 && stats.Health < PlayerStats.MaxHealth;
         internal bool Traveling => FloorSession.Instance && FloorSession.Instance.Traveling;

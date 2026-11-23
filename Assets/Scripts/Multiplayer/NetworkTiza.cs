@@ -16,6 +16,7 @@ namespace Hackaton.Multiplayer
         private FloorPlayer player;
         private PlayerView view;
         private bool statsDirty;
+        internal float RemoteSpeed { get; private set; }
         public PlayerView View => view;
         public FloorPlayer Player => player;
         public int Equipped => identity.Equipment.Value;
@@ -121,7 +122,13 @@ namespace Hackaton.Multiplayer
         {
             if (!IsSpawned || !view) return;
             if (IsOwner) transform.SetPositionAndRotation(view.transform.position, view.transform.rotation);
-            else view.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            else
+            {
+                float distance = Vector3.Distance(view.transform.position,transform.position);
+                float speed = distance / Mathf.Max(Time.deltaTime,.001f);
+                RemoteSpeed = Mathf.Lerp(RemoteSpeed,Mathf.Min(speed,12f),1f - Mathf.Exp(-12f * Time.deltaTime));
+                view.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            }
             if (IsServer && inventory) UpdateInventory();
             if (IsServer && statsDirty)
             {
@@ -164,10 +171,12 @@ namespace Hackaton.Multiplayer
         public void Interact(FloorInteraction target)
         {
             var point = target.GetComponent<Collider>().ClosestPoint(player.BodyCenter);
-            UseRpc(point, target.GetType().Name);
+            // Keep adjacent elevator keys distinct in the server overlap query.
+            if (target is FloorButton button) UseRpc(button.Keycap.Surface, target.GetType().Name, button.Destination);
+            else UseRpc(point, target.GetType().Name, -1);
         }
         [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Owner)]
-        private void UseRpc(Vector3 point, string kind)
+        private void UseRpc(Vector3 point, string kind, int destination)
         {
             if (!player || FloorSession.Instance.Traveling || Vector3.Distance(player.BodyCenter, point) > 3.6f) return;
             FloorInteraction closest = null;
@@ -175,6 +184,7 @@ namespace Hackaton.Multiplayer
             foreach (var c in Physics.OverlapSphere(point, .18f, ~0, QueryTriggerInteraction.Collide))
             {
                 if (!c.TryGetComponent<FloorInteraction>(out var target) || !target.isActiveAndEnabled || target.GetType().Name != kind) continue;
+                if (target is FloorButton button && button.Destination != destination) continue;
                 Vector3 near = c.ClosestPoint(player.BodyCenter);
                 if (Vector3.Distance(near, player.BodyCenter) > 3.6f) continue;
                 float distance = (c.ClosestPoint(point) - point).sqrMagnitude;
