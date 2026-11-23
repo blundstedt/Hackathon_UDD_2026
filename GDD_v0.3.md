@@ -1,6 +1,6 @@
 # GDD — Proyecto sin título
 
-**Versión:** 0.2  
+**Versión:** 0.3
 **Estado:** Borrador en desarrollo — sujeto a cambios
 
 ---
@@ -74,7 +74,23 @@ Lugar donde los jugadores podrán modificar la apariencia de sus personajes.
 - Diseñar los desafíos y enemigos de cada nivel.
 - Determinar las actividades y mecánicas sandbox disponibles en el exterior.
 - Definir el diseño y funcionamiento de cada local.
-- Determinar cómo se realiza la transición entre el lobby y los pisos.
+
+### 3.4. Viajes en ascensor
+
+El piso **0** es el lobby urbano (`UrbanLobby_new`). Al iniciar una partida, el botón 0 indica dónde está el jugador y el **1** es el único destino de combate disponible. Para viajar, el jugador entra en la cabina, apunta al botón del destino y pulsa **E**. El botón del piso actual sirve de indicador. Un botón bloqueado muestra «No disponible» y uno completado muestra «Nivel completado».
+
+Dentro de un nivel, el único destino del ascensor es el **0**. El equipo decide cuándo regresar. Si abandona el mapa antes de cumplir su objetivo, el piso sigue disponible para otro intento. Al viajar en cualquiera de los dos sentidos, una pantalla oscura con «Cargando...» cubre el cambio de escena.
+
+### 3.5. Cómo conectar el siguiente mapa
+
+El primer mapa que falta conectar es **Piso2**. Su definición y su llave ya existen. Al entregar la llave, el botón 2 se ilumina y muestra «Piso 2 aún no implementado» al seleccionarlo mientras falte la escena. La cantidad total de pisos y el diseño de sus desafíos siguen abiertos.
+
+1. **Preparar la escena.** Colocar la cabina existente (`Assets/Progression/Ascensor.prefab`) y un punto de aparición seguro con `FloorSpawn` y el avatar habitual en primera persona. Añadir la escena a la lista de escenas del perfil de compilación.
+2. **Vincular el destino.** En `Assets/Progression/Piso2.asset`, asignar a `Scene Name` el nombre exacto de la escena. Para pisos posteriores, crear un `FloorData` con número único y añadirlo a `Floors` en `FloorSession.prefab`. Los botones existentes consultan el progreso por número de piso.
+3. **Conectar el objetivo del mapa.** El encuentro o desafío llama a `FloorSession.Instance.CompleteCurrent(participante)` cuando se cumple su condición de victoria. El pedestal de `Piso1` usa esta misma operación. El ascensor permite volver al lobby antes o después de cumplir el objetivo.
+4. **Configurar la recompensa y el siguiente acceso.** En el piso que se completa, definir `Experience`, `Money` y el objeto de equipo en `Reward Item`. En el destino que abrirá la secretaria, asignar el piso anterior en `Prerequisite`, ese mismo objeto en `Required Item` y dejar desmarcado `Initially Available`.
+
+Para probar el mapa, hacer dos recorridos desde el lobby. En el primero, volver antes de completar el objetivo y comprobar que se puede reingresar sin haber cobrado la recompensa. En el segundo, completarlo y comprobar que la recompensa se recibe una sola vez, que el piso queda cerrado y que el siguiente botón se habilita al entregar el objeto en recepción.
 
 ## 4. Bucle principal de juego
 
@@ -84,14 +100,14 @@ El juego tendrá una estructura incremental basada en la superación de niveles 
 2. **Lobby / Ciudad:** los jugadores aparecen en la ciudad, donde pueden explorar, comprar armas, gestionar talentos y personalizarse.
 3. **Ingreso al edificio:** los jugadores acceden al piso correspondiente a su progreso.
 4. **Combate:** deben enfrentarse a enemigos y superar los desafíos del nivel.
-5. **Finalización del piso:** al completarlo, reciben las recompensas correspondientes y desbloquean el siguiente.
-6. **Regreso al lobby:** los jugadores regresan a la ciudad para mejorar sus personajes, adquirir equipamiento y prepararse.
+5. **Finalización del piso:** al cumplir el objetivo, cada participante recibe sus recompensas y el equipo obtiene el objeto que permite abrir el siguiente piso. El nivel completado queda cerrado durante esa partida.
+6. **Regreso al lobby:** los jugadores vuelven en ascensor y entregan el objeto a la secretaria para habilitar el siguiente destino. En la ciudad también pueden mejorar sus personajes, adquirir equipamiento y prepararse.
 7. **Siguiente piso:** cuando estén preparados, ingresan nuevamente al edificio para enfrentar el próximo nivel.
 8. **Jefe final:** el ciclo continúa hasta alcanzar el último piso y enfrentarse al jefe final.
 
 **Resumen del ciclo principal:**
 
-Lobby → Piso N → Combate → Recompensas → Lobby → Mejoras → Piso N+1 → Repetir hasta el jefe final.
+Lobby → Piso N → Cumplir el objetivo → Recibir recompensas y objeto → Volver al lobby → Entregar el objeto a la secretaria → Prepararse → Piso N+1.
 
 El regreso al lobby será una parte fundamental de la experiencia, permitiendo a los jugadores prepararse entre los diferentes niveles.
 
@@ -133,7 +149,7 @@ El juego tendrá un sistema de progresión incremental compuesto por tres elemen
 **Pendiente:**
 - Definir las clases.
 - Diseñar los árboles de talentos.
-- Determinar cómo se obtiene experiencia.
+- Definir las demás fuentes de experiencia y el balance entre niveles.
 - Establecer cómo se desbloquean o adquieren talentos.
 - Definir si las clases se pueden cambiar.
 
@@ -147,7 +163,7 @@ Los jugadores podrán adquirir nuevas armas mediante un sistema económico.
 
 **Pendiente:**
 - Definir el recurso económico.
-- Determinar cómo se obtiene.
+- Definir las demás fuentes de dinero y el balance de la economía.
 - Establecer los precios y tipos de armas disponibles.
 - Definir si todas las clases pueden utilizar todas las armas.
 
@@ -163,6 +179,14 @@ Este sistema será diferente de la compra directa de armas y permitirá fortalec
 - Establecer los efectos de estas mejoras.
 - Definir cuáles se conservan entre niveles o partidas.
 
+### 6.4. Recompensas y llave de equipo en el prototipo
+
+En la escena temporal `Piso1`, el jugador apunta al pedestal «Completar nivel (prueba)» y pulsa **E**. Cada participante recibe **60 EXP y 30 de dinero**. El equipo recibe **una** `LlavePiso2`. Estos valores se editan por nivel. El primer cumplimiento registra el premio y bloquea la repetición del piso.
+
+De vuelta en el lobby, cualquier participante puede acercarse a **Recepcionista - Tiza con peluca**, apuntarle y pulsar **E**. La secretaria comprueba el inventario compartido, consume la llave y habilita el piso 2. El panel refleja el cambio de inmediato. Una segunda interacción confirma que el piso ya está desbloqueado.
+
+El progreso es común al equipo durante la partida. Las estadísticas y el equipamiento se conservan por jugador al cambiar de escena. Al cerrar el juego o detener Play se reinicia la partida.
+
 ## 7. Multijugador y comunicación
 
 La experiencia será multijugador, con perspectiva en primera persona.
@@ -170,6 +194,8 @@ La experiencia será multijugador, con perspectiva en primera persona.
 Los jugadores podrán comunicarse mediante **chat de voz por proximidad**, haciendo que la comunicación dependa de la distancia entre ellos.
 
 Este sistema estará disponible para fomentar la interacción durante el combate y la exploración.
+
+**Embarque del grupo en el prototipo.** Tanto para subir como para volver, el ascensor espera a todos los jugadores activos. Si hay tres de cuatro dentro, muestra «Esperando jugadores... 3/4». Cuando entra el cuarto, comienza un único viaje. Si cambia la lista de participantes, se actualiza el conteo. Si quien pidió el viaje sale de la cabina o se desconecta durante la espera, se cancela la solicitud. Esta regla funciona con el registro local de la partida. La autoridad del servidor y la sincronización de escenas y recompensas entre equipos siguen pendientes.
 
 **Pendiente:**
 - Definir la cantidad máxima de jugadores.
@@ -183,6 +209,7 @@ La identidad visual y sonora del juego tendrá un enfoque **absurdo, humorístic
 - **Formato:** 3D.
 - **Perspectiva:** primera persona.
 - **Referencia visual:** *Gamble with Friends*.
+- **Tipografía del juego:** todos los textos visibles usan Dangrek, de `Assets/Fonts/Dangrek-Regular (1).ttf`, incluidos mensajes de interacción, HUD y pantalla de carga.
 - **Estilo de combate:** armas y efectos animados y cómicos.
 - **Ambientación:** ciudad con un edificio principal de varios pisos.
 - **Espacios adicionales:** locales comerciales, alcantarillas y exteriores explorables.
@@ -206,7 +233,9 @@ Se buscará una identidad artística coherente entre personajes, enemigos, armas
 | Identidad de los jugadores | Sin definir |
 | Edificio como escenario principal | Definido |
 | Pisos como niveles | Definido |
-| Regreso al lobby entre pisos | Definido |
+| Regreso al lobby entre pisos | Implementado mediante el botón 0 del ascensor |
+| Acceso al siguiente piso | Entrega del objeto de equipo a la secretaria |
+| Repetición de pisos | Se puede reintentar un piso abandonado. Un piso completado queda cerrado durante la partida |
 | Ciudad explorable | Idea general definida |
 | Locales de mejoras y compras | Concepto definido |
 | Mecánicas sandbox | Sin definir |
@@ -231,4 +260,4 @@ Este documento será la **fuente principal de referencia para el desarrollo del 
 - Mantener el GDD actualizado conforme el equipo acuerde nuevas ideas.
 - Distinguir entre la visión completa del juego y las funcionalidades que se implementarán en el prototipo de la hackatón.
 
-**Alcance de esta versión:** describe la visión conceptual y las mecánicas principales del juego. No establece todavía el alcance definitivo del prototipo jugable ni los detalles técnicos de implementación.
+**Alcance de esta versión:** conserva la visión del juego y documenta el recorrido jugable entre el lobby y `Piso1`, el desbloqueo de `Piso2` y la integración de futuros mapas. El diseño de esos mapas queda pendiente.
