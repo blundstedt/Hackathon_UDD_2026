@@ -1,4 +1,3 @@
-using Hackaton.Multiplayer;
 using Hackaton.Progression;
 using UnityEngine;
 
@@ -7,19 +6,15 @@ namespace Hackaton.Lobby
     [DisallowMultipleComponent]
     public sealed class JerseyMannequin : FloorInteraction
     {
-        [SerializeField] private GameObject jersey;
-
-        public override string Prompt(FloorSession session) =>
-            jersey.activeSelf ? "E - Quitar camiseta" : "E - Poner camiseta";
-
-        internal void SetWorn(bool worn) => jersey.SetActive(worn);
+        public override string Prompt(FloorSession session) => "E - Equipar polera";
+        public override string PromptFor(FloorSession session, FloorPlayer player) =>
+            player.Look.jersey ? "E - Quitar polera" : Prompt(session);
 
         public override string Interact(FloorPlayer player)
         {
-            if (TryGetComponent<NetworkJersey>(out var network) && network.IsSpawned)
-                network.Toggle();
-            else
-                SetWorn(!jersey.activeSelf);
+            var look = player.Look;
+            look.jersey = !look.jersey;
+            player.ChangeLook(look);
             return null;
         }
     }

@@ -23,6 +23,7 @@ namespace Hackaton.Multiplayer
             public string id;
             public PlayerStats.Snapshot stats;
             public string equipment;
+            public TizaLook appearance;
             public List<int> pendingRewards = new();
         }
 

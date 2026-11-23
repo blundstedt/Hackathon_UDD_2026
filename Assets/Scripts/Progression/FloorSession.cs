@@ -16,6 +16,7 @@ namespace Hackaton.Progression
         private readonly Dictionary<string, PlayerStats.Snapshot> accounts = new();
         private readonly Dictionary<string, List<FloorData>> owed = new();
         private readonly Dictionary<string, PlayerView> equipment = new();
+        private readonly Dictionary<string, TizaLook> appearances = new();
         private readonly HashSet<string> participants = new();
 
         public CampaignSave Capture()
@@ -25,7 +26,7 @@ namespace Hackaton.Progression
             Progress.Capture(save);
             foreach (var pair in accounts)
             {
-                var record = new CampaignSave.Account { id = pair.Key, stats = pair.Value,
+                var record = new CampaignSave.Account { id = pair.Key, stats = pair.Value, appearance = Look(pair.Key),
                     equipment = Equipment(pair.Key) ? Equipment(pair.Key).name : "" };
                 if (owed.TryGetValue(pair.Key, out var pending))
                     foreach (var floor in pending) record.pendingRewards.Add(floor.number);
@@ -38,10 +39,12 @@ namespace Hackaton.Progression
         {
             accounts.Clear();
             equipment.Clear();
+            appearances.Clear();
             owed.Clear();
             foreach (var record in save.accounts)
             {
                 accounts[record.id] = record.stats;
+                appearances[record.id] = record.appearance;
                 var prefab = System.Array.Find(avatars, p => p && p.name == record.equipment);
                 if (prefab) equipment[record.id] = prefab;
                 foreach (int number in record.pendingRewards)
@@ -50,10 +53,17 @@ namespace Hackaton.Progression
                     if (!owed.TryGetValue(record.id, out var pending)) owed[record.id] = pending = new();
                     pending.Add(Progress.Get(number));
                 }
-                if (active.TryGetValue(record.id, out var player)) player.Stats.Restore(record.stats);
+                if (active.TryGetValue(record.id, out var player))
+                {
+                    player.Stats.Restore(record.stats);
+                    player.RestoreLook(record.appearance);
+                }
             }
             Progress.Restore(save);
         }
+
+        internal TizaLook Look(string id) => appearances.TryGetValue(id, out var look) ? look : default;
+        internal void StoreLook(string id, TizaLook look) => appearances[id] = look;
 
         public PlayerView Equipment(string id) => equipment.TryGetValue(id, out var prefab) ? prefab : null;
         internal void Equip(string id, PlayerView prefab) => equipment[id] = prefab;

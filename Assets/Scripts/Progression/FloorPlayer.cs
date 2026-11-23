@@ -1,4 +1,5 @@
 using Hackaton.Player;
+using Hackaton.Multiplayer;
 using UnityEngine;
 
 namespace Hackaton.Progression
@@ -16,6 +17,29 @@ namespace Hackaton.Progression
         private FloorSession session;
         private bool assignedIdentity;
 
+        private TizaAppearance appearance;
+        private TizaBody networkBody;
+        public TizaLook Look { get; private set; }
+
+        internal void ApplyLook(TizaLook look)
+        {
+            Look = look;
+            if (appearance) appearance.Apply(look);
+        }
+
+        internal void RestoreLook(TizaLook look)
+        {
+            if (!networkBody) ApplyLook(look);
+        }
+
+        internal void ChangeLook(TizaLook look)
+        {
+            if (!session || (networkBody && !networkBody.Peer.IsServer)) return;
+            session.StoreLook(Id, look);
+            if (networkBody) networkBody.Peer.SetLook(look);
+            else ApplyLook(look);
+        }
+
         public string Id => playerId;
         // Supply the stable connection/account ID before enabling a spawned avatar.
         public void SetIdentity(string id)
@@ -31,6 +55,8 @@ namespace Hackaton.Progression
 
         private void Awake()
         {
+            appearance = GetComponent<TizaAppearance>();
+            networkBody = GetComponent<TizaBody>();
             Stats = GetComponent<PlayerStats>();
             input = GetComponent<PlayerInputReader>();
             view = GetComponent<PlayerView>();
@@ -51,7 +77,10 @@ namespace Hackaton.Progression
             // Lobby display avatars also inherit this prefab, with local input disabled.
             // A remote avatar joins explicitly through SetIdentity before activation.
             if (owner && (input.enabled || assignedIdentity) && Stats.CanReceiveRewards && owner.Register(this))
+            {
                 session = owner;
+                RestoreLook(owner.Look(Id));
+            }
         }
 
         private void OnDisable()
@@ -89,7 +118,7 @@ namespace Hackaton.Progression
                 if (peer && peer.Player == this) peer.Interact(target);
                 else session.Screen.Notice(target.Interact(this));
             }
-            session.Screen.Aim(target ? target.Prompt(session) : null);
+            session.Screen.Aim(target ? target.PromptFor(session, this) : null);
         }
     }
 }
