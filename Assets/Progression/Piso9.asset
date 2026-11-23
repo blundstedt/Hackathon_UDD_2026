@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Piso9
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorData
   number: 9
-  displayName: Archivo de Continuidad
+  displayName: Oficina Corrupta — Turno de Noche
   sceneName: Piso9
   initiallyAvailable: 0
   prerequisite: {fileID: 11400000, guid: b64525105365d5b45858dda7d4681d55, type: 2}

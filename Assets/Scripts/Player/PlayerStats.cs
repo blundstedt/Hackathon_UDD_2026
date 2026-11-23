@@ -52,6 +52,11 @@ namespace Hackaton.Player
             Changed?.Invoke();
         }
 
+        public void Eliminate()
+        {
+            if (IsTargetable) TakeDamage(Health);
+        }
+
         public void Heal(int amount)
         {
             if (amount <= 0 || Health == MaxHealth) return;

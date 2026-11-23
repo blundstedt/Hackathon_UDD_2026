@@ -16,6 +16,7 @@ namespace Hackaton.Multiplayer
         private FloorPlayer player;
         private PlayerView view;
         private bool statsDirty;
+        internal float RemoteSpeed { get; private set; }
         public PlayerView View => view;
         public FloorPlayer Player => player;
         public int Equipped => identity.Equipment.Value;
@@ -121,7 +122,13 @@ namespace Hackaton.Multiplayer
         {
             if (!IsSpawned || !view) return;
             if (IsOwner) transform.SetPositionAndRotation(view.transform.position, view.transform.rotation);
-            else view.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            else
+            {
+                float distance = Vector3.Distance(view.transform.position,transform.position);
+                float speed = distance / Mathf.Max(Time.deltaTime,.001f);
+                RemoteSpeed = Mathf.Lerp(RemoteSpeed,Mathf.Min(speed,12f),1f - Mathf.Exp(-12f * Time.deltaTime));
+                view.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            }
             if (IsServer && inventory) UpdateInventory();
             if (IsServer && statsDirty)
             {

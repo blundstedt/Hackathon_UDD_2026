@@ -11,6 +11,10 @@ namespace Hackaton.Levels
         [SerializeField] private NavMeshData pursuitMesh;
         private NavMeshDataInstance navigation;
 
+        private OfficeDirector shift;
+
+        private void Awake() => shift = GetComponent<OfficeDirector>();
+
         private void OnEnable()
         {
             if (pursuitMesh) navigation = NavMesh.AddNavMeshData(pursuitMesh);
@@ -24,7 +28,11 @@ namespace Hackaton.Levels
         private void LateUpdate()
         {
             var session = FloorSession.Instance;
-            if (!session || session.Traveling) return;
+            if (!session || session.Traveling || OfficeDirector.IsGuest) return;
+            bool allDown = session.PlayerCount > 0;
+            foreach (var member in session.Players)
+                if (member.Stats.IsTargetable) { allDown = false; break; }
+            if (allDown) shift.RestartPursuit();
             int slot = 0;
             foreach (var player in session.Players)
             {
@@ -44,12 +52,20 @@ namespace Hackaton.Levels
             if (simulating) impact.enabled = false;
             movement.enabled = false;
             body.enabled = false;
-            player.transform.SetPositionAndRotation(transform.position +
-                new Vector3(slot % 3 * 1.2f, .2f, slot / 3 * 1.2f), transform.rotation);
+            var checkpoint = shift.AtElevator ? shift.Checkpoint : transform.position;
+            var position = checkpoint + new Vector3(slot % 3 * 1.2f, .2f, slot / 3 * 1.2f);
+            player.transform.SetPositionAndRotation(position, transform.rotation);
+            if (player.TryGetComponent<Hackaton.Multiplayer.TizaBody>(out var net) && !net.Peer.IsOwner)
+                net.Peer.RecoverRpc(position, transform.rotation);
             body.enabled = true;
             movement.enabled = moving;
             if (simulating) impact.enabled = true;
-            if (player.Stats.Health == 0) player.Stats.Heal(PlayerStats.MaxHealth);
+            if (player.Stats.Health == 0)
+            {
+                player.Stats.Heal(PlayerStats.MaxHealth);
+                FloorSession.Instance.Screen.Notice(shift.AtElevator ?
+                    "Reincorporación en el área de defensa" : "Empleado eliminado · Reincorporación en recepción");
+            }
         }
     }
 }

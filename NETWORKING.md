@@ -17,6 +17,7 @@ La primera escena es `Assets/Scenes/MenuPrincipal.unity`. En el Editor, `MenuSta
 - `FloorProgress` conserva el catálogo del GDD y aplica una recompensa por piso. El registro de `FloorSession` asigna EXP, dinero, salud, nivel y equipamiento por identidad. La llave pertenece al grupo. La cuenta `local` identifica al dueño del slot tanto en línea como sin conexión. Los invitados conservan su identidad mediante la autenticación anónima de su instalación.
 - Cada slot tiene un JSON propio en `Application.persistentDataPath/Partidas/partida-N.json`. `CampaignSlots` escribe un temporal en el mismo directorio, lo vacía al disco y reemplaza la versión anterior conservando una copia `.bak`. La interfaz pide confirmación para eliminar ambas copias del slot. Los ajustes personales utilizan PlayerPrefs de la máquina.
 - Al continuar se vuelve al lobby con el progreso guardado. Un piso abandonado sin completar se puede volver a intentar. El sistema guarda el progreso de campaña y las cuentas de los participantes, no la posición momentánea de enemigos o proyectiles.
+- En el Piso 9 el host dirige la persecución, la caída, las tres oleadas y el cofre. Los invitados reciben la posición, la animación y la vida de cada enemigo diez veces por segundo. El Corruptor conserva su identidad al volver como jefe. Cualquier participante puede activar la terminal y recoger el cofre para el grupo.
 - La mesa de ping-pong conserva su partida individual contra la máquina. Su marcador es local y no concede dinero, EXP ni llaves.
 
 ## Versiones y APIs

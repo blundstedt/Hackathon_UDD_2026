@@ -50,6 +50,7 @@ public sealed class TowerFloorPanel : MonoBehaviour
         if (session.Traveling || !session.IsActive(player)) return "No disponible";
         var reason = session.TravelBlock(destination);
         if (reason != null) return reason;
+        if (exitReward && !exitReward.isActiveAndEnabled) return "Ascensor en reactivación";
         if (!Contains(player)) return "Entra al ascensor";
         if (pending < 0)
         {
@@ -87,6 +88,7 @@ public sealed class TowerFloorPanel : MonoBehaviour
             return;
         }
         int destination = pending;
+        if (exitReward && !exitReward.isActiveAndEnabled) { Cancel(); return; }
         if (exitReward && destination == 0)
             exitReward.Interact(requester);
         Cancel();
