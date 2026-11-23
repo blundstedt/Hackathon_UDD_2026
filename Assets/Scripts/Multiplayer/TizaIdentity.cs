@@ -1,3 +1,4 @@
+using Hackaton.Player;
 using Unity.Collections;
 using Unity.Netcode;
 
@@ -7,22 +8,23 @@ namespace Hackaton.Multiplayer
     {
         public readonly NetworkVariable<FixedString64Bytes> Account = new();
         public readonly NetworkVariable<int> Equipment = new();
-        public readonly NetworkVariable<int> ColorIndex = new();
-        private int initialColor;
+        public readonly NetworkVariable<TizaLook> Appearance = new();
+        private TizaLook initialLook;
         private string initialAccount;
         private int initialEquipment;
 
-        internal void Configure(string account, int equipment, int colorIndex)
+        internal void Configure(string account, int equipment, TizaLook look)
         {
             initialAccount = account;
-            initialColor = colorIndex;
+            initialLook = look;
             initialEquipment = equipment;
         }
+
         public override void OnNetworkSpawn()
         {
             if (!IsServer) return;
             Account.Value = initialAccount;
-            ColorIndex.Value = initialColor;
+            Appearance.Value = initialLook;
             Equipment.Value = initialEquipment;
         }
     }

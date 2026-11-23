@@ -25,7 +25,6 @@ namespace Hackaton.Multiplayer
         [SerializeField] private PlayerView[] avatars;
         private readonly Dictionary<ulong, string> identities = new();
         private readonly HashSet<ulong> reserved = new();
-        private readonly Dictionary<ulong, int> colors = new();
         private NetworkManager manager;
         private FloorSession campaign;
         [SerializeField] private CampaignIntro introPrefab;
@@ -154,8 +153,6 @@ namespace Hackaton.Multiplayer
             result.Reason = reason ?? "";
             if (!result.Approved) return;
             identities[request.ClientNetworkId] = id;
-            for (int color = 0; color < 4; color++)
-                if (!colors.ContainsValue(color)) { colors[request.ClientNetworkId] = color; break; }
         }
         private void ServerStarted() => manager.SceneManager.OnLoadEventCompleted += SceneReady;
         private void ClientStarted()
@@ -181,7 +178,6 @@ namespace Hackaton.Multiplayer
         private void Disconnected(ulong id)
         {
             identities.Remove(id);
-            colors.Remove(id);
             reserved.Remove(id);
         }
         private void Stopped(bool wasHost) { if (!closing && !Busy && online) Lost(); }
@@ -248,7 +244,7 @@ namespace Hackaton.Multiplayer
             var instance = Instantiate(tizaPrefab, pose.Value.position, pose.Value.rotation);
             var tiza = instance.GetComponent<TizaIdentity>();
             int equipped = Array.IndexOf(avatars, campaign.Equipment(identity));
-            tiza.Configure(identity, Mathf.Max(0, equipped), colors[id]);
+            tiza.Configure(identity, Mathf.Max(0, equipped), campaign.Look(identity));
             instance.SpawnAsPlayerObject(id, true);
         }
         public void Save()
@@ -307,7 +303,6 @@ namespace Hackaton.Multiplayer
                     campaign = null;
                 }
                 identities.Clear();
-                colors.Clear();
                 reserved.Clear();
                 slot = 0;
                 host = online = loading = false;

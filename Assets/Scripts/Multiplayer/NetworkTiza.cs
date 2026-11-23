@@ -16,8 +16,6 @@ namespace Hackaton.Multiplayer
         private FloorPlayer player;
         private PlayerView view;
         private bool statsDirty;
-        private static readonly Color[] BodyColors = { new Color32(218, 83, 132, 255), new Color32(86, 145, 242, 255),
-            new Color32(246, 166, 70, 255), new Color32(108, 196, 160, 255) };
         public PlayerView View => view;
         public FloorPlayer Player => player;
         public int Equipped => identity.Equipment.Value;
@@ -27,6 +25,7 @@ namespace Hackaton.Multiplayer
             identity = GetComponent<TizaIdentity>();
             if (IsOwner) Local = this;
             identity.Equipment.OnValueChanged += ChangedEquipment;
+            identity.Appearance.OnValueChanged += ChangedLook;
             Assemble(identity.Equipment.Value);
             if (!IsServer && IsOwner) RequestStateRpc();
         }
@@ -35,21 +34,13 @@ namespace Hackaton.Multiplayer
         {
             var catalog = CampaignRoom.Current.Avatars;
             var pose = view ? new Pose(view.transform.position, view.transform.rotation) : new Pose(transform.position, transform.rotation);
+            var cameraMode = view ? view.Mode : PlayerView.CameraMode.FirstPerson;
             if (view) RemoveAvatar();
             var staging = new GameObject("Montaje de Tiza");
             staging.SetActive(false);
             view = Instantiate(catalog[index], staging.transform);
             player = view.GetComponent<FloorPlayer>();
             view.gameObject.AddComponent<TizaBody>().Peer = this;
-            foreach (var part in view.GetComponentsInChildren<Renderer>(true))
-            {
-                if (part.name != "Cuerpo") continue;
-                var tint = new MaterialPropertyBlock();
-                part.GetPropertyBlock(tint);
-                tint.SetColor("_BaseColor", BodyColors[identity.ColorIndex.Value]);
-                tint.SetColor("_Color", BodyColors[identity.ColorIndex.Value]);
-                part.SetPropertyBlock(tint);
-            }
             player.SetIdentity(identity.Account.Value.ToString());
             view.transform.SetPositionAndRotation(pose.position, pose.rotation);
             if (!IsOwner)
@@ -63,7 +54,9 @@ namespace Hackaton.Multiplayer
             }
             view.ViewCamera.clearFlags = CameraClearFlags.Skybox;
             view.transform.SetParent(null, true);
+            player.ApplyLook(identity.Appearance.Value);
             if (!IsOwner) view.enabled = false; // Restores authored hands and third-person renderers.
+            else view.SetCameraMode(cameraMode);
             Destroy(staging);
             if (IsServer)
             {
@@ -82,7 +75,11 @@ namespace Hackaton.Multiplayer
         }
         public override void OnNetworkDespawn()
         {
-            if (identity) identity.Equipment.OnValueChanged -= ChangedEquipment;
+            if (identity)
+            {
+                identity.Equipment.OnValueChanged -= ChangedEquipment;
+                identity.Appearance.OnValueChanged -= ChangedLook;
+            }
             if (Local == this) Local = null;
             RemoveAvatar();
         }
@@ -96,6 +93,11 @@ namespace Hackaton.Multiplayer
             controller.enabled = true;
         }
         private void ChangedEquipment(int before, int after) => Assemble(after);
+        internal void SetLook(TizaLook look) => identity.Appearance.Value = look;
+        private void ChangedLook(TizaLook before, TizaLook after)
+        {
+            if (player) player.ApplyLook(after);
+        }
         private void DirtyStats() => statsDirty = true;
 
         [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Owner)]
@@ -165,15 +167,21 @@ namespace Hackaton.Multiplayer
         private void UseRpc(Vector3 point, string kind)
         {
             if (!player || FloorSession.Instance.Traveling || Vector3.Distance(player.BodyCenter, point) > 3.6f) return;
+            FloorInteraction closest = null;
+            float best = float.PositiveInfinity;
             foreach (var c in Physics.OverlapSphere(point, .18f, ~0, QueryTriggerInteraction.Collide))
             {
                 if (!c.TryGetComponent<FloorInteraction>(out var target) || !target.isActiveAndEnabled || target.GetType().Name != kind) continue;
                 Vector3 near = c.ClosestPoint(player.BodyCenter);
                 if (Vector3.Distance(near, player.BodyCenter) > 3.6f) continue;
-                var message = target.Interact(player);
-                if (!string.IsNullOrEmpty(message)) NoticeRpc(message);
-                return;
+                float distance = (c.ClosestPoint(point) - point).sqrMagnitude;
+                if (distance >= best) continue;
+                best = distance;
+                closest = target;
             }
+            if (!closest) return;
+            var message = closest.Interact(player);
+            if (!string.IsNullOrEmpty(message)) NoticeRpc(message);
         }
         [Rpc(SendTo.Owner, InvokePermission = RpcInvokePermission.Server)]
         private void NoticeRpc(string message) => FloorSession.Instance.Screen.Notice(message);
