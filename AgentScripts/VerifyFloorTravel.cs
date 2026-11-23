@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Hackaton.Player;
+using Hackaton.Levels;
 using Hackaton.Lobby;
 using Hackaton.Progression;
 using UnityEditor;
@@ -30,9 +31,9 @@ public static class VerifyFloorTravel
         checks.Add(label);
     }
 
-    private static async Task Until(Func<bool> ready, string reason)
+    private static async Task Until(Func<bool> ready, string reason, float seconds = 18)
     {
-        double deadline = EditorApplication.timeSinceStartup + 18;
+        double deadline = EditorApplication.timeSinceStartup + seconds;
         while (!ready())
         {
             if (EditorApplication.timeSinceStartup > deadline) throw new TimeoutException(reason);
@@ -49,8 +50,37 @@ public static class VerifyFloorTravel
         Physics.SyncTransforms();
     }
 
+    private static int EarnedXp(PlayerStats stats) => 50*(stats.Level-1)*stats.Level+stats.Experience;
+
+    private static async Task<ForestChest> ClearForest()
+    {
+        var arena = Object.FindAnyObjectByType<ForestArena>();
+        Check(arena && !arena.CanClaim, "El piso empieza sin recompensa disponible");
+        foreach (int total in new[]{12,16,19})
+        {
+            ForestEnemy[] living = null;
+            await Until(() =>
+            {
+                living = Object.FindObjectsByType<ForestEnemy>().Where(e => e.Health > 0).ToArray();
+                return living.Length == total;
+            }, "Oleada incompleta de " + total, 90);
+            Check(living.Count(e => e.Rank==ForestRank.Goblin)==12, "Doce duendes");
+            Check(living.Count(e => e.Rank==ForestRank.Guardian)==(total==12 ? 0 : total==16 ? 4 : 6), "Guardianes de la oleada");
+            if (total==19)
+            {
+                var boss=living.Single(e=>e.Rank==ForestRank.Colossus);
+                boss.TakeDamage(boss.Health);
+                var chest=Object.FindObjectsByType<ForestChest>().Single();
+                Check(!arena.CanClaim && chest.Interact(Local).Contains("restantes"),"Cofre visible y cerrado tras caer el jefe");
+            }
+            foreach (var enemy in living) enemy.TakeDamage(enemy.Health);
+        }
+        await Until(()=>arena.CanClaim,"Cofre bloqueado después del combate");
+        return Object.FindObjectsByType<ForestChest>().Single();
+    }
+
     // The meadow puts its objective across the clearing. Walk the real capsule to interaction range.
-    private static void WalkToObjective(FloorObjective objective)
+    private static void WalkToObjective(FloorInteraction objective)
     {
         var controller = Local.GetComponent<CharacterController>();
         var motion = new Hackaton.Combat.CharacterImpactMotion();
@@ -150,7 +180,7 @@ public static class VerifyFloorTravel
             Board(Local);
             await Use(Button(1));
             await Arrive(1);
-            var objective = Object.FindAnyObjectByType<FloorObjective>();
+            var objective = await ClearForest();
             WalkToObjective(objective);
             await Use(objective);
             Check(Session.Progress.State(1) == FloorState.Completed, "E recoge la llave en la pradera");
@@ -225,13 +255,16 @@ public static class VerifyFloorTravel
         var teammate = Join("tres");
         var offline = Join("ausente");
         offline.gameObject.SetActive(false);
-        var objective = Object.FindAnyObjectByType<FloorObjective>();
+        var objective = await ClearForest();
+        initialMoney=Local.Stats.Money;
+        initialXp=EarnedXp(Local.Stats);
+        int teammateMoney=teammate.Stats.Money, teammateXp=EarnedXp(teammate.Stats);
         WalkToObjective(objective);
         Check(Press(objective).Contains(data.rewardItem.displayName),"Finalización mediante el objetivo");
         Check(Session.Progress.State(1)==FloorState.Completed && Session.Progress.State(2)==FloorState.Locked &&
-            Local.Stats.Money==initialMoney+data.money && Local.Stats.Experience==initialXp+data.experience &&
-            teammate.Stats.Money==data.money && teammate.Stats.Experience==data.experience,"Premios individuales y llave de equipo");
-        Check(Press(objective)=="Nivel completado" && teammate.Stats.Money==data.money,"Segunda finalización sin duplicados");
+            Local.Stats.Money==initialMoney+data.money && EarnedXp(Local.Stats)==initialXp+data.experience &&
+            teammate.Stats.Money==teammateMoney+data.money && EarnedXp(teammate.Stats)==teammateXp+data.experience,"Premios individuales y llave de equipo");
+        Check(Press(objective).Contains("lobby") && teammate.Stats.Money==teammateMoney+data.money,"Segunda finalización sin duplicados");
         offline.gameObject.SetActive(true);
         Check(offline.Stats.Money==data.money && offline.Stats.Experience==data.experience,"Participante reconectado cobra una vez");
         offline.gameObject.SetActive(false);
@@ -239,7 +272,7 @@ public static class VerifyFloorTravel
         Board(Local); Press(Button(0));
         await Arrive(0);
         Check(Local.GetComponent<BastonAttack>().enabled,"Equipamiento restaurado en el lobby");
-        Check(Session==authority && Local.Stats.Money==initialMoney+data.money && Local.Stats.Experience==initialXp+data.experience,
+        Check(Session==authority && Local.Stats.Money==initialMoney+data.money && EarnedXp(Local.Stats)==initialXp+data.experience,
             "Autoridad y saldo conservados entre escenas");
         Board(Local);
         Check(Press(Button(1))=="Nivel completado","Piso completado no repetible");
@@ -268,7 +301,6 @@ public static class VerifyFloorTravel
         var companion=Join("explorador");
         float ground=diamond.transform.parent.position.y;
         Move(Local,new Vector3(diamond.transform.position.x,ground+.1f,diamond.transform.position.z-2.4f));
-        int EarnedXp(PlayerStats s)=>50*(s.Level-1)*s.Level+s.Experience;
         int beforeXp=EarnedXp(Local.Stats);
         Check(Press(diamond).Contains("Nivel completado") && floor2.rewardItem && !Session.Traveling,"El diamante completa el piso 2 y entrega la llave del piso 3");
         Check(Local.Stats.Money==beforeMoney+floor2.money && EarnedXp(Local.Stats)==beforeXp+floor2.experience &&
