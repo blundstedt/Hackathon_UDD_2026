@@ -254,6 +254,8 @@ namespace Hackaton.Player
             landingTime = Mathf.Min(1f, landingTime + Time.deltaTime);
         }
 
+        internal void RestoreSupportHand() => supportHand.Apply(Mode != CameraMode.FirstPerson, Vector3.zero);
+
         private void ApplyHandPoses()
         {
             bool thirdPerson = Mode != CameraMode.FirstPerson;

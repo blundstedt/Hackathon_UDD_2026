@@ -248,9 +248,7 @@ public static class VerifyFloorTravel
         Check(secretary.Prompt(Session)=="Presiona E para entregar el objeto","Llave pendiente de entrega");
         Check(Press(secretary)=="¡Piso 2 desbloqueado!" && Session.Progress.State(2)==FloorState.Available,"Entrega efectiva");
         Check(!Press(secretary).Contains("¡Piso") && Session.Progress.State(3)==FloorState.Locked,"Entrega duplicada rechazada");
-        var serialized = new SerializedObject(Panel);
-        var digit = (Renderer)serialized.FindProperty("digits").GetArrayElementAtIndex(2).objectReferenceValue;
-        Check(digit.sharedMaterial==serialized.FindProperty("illuminated").objectReferenceValue,"Botón 2 actualizado por evento");
+        Check(Button(2).Keycap.Illuminated,"Botón 2 actualizado por evento");
         Board(Local);
         Press(Button(2)); await Arrive(2);
         var entry=GameObject.Find("Ascensor del atrio").GetComponent<TowerFloorPanel>();

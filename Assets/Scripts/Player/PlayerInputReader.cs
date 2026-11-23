@@ -14,7 +14,9 @@ namespace Hackaton.Player
         private bool skipLook;
         private PlayerInventory inventory;
 
-        public bool HasControl => isActiveAndEnabled && !Hackaton.Multiplayer.SessionMenu.CapturesInput &&
+        internal bool Reaching { get; set; }
+        public bool HasControl => !Reaching && HasFocus;
+        internal bool HasFocus => isActiveAndEnabled && !Hackaton.Multiplayer.SessionMenu.CapturesInput &&
             Application.isFocused && Cursor.lockState == CursorLockMode.Locked;
         public Vector2 Move => HasControl ? move.ReadValue<Vector2>() : Vector2.zero;
         public Vector2 Look => HasControl && !skipLook ? look.ReadValue<Vector2>() : Vector2.zero;

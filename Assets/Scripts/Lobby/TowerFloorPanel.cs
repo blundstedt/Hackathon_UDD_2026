@@ -6,9 +6,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-400)]
 public sealed class TowerFloorPanel : MonoBehaviour
 {
-    [SerializeField] private Renderer[] digits;
-    [SerializeField] private Material illuminated;
-    [SerializeField] private Material inactive;
+    [SerializeField] private FloorButton[] buttons;
     [SerializeField] private BoxCollider cabin;
     [SerializeField] private FloorSession sessionPrefab;
     [Tooltip("Módulo que concede el premio al embarcar en la salida. Vacío en las cabinas de entrada.")]
@@ -37,11 +35,12 @@ public sealed class TowerFloorPanel : MonoBehaviour
     private void Refresh()
     {
         var current = session.Progress.ForScene(gameObject.scene.name);
-        for (int i = 0; i < digits.Length; i++)
+        foreach (var button in buttons)
         {
+            int i = button.Destination;
             bool lit = current && (i == 0 || current.number == i ||
                 (current.number == 0 && session.Progress.State(i) == FloorState.Available));
-            if (digits[i]) digits[i].sharedMaterial = lit ? illuminated : inactive;
+            button.Keycap.LightKey(lit);
         }
     }
 

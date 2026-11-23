@@ -19,6 +19,7 @@ namespace Hackaton.Player
         private bool animating;
         private bool impactPending;
         private float readyAt;
+        internal bool Swinging => animating;
         public float RemainingFraction => Mathf.Clamp01((readyAt - Time.time) / Cooldown);
 
         protected void Awake()

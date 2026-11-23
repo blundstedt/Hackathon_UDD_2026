@@ -138,7 +138,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 266020950871281214}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -228,7 +228,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388754732675264164}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -318,7 +318,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886206220796477156}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -408,7 +408,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1322431019778859211}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -498,7 +498,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1334623909107327084}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -672,6 +672,8 @@ Transform:
   - {fileID: 1529552692806451106}
   - {fileID: 3652708215390163113}
   - {fileID: 281676204883964791}
+  - {fileID: 1819007855318293496}
+  - {fileID: 2503346867993483198}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7305819494556274445
@@ -686,21 +688,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df9f0675ed234be4592e2d99ec0e65ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TowerFloorPanel
-  digits:
-  - {fileID: 2931261368816046193}
-  - {fileID: 3196634522071058024}
-  - {fileID: 1325131840411954205}
-  - {fileID: 2597468131620506420}
-  - {fileID: 2406922894266031533}
-  - {fileID: 6006075206902934595}
-  - {fileID: 2126719538726916714}
-  - {fileID: 4793923889032496473}
-  - {fileID: 9040451660023860957}
-  - {fileID: 7235209821986261997}
-  illuminated: {fileID: 8133348906608402135, guid: 711a7d820e28d6e4e9d3cf46e62bcbd0, type: 2}
-  inactive: {fileID: -5670739481556558282, guid: 711a7d820e28d6e4e9d3cf46e62bcbd0, type: 2}
+  buttons:
+  - {fileID: 9213175316410464872}
+  - {fileID: 6587901268918835473}
+  - {fileID: 6682655155180801125}
+  - {fileID: 4773915531565491940}
+  - {fileID: 2233234056802661563}
+  - {fileID: 2597230932348367691}
+  - {fileID: 6421875444850023425}
+  - {fileID: 778255777744826405}
+  - {fileID: 5370199284651635798}
+  - {fileID: 4300950049066248847}
+  - {fileID: 2175267908187567748}
   cabin: {fileID: 3899633816994178003}
   sessionPrefab: {fileID: 2955261675028580761, guid: 2e1fb970cab4275489746b65a9bb2c13, type: 3}
+  exitReward: {fileID: 0}
 --- !u!1 &2469547921521225508
 GameObject:
   m_ObjectHideFlags: 0
@@ -749,7 +751,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2469547921521225508}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -845,8 +847,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 1.42, y: 2.51, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 1.451, y: 2.315, z: 18.945}
 --- !u!114 &6421875444850023425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -861,6 +863,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 6
+  keycap: {fileID: 3662828890822407193}
 --- !u!1 &2529469342168980394
 GameObject:
   m_ObjectHideFlags: 0
@@ -909,7 +912,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2529469342168980394}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1005,8 +1008,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 1.42, y: 1.59, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 1.451, y: 1.4929999, z: 18.945}
 --- !u!114 &6682655155180801125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1021,6 +1024,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 2
+  keycap: {fileID: 6265224091843956348}
 --- !u!1 &2727501428567977895
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,7 +1073,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2727501428567977895}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1255,8 +1259,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 2.1, y: 2.97, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 2.069, y: 2.7259998, z: 18.945}
 --- !u!114 &4300950049066248847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1271,6 +1275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 9
+  keycap: {fileID: 5592496975460193505}
 --- !u!1 &3398256840429737641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1415,8 +1420,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 2.1, y: 2.05, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 2.069, y: 1.9039999, z: 18.945}
 --- !u!114 &2597230932348367691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1431,6 +1436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 5
+  keycap: {fileID: 8438203035860174577}
 --- !u!1 &4594241282582739353
 GameObject:
   m_ObjectHideFlags: 0
@@ -1485,8 +1491,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 1.42, y: 2.97, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 1.451, y: 2.7259998, z: 18.945}
 --- !u!114 &5370199284651635798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1501,6 +1507,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 8
+  keycap: {fileID: 5568178560391347358}
 --- !u!1 &4637638818093245478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1555,8 +1562,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 1.42, y: 1.13, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 1.451, y: 1.0819999, z: 18.945}
 --- !u!114 &9213175316410464872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1571,6 +1578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 0
+  keycap: {fileID: 3547382756439446652}
 --- !u!1 &4843325491541680207
 GameObject:
   m_ObjectHideFlags: 0
@@ -1619,7 +1627,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4843325491541680207}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1799,7 +1807,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5371857338563918569}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1979,7 +1987,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5454927037933443965}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2075,8 +2083,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 2.1, y: 1.13, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 2.069, y: 1.0819999, z: 18.945}
 --- !u!114 &6587901268918835473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2091,6 +2099,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 1
+  keycap: {fileID: 2000872176830038851}
 --- !u!1 &6083418121279986301
 GameObject:
   m_ObjectHideFlags: 0
@@ -2139,7 +2148,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6083418121279986301}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2282,7 +2291,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6525565145249733139}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2372,7 +2381,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6777683033777266959}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2552,7 +2561,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6932704054292016145}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2648,8 +2657,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 2.1, y: 2.51, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 2.069, y: 2.315, z: 18.945}
 --- !u!114 &778255777744826405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2664,6 +2673,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 7
+  keycap: {fileID: 9020449188750742673}
 --- !u!1 &7094109786762426684
 GameObject:
   m_ObjectHideFlags: 0
@@ -2712,7 +2722,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7094109786762426684}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2808,8 +2818,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 2.1, y: 1.59, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 2.069, y: 1.4929999, z: 18.945}
 --- !u!114 &4773915531565491940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2824,6 +2834,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 3
+  keycap: {fileID: 491129276644105806}
 --- !u!1 &7952948284878411958
 GameObject:
   m_ObjectHideFlags: 0
@@ -3161,8 +3172,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.56, y: 0.425, z: 0.09}
-  m_Center: {x: 1.42, y: 2.05, z: 18.91}
+  m_Size: {x: 0.55, y: 0.326, z: 0.038}
+  m_Center: {x: 1.451, y: 1.9039999, z: 18.945}
 --- !u!114 &2233234056802661563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3177,6 +3188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
   panel: {fileID: 7305819494556274445}
   destination: 4
+  keycap: {fileID: 4699228201988452290}
 --- !u!1 &8529580279194775421
 GameObject:
   m_ObjectHideFlags: 0
@@ -3225,7 +3237,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8529580279194775421}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3405,7 +3417,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8610046304217063904}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3592,7 +3604,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9053801735627215205}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3682,7 +3694,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9073736115099122845}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3772,7 +3784,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9140063458474959848}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3814,3 +3826,255 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3591611770041762829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2503346867993483198}
+  - component: {fileID: 2175267908187567748}
+  - component: {fileID: 7044887610275915541}
+  m_Layer: 0
+  m_Name: Piso 10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2503346867993483198
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591611770041762829}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5696747676765550183}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2175267908187567748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591611770041762829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43618656222f964ba703cc8f4983eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorButton
+  panel: {fileID: 7305819494556274445}
+  destination: 10
+  keycap: {fileID: 2374272135573577700}
+--- !u!65 &7044887610275915541
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591611770041762829}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.145, y: 0.36, z: 0.038}
+  m_Center: {x: 1.76, y: 3.172, z: 18.945}
+--- !u!1001 &8459221268003932071
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5696747676765550183}
+    m_Modifications:
+    - target: {fileID: 2470998642031675762, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_Name
+      value: Botonera
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 18.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+--- !u!114 &491129276644105806 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8337824913270725097, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!4 &1819007855318293496 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7807934354543975519, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2000872176830038851 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7971853237641217252, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &2374272135573577700 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6167164023750350915, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &3547382756439446652 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4926908575376643035, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &3662828890822407193 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5166134086725284798, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &4699228201988452290 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3770132782111074405, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &5568178560391347358 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4045098925938424633, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &5592496975460193505 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4105517812448858950, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &6265224091843956348 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2564726257482320347, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &8438203035860174577 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 35945340383019350, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
+--- !u!114 &9020449188750742673 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 597327636334580534, guid: f2e453068b8fc7744bd98268aea52fbb, type: 3}
+  m_PrefabInstance: {fileID: 8459221268003932071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575e59859b017e54b91e3f38146cf5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.ElevatorKeycap
