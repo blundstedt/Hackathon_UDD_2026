@@ -33,7 +33,12 @@ namespace Hackaton.Progression
             if (Instance && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            Progress = new FloorProgress(floors);
+            // Play launched directly in a floor starts a fresh preview session.
+            string previewScene = null;
+#if UNITY_EDITOR
+            previewScene = SceneManager.GetActiveScene().name;
+#endif
+            Progress = new FloorProgress(floors, previewScene);
             SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 

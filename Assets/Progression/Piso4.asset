@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d23137baa148ef4458ea93c70b9ee633, type: 3}
+  m_Name: Piso4
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorData
+  number: 4
+  displayName: Piso 4
+  sceneName: 
+  initiallyAvailable: 0
+  prerequisite: {fileID: 11400000, guid: 8643e0b8f0a00f444a77117ea00f15b1, type: 2}
+  requiredItem: {fileID: 11400000, guid: 7c76dc12f4969ef439ff7c06f63d7348, type: 2}
+  experience: 0
+  money: 0
+  rewardItem: {fileID: 0}

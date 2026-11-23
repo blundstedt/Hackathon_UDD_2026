@@ -14,7 +14,7 @@ namespace Hackaton.Progression
         private readonly Dictionary<UnlockItem, int> items = new();
         public event Action Changed;
 
-        public FloorProgress(IEnumerable<FloorData> catalog)
+        public FloorProgress(IEnumerable<FloorData> catalog, string previewScene = null)
         {
             foreach (var floor in catalog)
             {
@@ -23,7 +23,9 @@ namespace Hackaton.Progression
                     Debug.LogError("El catálogo contiene una referencia vacía o un número de piso repetido.");
                     continue;
                 }
-                states.Add(floor.number, floor.number == 0 || floor.initiallyAvailable ? FloorState.Available : FloorState.Locked);
+                bool available = floor.number == 0 || floor.initiallyAvailable ||
+                    (!string.IsNullOrEmpty(previewScene) && floor.sceneName == previewScene);
+                states.Add(floor.number, available ? FloorState.Available : FloorState.Locked);
             }
         }
 
@@ -41,6 +43,9 @@ namespace Hackaton.Progression
         {
             if (!floor || floor.number == 0 || State(floor.number) != FloorState.Available) return false;
             states[floor.number] = FloorState.Completed;
+            foreach (var next in floors.Values)
+                if (next.prerequisite == floor && !next.requiredItem && State(next.number) == FloorState.Locked)
+                    states[next.number] = FloorState.Available;
             if (floor.rewardItem)
             {
                 items.TryGetValue(floor.rewardItem, out int count);

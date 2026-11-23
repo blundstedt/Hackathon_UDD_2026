@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Piso2
   m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Progression.FloorData
   number: 2
-  displayName: Piso 2
-  sceneName: 
+  displayName: Paraíso Celestial
+  sceneName: ParaisoCelestial
   initiallyAvailable: 0
   prerequisite: {fileID: 11400000, guid: 819fda10ca3a6d24792c0214837f3cc8, type: 2}
   requiredItem: {fileID: 11400000, guid: 625aa3b72e6fa164b88ccadbca436d40, type: 2}
-  experience: 0
-  money: 0
+  experience: 90
+  money: 45
   rewardItem: {fileID: 0}
