@@ -11,6 +11,8 @@ namespace Hackaton.Player
         private static readonly Color Red = new Color32(201, 53, 67, 255);
         private static readonly Color Track = new Color32(32, 26, 40, 225);
         private PlayerStats stats;
+        private PlayerInventory inventory;
+        private InventoryHud slots;
         [SerializeField] private Font hudFont;
         private Text level, money;
         private PlayerAttack attack;
@@ -34,6 +36,8 @@ namespace Hackaton.Player
             scaler.referenceResolution = new Vector2(1280, 720);
             scaler.matchWidthOrHeight = 0.5f;
 
+            inventory = GetComponent<PlayerInventory>();
+            if (inventory) slots = new InventoryHud(canvas.transform, hudFont, inventory.Items, attack);
             var summary = Panel(canvas.transform, "Resumen", Vector2.one, new Vector2(-12, -8), new Vector2(196, 57));
             level = Label(summary, "Nivel", 27, LevelColor, 0, 34);
             money = Label(summary, "Dinero", 23, MoneyColor, 27, 30);
@@ -59,6 +63,7 @@ namespace Hackaton.Player
 
         private void LateUpdate()
         {
+            if (slots != null) slots.Show(inventory.Selected, stats.Completos);
             if (cooldownFill == null) return;
             float remaining = attack.RemainingFraction;
             cooldownFill.parent.gameObject.SetActive(remaining > 0);

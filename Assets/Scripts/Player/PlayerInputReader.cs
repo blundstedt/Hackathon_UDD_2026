@@ -12,6 +12,7 @@ namespace Hackaton.Player
         private InputActionAsset ownedActions;
         private InputAction move, look, jump, sprint, attack;
         private bool skipLook;
+        private PlayerInventory inventory;
 
         public bool HasControl => isActiveAndEnabled && !Hackaton.Multiplayer.SessionMenu.CapturesInput &&
             Application.isFocused && Cursor.lockState == CursorLockMode.Locked;
@@ -25,6 +26,7 @@ namespace Hackaton.Player
         private void Awake()
         {
             // Private copy: enabling one player never changes the shared project actions.
+            inventory = GetComponent<PlayerInventory>();
             ownedActions = Instantiate(inputActions);
             ownedActions.bindingMask = InputBinding.MaskByGroup("Keyboard&Mouse");
             attack = ownedActions.FindAction("Player/Attack", true);
@@ -50,6 +52,7 @@ namespace Hackaton.Player
             else if (Application.isFocused && Cursor.lockState != CursorLockMode.Locked &&
                      Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
                 CaptureCursor();
+            if (inventory) inventory.ReadInput(this);
         }
 
         private void CaptureCursor()
