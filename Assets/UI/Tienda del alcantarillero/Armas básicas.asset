@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc41b4d548d6bb444a84579b577a3f94, type: 3}
+  m_Name: "Armas b\xE1sicas"
+  m_EditorClassIdentifier: Assembly-CSharp::Hackaton.Lobby.WeaponCatalog
+  weapons:
+  - id: baston
+    displayName: "Bast\xF3n"
+    icon: {fileID: 21300000, guid: 81051a2d8acabd44bbb87aad973c572d, type: 3}
+    previewModel: {fileID: 919132149155446097, guid: 212b7c9c3e0849e4ea7954581c6015b6, type: 3}
+    previewMaterial: {fileID: 0}
+    previewYaw: -12
+    playerPrefab: {fileID: 6951401669264599305, guid: 8544c3e2a17c6f849817bf67eba42b57, type: 3}
+    price: 0
+    unlocked: 1
+  - id: cafe
+    displayName: "Caf\xE9"
+    icon: {fileID: 21300000, guid: 8bc3ccdd1b98d9d48b939a463fc11064, type: 3}
+    previewModel: {fileID: 100000, guid: 3587f44602ce32b45a0f4930835cdb44, type: 3}
+    previewMaterial: {fileID: 2100000, guid: c2caf19197ca08649864d3dde6b2232f, type: 2}
+    previewYaw: 65
+    playerPrefab: {fileID: 8146567122572123949, guid: 5b11bcad7b87c1c429846b4ab9aa26e6, type: 3}
+    price: 0
+    unlocked: 1
+  - id: honda
+    displayName: Honda
+    icon: {fileID: 21300000, guid: 4aa62ba8a03f7854ea4b2c998eb22820, type: 3}
+    previewModel: {fileID: 919132149155446097, guid: 3a7887eed63de8642a186f660222e886, type: 3}
+    previewMaterial: {fileID: 0}
+    previewYaw: -15
+    playerPrefab: {fileID: 5516798386156160778, guid: c57e6a182b8e90f499b40bd0dad418e0, type: 3}
+    price: 0
+    unlocked: 1

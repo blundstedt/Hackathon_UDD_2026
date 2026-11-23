@@ -214,9 +214,8 @@ public static class VerifyFloorTravel
         Move(Local,secretary.transform.position+secretary.transform.forward*2.5f);
         Check(Press(secretary)=="Necesitas el objeto de desbloqueo","Secretaria sin llave");
         var station = Object.FindAnyObjectByType<LobbyEquipmentStation>();
-        var options = (Array)typeof(LobbyEquipmentStation).GetField("options",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(station);
-        typeof(LobbyEquipmentStation).GetMethod("Equip",BindingFlags.NonPublic|BindingFlags.Instance)
-            .Invoke(station,new[]{options.GetValue(1)});
+        Move(Local, station.transform.position + Vector3.right * 2.4f);
+        station.SelectWeapon(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/PlayerTizaBaston.prefab").GetComponent<PlayerView>());
         var equipped = Session.Equipment(Local.Id);
         Check(equipped && Local.GetComponent<BastonAttack>().enabled, "Equipamiento asociado al jugador");
         Board(Local);

@@ -21,7 +21,8 @@ namespace Hackaton.Multiplayer
         private Page page, previous;
         private Action confirmed;
         private bool local;
-        public static bool CapturesInput { get; private set; }
+        private static bool pageCapturesInput;
+        public static bool CapturesInput => pageCapturesInput || Hackaton.Lobby.WeaponShopMenu.CapturesInput;
 
         private void Start()
         {
@@ -48,11 +49,11 @@ namespace Hackaton.Multiplayer
         private void Show(Page next)
         {
             page = next;
-            CapturesInput = next != Page.Hidden;
+            pageCapturesInput = next != Page.Hidden;
             background.SetActive(SceneManager.GetActiveScene().name == CampaignRoom.Menu);
             for (int i = 0; i < pages.Length; i++) pages[i].SetActive(i == (int)next);
-            Cursor.lockState = CapturesInput ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = CapturesInput;
+            Cursor.lockState = pageCapturesInput ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = pageCapturesInput;
             Message(null);
             if (next == Page.Slots) RefreshSlots();
             if (next == Page.Pause) roomCode.text = string.IsNullOrEmpty(room.Code) ? "Partida local" : room.Code;
@@ -136,7 +137,7 @@ namespace Hackaton.Multiplayer
         }
         private void Update()
         {
-            if (room.Busy || Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
+            if (Hackaton.Lobby.WeaponShopMenu.CapturesInput || room.Busy || Keyboard.current?.escapeKey.wasPressedThisFrame != true) return;
             if (page == Page.Hidden) Show(Page.Pause);
             else if (page == Page.Pause) Resume();
             else if (page != Page.Home) Back();
