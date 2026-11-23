@@ -80,3 +80,13 @@ unity command script run --caller plugin --skill unity-pipeline --file AgentScri
 ```powershell
 unity command script run --caller plugin --skill unity-pipeline --file AgentScripts/VerifyFloorTravel.cs --entry VerifyFloorTravel.KeyboardFlow
 ```
+
+### Verificación del turno de noche
+
+Inicia Play directamente en `Assets/Scenes/Piso9.unity` para probar el nivel con una sesión nueva. Desde el lobby, la ruta de campaña requiere completar el piso 3 y entregar su llave en recepción.
+
+```powershell
+unity command script run --caller plugin --skill unity-pipeline --file AgentScripts/VerifyOfficeMaze.cs --entry VerifyOfficeMaze.All --timeout 210
+```
+
+La prueba mide el paso físico y la navegación de los 72 sectores, camina la ruta entre cabinas y comprueba la esquiva y el golpe letal. Activa la terminal mediante el rayo de interacción, acelera el reloj durante la defensa y aplica impactos a los enemigos para verificar las tres dotaciones. Comprueba la identidad y la vulnerabilidad del jefe, el cobro único, el regreso y el canje de la llave del piso 10. En otra sesión nueva de Play, la entrada `VerifyOfficeMaze.Skirmish` prueba la bofetada del avatar, el retroceso y la recuperación del empleado y el impacto del proyectil del dron. La dificultad de combate requiere una partida con jugadores.

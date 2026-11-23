@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Hackaton.Combat;
+using Hackaton.Levels;
 using Hackaton.Player;
 using Hackaton.Progression;
 using UnityEditor;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Object = UnityEngine.Object;
 
-// Run All in a fresh Play session in UrbanLobby_new. Distances are in metres.
+// Run All in a fresh Play session in Piso9. Distances are in metres.
 public static class VerifyOfficeMaze
 {
     const float Cell = 12.8f;
@@ -19,7 +20,6 @@ public static class VerifyOfficeMaze
     const float Height = 3.8f;
     static FloorSession Session => FloorSession.Instance;
     static FloorPlayer Player => Session.Players.Single();
-    static TowerFloorPanel Panel => Object.FindObjectsByType<TowerFloorPanel>().Single(panel => !panel.IsExit);
     static TowerFloorPanel Exit => Object.FindObjectsByType<TowerFloorPanel>().Single(panel => panel.IsExit);
 
     static Vector3 Center(int index) => new Vector3((index % 9) * Cell, 0, (index / 9) * Cell);
@@ -120,15 +120,6 @@ public static class VerifyOfficeMaze
         }
     }
 
-    static async Task UseCabin(int destination)
-    {
-        var zone=Panel.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
-        MoveTo(zone.transform.TransformPoint(new Vector3(1.8f,.12f,17.6f)));
-        string reason = Use(Panel.transform.Find("Piso "+destination).GetComponent<FloorButton>());
-        Require(reason == null, reason);
-        await WaitForFloor(destination);
-    }
-
     static async Task WaitForRecovery(Vector3 safe)
     {
         double deadline=EditorApplication.timeSinceStartup+3;
@@ -139,66 +130,190 @@ public static class VerifyOfficeMaze
         }
     }
 
+    static async Task Until(Func<bool> condition, string reason, double timeout = 35)
+    {
+        double deadline = EditorApplication.timeSinceStartup + timeout;
+        while (!condition())
+        {
+            if (EditorApplication.timeSinceStartup > deadline) throw new Exception(reason);
+            await Task.Yield();
+        }
+    }
+
+    public static async Task<string> Skirmish()
+    {
+        Require(Session.Current.number == 9 && Session.PlayerCount == 1,"Iniciar Play directamente en Piso9");
+        var director = Object.FindAnyObjectByType<OfficeDirector>();
+        OfficeActor Place(string name, Vector3 point)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<OfficeActor>("Assets/Scenes/Piso9Arte/" + name + ".prefab");
+            var actor = Object.Instantiate(prefab,point,Quaternion.identity);
+            actor.Bind(director);
+            return actor;
+        }
+        var body = Player.GetComponent<CharacterController>();
+        var employee = Place("Empleado Corrupto",Center(0) + Vector3.forward * 2);
+        OfficeActor drone = null;
+        try
+        {
+            MoveTo(Center(0)+Vector3.up*.15f);
+            Player.transform.rotation = Quaternion.identity;
+            var camera = Player.GetComponentInChildren<Camera>();
+            camera.transform.LookAt(employee.transform.position + Vector3.up * 1.25f);
+            var hands = Player.GetComponent<SlapAttack>();
+            Require(hands && hands.TryAttack(),"Manos vacías del avatar");
+            await Until(() => employee.Health < employee.MaximumHealth,"La bofetada no dañó al empleado",5);
+            var nav = employee.GetComponent<NavMeshAgent>();
+            await Until(() => nav.updatePosition && nav.isOnNavMesh,"Recuperación de knockback",12);
+            nav.Warp(body.transform.position + Vector3.forward*1.4f);
+            employee.transform.rotation = Quaternion.Euler(0,180,0);
+            Physics.SyncTransforms();
+            int before = Player.Stats.Health;
+            await Until(() => Player.Stats.Health < before,"Golpe del empleado",6);
+            employee.TakeDamage(employee.Health);
+            Require(!employee.Alive,"Muerte del empleado");
+            var stand = body.transform.position;
+            drone = Place("Dron Supervisor",stand + Vector3.right * 4);
+            drone.transform.LookAt(stand);
+            bool sawProjectile = false;
+            int droneHP = drone.Health;
+            before = Player.Stats.Health;
+            await Until(() => {
+                sawProjectile |= Object.FindObjectsByType<CombatProjectile>().Length > 0;
+                return Player.Stats.Health < before;
+            },"El proyectil del dron no alcanzó al jugador",14);
+            Require(sawProjectile && drone.Health == droneHP,"Proyectil visible y exclusión del emisor");
+            drone.TakeDamage(drone.Health);
+            Require(!drone.Alive,"Muerte del dron");
+            return "Bofetada FPS, daño y recuperación de knockback del empleado, ataque corto, disparo visible con impacto y muerte de ambos arquetipos.";
+        }
+        finally
+        {
+            if (employee) Object.Destroy(employee.gameObject);
+            if (drone) Object.Destroy(drone.gameObject);
+        }
+    }
+
     public static async Task<string> All()
     {
         Application.runInBackground = true;
-        Require(Session.Current.number==0 && Session.Progress.State(2)==FloorState.Locked && Session.Progress.State(10)==FloorState.Locked,"Iniciar en el lobby en una partida nueva");
-        await UseCabin(9);
-        await UseCabin(0);
-        Require(Session.Progress.State(9)==FloorState.Available && Session.Progress.State(10)==FloorState.Locked,"Abandono anticipado");
-        await UseCabin(9);
-        var safe=Object.FindAnyObjectByType<FloorSpawn>().transform.position;
-        MoveTo(Vector3.down*9);
-        await WaitForRecovery(safe);
-        Physics.SyncTransforms();
-        var graph=Inspect(out int edges);
-        Require(edges==83,"Pasos encontrados: "+edges);
-        var box=Object.FindAnyObjectByType<FloorObjective>();
-        var p=box.transform.position;
-        int goal=Mathf.RoundToInt(p.x/Cell)+9*Mathf.RoundToInt(p.z/Cell);
-        var zone=Exit.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
-        Require(goal==71 && zone.bounds.Contains(p),"El módulo debe estar dentro de la cabina de la esquina opuesta");
-        var route=Route(graph,goal);
-        foreach(var index in route) Walk(Center(index));
-        Vector3 approach=Vector3.MoveTowards(p,Center(goal),1.85f);
-        Walk(approach);
-        int xp=Player.Stats.Experience, money=Player.Stats.Money;
-        string reward=Use(box);
-        Require(reward.Contains(Session.Progress.Get(10).requiredItem.displayName),"Llave incorrecta: "+reward);
-        Require(Player.Stats.Experience==xp+Session.Current.experience && Player.Stats.Money==money+Session.Current.money,"Recompensa incorrecta");
-        int paid=Player.Stats.Money, earned=Player.Stats.Experience;
-        Use(box);
-        Require(Player.Stats.Money==paid && Player.Stats.Experience==earned,"Cobro duplicado");
-        Player.Stats.TakeDamage(PlayerStats.MaxHealth);
-        await WaitForRecovery(safe);
-        Require(Player.Stats.Money==paid && Player.Stats.Experience==earned && Session.Progress.State(9)==FloorState.Completed,"Recuperación altera el progreso");
-        foreach(var index in route) Walk(Center(index));
-        Walk(zone.transform.TransformPoint(new Vector3(1.45f,.1f,17.45f)));
-        Require(Use(Exit.transform.Find("Piso 0").GetComponent<FloorButton>())==null,"Salida al lobby denegada");
-        await WaitForFloor(0);
-        Require(Player.Stats.Money==paid && Player.Stats.Experience==earned && Session.Progress.State(10)==FloorState.Locked,"El viaje altera recompensa o llave");
-        Require(Session.Progress.State(1)==FloorState.Available && Session.Progress.State(2)==FloorState.Locked,"Progreso ajeno al piso alterado");
-        var secretary=Object.FindAnyObjectByType<FloorSecretary>();
-        MoveTo(secretary.transform.position+secretary.transform.forward*2.5f);
-        Use(secretary);
-        Require(Session.Progress.State(10)==FloorState.Available && Session.Progress.State(2)==FloorState.Locked,"Recepción debe desbloquear únicamente el piso 10");
-        return $"72 sectores, {edges} conexiones. {route.Count-1} tramos a pie entre cabinas. {reward}. Llave del 10 canjeada.";
-    }
-
-    public static async Task<string> ExitOnly()
-    {
-        Application.runInBackground = true;
-        await UseCabin(9);
-        var zone=Exit.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
-        int expected=Player.Stats.Experience+Session.Current.experience;
+        Require(Session.Current.number == 9 && Session.PlayerCount == 1, "Iniciar Play directamente en Piso9");
+        var director = Object.FindAnyObjectByType<OfficeDirector>();
+        var terminal = Object.FindAnyObjectByType<OfficeTerminal>();
+        var chest = Object.FindAnyObjectByType<FloorObjective>(FindObjectsInactive.Include);
+        int money = Player.Stats.Money, xp = Player.Stats.Experience;
+        Require(!chest.isActiveAndEnabled && chest.Interact(Player) == "Objetivo bloqueado", "Cofre prematuro");
+        Require(Exit.Request(Player,0) != null && terminal.Interact(Player) == "Terminal en espera", "Bloqueo previo");
+        var graph = Inspect(out int edges);
+        var route = Route(graph,71);
+        Require(edges > 72, "El laberinto necesita circuitos alternativos");
+        var origin = Player.transform.position;
+        MoveTo(Vector3.down * 9);
+        await WaitForRecovery(origin);
+        Walk(Center(route[1]));
+        Walk(Center(route[2]));
+        await Until(() => director.Phase == OfficeDirector.Stage.Pursuit,"No comenzó la persecución");
+        var hunter = Object.FindObjectsByType<OfficeActor>().Single(a => a.Role == OfficeActor.Kind.Corruptor);
+        var agent = hunter.GetComponent<NavMeshAgent>();
+        int hp = hunter.Health;
+        hunter.ReceiveHit(hp*2,hunter.transform.position,Vector3.right,new Knockback(20,15,.5f,.2f,true),Player.transform);
+        Require(hunter.Health == hp && agent.updatePosition, "El perseguidor recibió daño o impulso");
+        // Put a player inside the frontal arc. Observe the real windup, dodge, then let the second swing connect.
+        agent.Warp(Center(40));
+        hunter.transform.rotation = Quaternion.identity;
+        MoveTo(Center(40) + Vector3.forward * 1.8f);
+        await Until(() => hunter.transform.Find("Model/Torso/ArmR").localEulerAngles.x > 280 &&
+            hunter.transform.Find("Model/Torso/ArmR").localEulerAngles.x < 336,"Anticipación del perseguidor");
+        MoveTo(Center(40) + Vector3.back * 4.3f);
+        float dodgedAt = Time.time;
+        await Until(() => Time.time > dodgedAt + .8f,"Esquiva");
+        Require(Player.Stats.Health == PlayerStats.MaxHealth,"El golpe fallido hizo daño");
+        bool eliminated = false;
+        void ObserveDeath() { if (Player.Stats.Health == 0) eliminated = true; }
+        Player.Stats.Changed += ObserveDeath;
+        try
+        {
+            await Until(() => {
+                if (hunter && !eliminated)
+                    MoveTo(hunter.transform.position + hunter.transform.forward * 1.55f);
+                return eliminated;
+            },"El ataque conectado no eliminó al jugador",12);
+        }
+        finally { Player.Stats.Changed -= ObserveDeath; }
+        await WaitForRecovery(origin);
+        foreach (int cell in route) Walk(Center(cell));
+        await Until(() => director.Phase == OfficeDirector.Stage.Window,"No se activó la ventana");
+        hunter = Object.FindObjectsByType<OfficeActor>().Single(a => a.Role == OfficeActor.Kind.Corruptor);
+        var identity = hunter.GetEntityId();
+        await Until(() => director.Phase == OfficeDirector.Stage.Preparation,"No terminó la caída");
+        Require(!hunter.gameObject.activeSelf,"El perseguidor sigue activo");
+        Require(!chest.isActiveAndEnabled,"Premio antes de la defensa");
+        MoveTo(terminal.transform.position + Vector3.back * 1.75f - Vector3.up * 1.15f);
+        Require(Use(terminal).Contains("iniciada") && terminal.Interact(Player) == "Terminal en espera","Activación única");
+        int employees = 0, drones = 0;
+        var waves = new HashSet<OfficeDirector.Stage>();
+        // Advance real spawners, budgets and death handlers. Weapon-specific impacts have a separate suite.
+        float previousScale = Time.timeScale;
+        try
+        {
+            Time.timeScale = 3;
+            await Until(() => {
+                waves.Add(director.Phase);
+                foreach (var actor in Object.FindObjectsByType<OfficeActor>())
+                {
+                    if (actor.Role == OfficeActor.Kind.Corruptor || !actor.Alive) continue;
+                    if (actor.Role == OfficeActor.Kind.Drone) drones++; else employees++;
+                    actor.ReceiveHit(actor.Health,actor.transform.position,Vector3.forward,0,Player.transform);
+                }
+                return director.Phase == OfficeDirector.Stage.FinalCombat;
+            },"Oleadas bloqueadas",100);
+            Require(waves.Contains(OfficeDirector.Stage.WaveOne) && waves.Contains(OfficeDirector.Stage.WaveTwo) &&
+                employees >= 28 && drones >= 3,"Composición de las dos primeras oleadas");
+            Require(hunter.GetEntityId() == identity && hunter.IsBoss && hunter.Alive,"Identidad del jefe");
+            int thirdEmployees = 0, thirdDrones = 0;
+            await Until(() => {
+                foreach (var add in Object.FindObjectsByType<OfficeActor>())
+                {
+                    if (!add.Alive || add.Role == OfficeActor.Kind.Corruptor) continue;
+                    if (add.Role == OfficeActor.Kind.Drone) thirdDrones++; else thirdEmployees++;
+                    add.TakeDamage(add.MaximumHealth);
+                }
+                return thirdEmployees >= 10 && thirdDrones >= 2;
+            },"Dotación inicial de la última oleada");
+            Require(director.Phase == OfficeDirector.Stage.FinalCombat && !chest.isActiveAndEnabled,
+                "Limpiar la dotación debe dejar al jefe activo y el cofre cerrado");
+            hunter.TakeDamage(hunter.MaximumHealth / 3);
+            Require(hunter.Health < .7f * hunter.MaximumHealth,"Etapa 2");
+            hunter.TakeDamage(hunter.MaximumHealth / 3);
+            Require(hunter.Health <= .35f * hunter.MaximumHealth,"Furia");
+            var bossAgent = hunter.GetComponent<NavMeshAgent>();
+            bossAgent.Warp(Center(71));
+            hunter.transform.rotation = Quaternion.identity;
+            MoveTo(Center(71)+Vector3.forward*1.8f);
+            Player.Stats.Heal(PlayerStats.MaxHealth);
+            int before = Player.Stats.Health;
+            await Until(() => Player.Stats.Health < before, "El jefe no atacó");
+            Require(Player.Stats.Health > 0,"Golpe letal habilitado en modo jefe");
+            hunter.TakeDamage(hunter.Health);
+            await Until(() => director.Phase == OfficeDirector.Stage.Completed,"No abrió la salida");
+            float open = Time.time;
+            await Until(() => Time.time > open + 1.1f,"Puertas");
+        }
+        finally { Time.timeScale = previousScale; }
+        Require(chest.isActiveAndEnabled && Session.Progress.State(10)==FloorState.Locked,"Disponibilidad del cofre o llave");
+        MoveTo(chest.transform.position + Vector3.back * 1.7f - Vector3.up * .7f);
+        string reward = Use(chest);
+        Require(reward.Contains(Session.Progress.Get(10).requiredItem.displayName), reward);
+        Use(chest);
+        Require(Player.Stats.Money==money+Session.Current.money && Player.Stats.Experience==xp+Session.Current.experience,"Cobro único");
+        var zone = Exit.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
         MoveTo(zone.transform.TransformPoint(new Vector3(1.45f,.1f,17.45f)));
-        Require(Use(Exit.transform.Find("Piso 0").GetComponent<FloorButton>())==null,"Petición de salida rechazada");
+        Require(Use(Exit.transform.Find("Piso 0").GetComponent<FloorButton>())==null,"Solicitud de regreso");
         await WaitForFloor(0);
-        Require(Player.Stats.Experience==expected && Session.Progress.State(9)==FloorState.Completed,"Premio automático de embarque incorrecto");
         var secretary=Object.FindAnyObjectByType<FloorSecretary>();
         MoveTo(secretary.transform.position+secretary.transform.forward*2.5f);
         Use(secretary);
-        Require(Session.Progress.State(10)==FloorState.Available && Session.Progress.State(2)==FloorState.Locked,"Llave de embarque incorrecta");
-        return "Embarque de salida concede una recompensa y la llave para el piso 10.";
+        Require(Session.Progress.State(10)==FloorState.Available && Session.Progress.State(2)==FloorState.Locked,"Llave de campaña");
+        return $"72 sectores, {edges} pasos, {route.Count-1} tramos a pie. Esquiva, eliminación, caída y retorno del mismo jefe. {employees} empleados y {drones} drones antes del jefe. {reward}. Regreso y canje del piso 10.";
     }
 }

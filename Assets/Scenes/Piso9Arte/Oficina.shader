@@ -12,6 +12,7 @@ Shader "Piso9/Acabados de oficina"
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
+            float _OfficeAlarm;
             TEXTURE2D(_LightAtlas); SAMPLER(sampler_LightAtlas);
             struct V {float4 pos:SV_POSITION;float3 w:TEXCOORD0;half3 n:TEXCOORD1;half4 c:COLOR;};
             struct A {float4 p:POSITION;float3 n:NORMAL;half4 c:COLOR;};
@@ -27,7 +28,7 @@ Shader "Piso9/Acabados de oficina"
                     float2 g=float2(u/1.12,w.y/2.5), f=frac(g);
                     float glow=hash(floor(g)+floor(w.xz*.05));
                     float pane=step(.13,f.x)*step(f.x,.83)*step(.14,f.y)*step(f.y,.78)*step(abs(i.n.y),.4);
-                    rgb=lerp(rgb*(.68+.28*hash(floor(g))),lerp(float3(.28,.39,.54),float3(.96,.65,.39),glow),pane*smoothstep(.51,.90,glow));
+                    rgb=lerp(rgb*float3(.35,.40,.57)*(.68+.28*hash(floor(g))),lerp(float3(.19,.28,.45),float3(.87,.60,.38),glow),pane*smoothstep(.51,.90,glow));
                     return half4(SRGBToLinear(rgb),1);
                 }
                 if(style>.95){
@@ -35,7 +36,7 @@ Shader "Piso9/Acabados de oficina"
                     float drift=1;
                     if(w.y>6.3 && w.x>52 && w.z>45 && hash(floor(w.xz/6.4))>.68)
                         drift-=.14*pow(.5+.5*sin(_Time.y*2.1+w.x*.08),6);
-                    return half4(SRGBToLinear(rgb)*1.55*drift,1);
+                    return half4(SRGBToLinear(rgb)*1.55*drift*lerp(float3(1,1,1),float3(1,.48,.64),_OfficeAlarm*saturate(w.x/100)),1);
                 }
                 if(style>.085 && style<.115){
                     float2 tile=w.xz/1.28;float2 f=frac(tile);float stripe=fmod(floor(tile.x)+floor(tile.y),2)==0?w.x:w.z;
@@ -50,7 +51,10 @@ Shader "Piso9/Acabados de oficina"
                 float facing=.85+.18*dot(normalize(i.n),normalize(float3(-.55,.86,.45)));
                 float height=saturate((w.y+.2)/3.8);
                 float3 illum=lerp(atlas,float3(.57,.60,.69),height*.22);
-                float3 shaded=rgb*illum*facing;
+                float wing=saturate((w.x+w.z)/160);
+                float flicker=.5+.5*sin(_Time.y*5+w.z*.13);
+                float alarm=_OfficeAlarm*wing*(.65+.35*flicker);
+                float3 shaded=rgb*illum*facing*lerp(float3(.89,.93,1),float3(1.05,.57,.72),alarm);
                 if(style>.16 && style<.20){
                     float along=abs(i.n.x)>.7?w.z:w.x;
                     float axis=abs(frac(along/12.8+.5)-.5)*12.8;

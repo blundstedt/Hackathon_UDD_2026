@@ -122,8 +122,11 @@ namespace Hackaton.Lobby
             RenderSettings.ambientGroundColor = daylight.Ground;
             RenderSettings.fogColor = daylight.Fog;
             RenderSettings.reflectionIntensity = daylight.ReflectionIntensity;
-            sun.color = daylight.SunColor;
-            sun.intensity = daylight.SunIntensity;
+            if (sun)
+            {
+                sun.color = daylight.SunColor;
+                sun.intensity = daylight.SunIntensity;
+            }
         }
 
         private readonly struct Daylight

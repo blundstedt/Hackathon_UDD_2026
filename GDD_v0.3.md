@@ -92,6 +92,12 @@ El botón 2 conduce a **Paraíso Celestial** al entregar la llave del piso 1 en 
 
 Para probar el mapa, hacer dos recorridos desde el lobby. En el primero, volver antes de completar el objetivo y comprobar que se puede reingresar sin haber cobrado la recompensa. En el segundo, completarlo y comprobar que la recompensa se recibe una sola vez, que el piso queda cerrado y que el siguiente botón se habilita al entregar el objeto en recepción.
 
+### 3.6. Piso 9 · Oficina Corrupta — Turno de Noche
+
+El grupo entra por recepción y atraviesa la planta hasta la cabina de salida. El Corruptor investiga ruidos y persigue a quien ve. Una garra que conecta elimina al jugador y lo devuelve al punto de recuperación. Si cae todo el equipo durante la persecución, el turno se reinicia en recepción. La cabina de entrada permite abandonar el intento.
+
+Al llegar a la salida, el Corruptor atraviesa el ventanal. La terminal junto al ascensor inicia tres oleadas. La defensa alcanza el 30 % y el 65 % al limpiar las dos primeras. En la tercera, la IA reconstruye al mismo empleado con armadura. Su derrota abre la cabina y habilita el cofre. La recompensa individual es de 60 EXP y 30 de dinero. El equipo recibe una llave que se canjea en recepción para habilitar el piso 10.
+
 ## 4. Bucle principal de juego
 
 El juego tendrá una estructura incremental basada en la superación de niveles y el desarrollo del personaje.

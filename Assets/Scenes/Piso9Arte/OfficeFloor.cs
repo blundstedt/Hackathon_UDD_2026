@@ -11,6 +11,10 @@ namespace Hackaton.Levels
         [SerializeField] private NavMeshData pursuitMesh;
         private NavMeshDataInstance navigation;
 
+        private OfficeDirector shift;
+
+        private void Awake() => shift = GetComponent<OfficeDirector>();
+
         private void OnEnable()
         {
             if (pursuitMesh) navigation = NavMesh.AddNavMeshData(pursuitMesh);
@@ -25,6 +29,10 @@ namespace Hackaton.Levels
         {
             var session = FloorSession.Instance;
             if (!session || session.Traveling) return;
+            bool allDown = session.PlayerCount > 0;
+            foreach (var member in session.Players)
+                if (member.Stats.IsTargetable) { allDown = false; break; }
+            if (allDown) shift.RestartPursuit();
             int slot = 0;
             foreach (var player in session.Players)
             {
@@ -44,12 +52,18 @@ namespace Hackaton.Levels
             if (simulating) impact.enabled = false;
             movement.enabled = false;
             body.enabled = false;
-            player.transform.SetPositionAndRotation(transform.position +
+            var checkpoint = shift.AtElevator ? shift.Checkpoint : transform.position;
+            player.transform.SetPositionAndRotation(checkpoint +
                 new Vector3(slot % 3 * 1.2f, .2f, slot / 3 * 1.2f), transform.rotation);
             body.enabled = true;
             movement.enabled = moving;
             if (simulating) impact.enabled = true;
-            if (player.Stats.Health == 0) player.Stats.Heal(PlayerStats.MaxHealth);
+            if (player.Stats.Health == 0)
+            {
+                player.Stats.Heal(PlayerStats.MaxHealth);
+                FloorSession.Instance.Screen.Notice(shift.AtElevator ?
+                    "Reincorporación en el área de defensa" : "Empleado eliminado · Reincorporación en recepción");
+            }
         }
     }
 }

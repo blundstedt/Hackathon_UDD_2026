@@ -44,11 +44,14 @@ namespace Hackaton.Enemies
         [SerializeField] private EnemyVisual visual;
         [SerializeField] private EnemyHealthBar healthBar;
 
-        public EnemyState State { get; private set; }
+        public EnemyState State { get; protected set; }
         public int Health { get; private set; }
+        public int MaximumHealth => maxHealth;
+
+        protected void SetMaximumHealth(int amount) => Health = maxHealth = Mathf.Max(1, amount);
         protected int AttackDamage => damage;
 
-        private NavMeshAgent agent;
+        protected NavMeshAgent agent;
         private CharacterController body;
         private CharacterImpactMotion impact;
         private LargeKnockback launch;
@@ -100,6 +103,11 @@ namespace Hackaton.Enemies
             if (Time.time < nextSense) return;
             nextSense = Time.time + senseInterval;
 
+            Think();
+        }
+
+        protected virtual void Think()
+        {
             Transform target = FindVisibleTarget();
             if (target != null)
             {
@@ -184,7 +192,7 @@ namespace Hackaton.Enemies
             return nearest;
         }
 
-        private bool MoveTo(Vector3 position)
+        protected bool MoveTo(Vector3 position)
         {
             if (!agent.isOnNavMesh) return false;
             agent.isStopped = false;
@@ -199,7 +207,7 @@ namespace Hackaton.Enemies
                 || agent.remainingDistance <= agent.stoppingDistance + .1f;
         }
 
-        private void StopMoving()
+        protected void StopMoving()
         {
             if (!agent.isOnNavMesh) return;
             agent.isStopped = true;
@@ -279,7 +287,7 @@ namespace Hackaton.Enemies
             foreach (var player in FindObjectsByType<PlayerStats>())
             {
                 if (!player.CanReceiveRewards) continue;
-                player.RewardDefeat(moneyReward, experienceReward);
+                if (moneyReward > 0 || experienceReward > 0) player.RewardDefeat(moneyReward, experienceReward);
                 if (player == killer && (killerBonusMoney > 0 || killerBonusExperience > 0))
                 {
                     player.RewardDefeat(killerBonusMoney, killerBonusExperience);
@@ -287,7 +295,7 @@ namespace Hackaton.Enemies
                         killerBonusMoney, killerBonusExperience, "Bono: ");
                 }
             }
-            if (healthBar != null) healthBar.ShowReward(transform.position + Vector3.up * 1.8f,
+            if (healthBar != null && (moneyReward > 0 || experienceReward > 0)) healthBar.ShowReward(transform.position + Vector3.up * 1.8f,
                 moneyReward, experienceReward, "");
             OnDeath();
             StartCoroutine(RemoveCorpse());

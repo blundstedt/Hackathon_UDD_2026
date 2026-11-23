@@ -19,6 +19,7 @@ namespace Hackaton.Progression
             return completed ? "Nivel completado" : "[E] Completar nivel";
         }
 
-        public override string Interact(FloorPlayer player) => FloorSession.Instance.CompleteCurrent(player);
+        public override string Interact(FloorPlayer player) =>
+            isActiveAndEnabled ? FloorSession.Instance.CompleteCurrent(player) : "Objetivo bloqueado";
     }
 }
