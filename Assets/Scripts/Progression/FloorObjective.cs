@@ -8,6 +8,10 @@ namespace Hackaton.Progression
         [SerializeField] private string actionPrompt;
         [SerializeField] private string completedPrompt;
 
+        internal event System.Action AvailabilityChanged;
+        private void OnEnable() => AvailabilityChanged?.Invoke();
+        private void OnDisable() => AvailabilityChanged?.Invoke();
+
         public override string Prompt(FloorSession session)
         {
             var floor = session.Current;

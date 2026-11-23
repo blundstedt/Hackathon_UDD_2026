@@ -6,9 +6,7 @@ using UnityEngine;
 [DefaultExecutionOrder(-400)]
 public sealed class TowerFloorPanel : MonoBehaviour
 {
-    [SerializeField] private Renderer[] digits;
-    [SerializeField] private Material illuminated;
-    [SerializeField] private Material inactive;
+    [SerializeField] private FloorButton[] buttons;
     [SerializeField] private BoxCollider cabin;
     [SerializeField] private FloorSession sessionPrefab;
     [Tooltip("Módulo que concede el premio al embarcar en la salida. Vacío en las cabinas de entrada.")]
@@ -24,33 +22,42 @@ public sealed class TowerFloorPanel : MonoBehaviour
         session = FloorSession.Instance ? FloorSession.Instance : Instantiate(sessionPrefab);
     }
 
-    private void OnEnable() => session.Progress.Changed += Refresh;
+    private void OnEnable()
+    {
+        session.Progress.Changed += Refresh;
+        if (exitReward) exitReward.AvailabilityChanged += Refresh;
+    }
     private void Start() => Refresh();
 
     private void OnDisable()
     {
         if (!session) return;
         session.Progress.Changed -= Refresh;
+        if (exitReward) exitReward.AvailabilityChanged -= Refresh;
         Cancel();
     }
 
     private void Refresh()
     {
         var current = session.Progress.ForScene(gameObject.scene.name);
-        for (int i = 0; i < digits.Length; i++)
+        foreach (var button in buttons)
         {
-            bool lit = current && (i == 0 || current.number == i ||
+            int i = button.Destination;
+            bool lit = current && (current.number == i || (i == 0 && TravelBlock(i) == null) ||
                 (current.number == 0 && session.Progress.State(i) == FloorState.Available));
-            if (digits[i]) digits[i].sharedMaterial = lit ? illuminated : inactive;
+            button.Keycap.LightKey(lit);
         }
     }
+
+    internal string TravelBlock(int destination) =>
+        session.TravelBlock(destination) ??
+        (exitReward && !exitReward.isActiveAndEnabled ? "Ascensor en reactivación" : null);
 
     public string Request(FloorPlayer player, int destination)
     {
         if (session.Traveling || !session.IsActive(player)) return "No disponible";
-        var reason = session.TravelBlock(destination);
+        var reason = TravelBlock(destination);
         if (reason != null) return reason;
-        if (exitReward && !exitReward.isActiveAndEnabled) return "Ascensor en reactivación";
         if (!Contains(player)) return "Entra al ascensor";
         if (pending < 0)
         {
@@ -71,7 +78,7 @@ public sealed class TowerFloorPanel : MonoBehaviour
     private void LateUpdate()
     {
         if (pending < 0) return;
-        if (session.Traveling || !session.IsActive(requester) || !Contains(requester) || session.TravelBlock(pending) != null)
+        if (session.Traveling || !session.IsActive(requester) || !Contains(requester) || TravelBlock(pending) != null)
         {
             Cancel();
             return;
@@ -88,7 +95,6 @@ public sealed class TowerFloorPanel : MonoBehaviour
             return;
         }
         int destination = pending;
-        if (exitReward && !exitReward.isActiveAndEnabled) { Cancel(); return; }
         if (exitReward && destination == 0)
             exitReward.Interact(requester);
         Cancel();

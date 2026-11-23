@@ -202,6 +202,10 @@ public static class VerifyOfficeMaze
         var terminal = Object.FindAnyObjectByType<OfficeTerminal>();
         var chest = Object.FindAnyObjectByType<FloorObjective>(FindObjectsInactive.Include);
         int money = Player.Stats.Money, xp = Player.Stats.Experience;
+        var returnButton = Exit.GetComponentsInChildren<FloorButton>().Single(button => button.Destination == 0);
+        var currentFloorButton = Exit.GetComponentsInChildren<FloorButton>().Single(button => button.Destination == 9);
+        Require(!returnButton.Keycap.Illuminated && currentFloorButton.Keycap.Illuminated &&
+            returnButton.Prompt(Session) == "Ascensor en reactivación","Indicadores de salida antes de la defensa");
         Require(!chest.isActiveAndEnabled && chest.Interact(Player) == "Objetivo bloqueado", "Cofre prematuro");
         Require(Exit.Request(Player,0) != null && terminal.Interact(Player) == "Terminal en espera", "Bloqueo previo");
         var graph = Inspect(out int edges);
@@ -300,6 +304,8 @@ public static class VerifyOfficeMaze
             await Until(() => Time.time > open + 1.1f,"Puertas");
         }
         finally { Time.timeScale = previousScale; }
+        Require(returnButton.Keycap.Illuminated && currentFloorButton.Keycap.Illuminated &&
+            returnButton.Prompt(Session).Contains("Recoger recompensa"),"Indicadores tras completar la defensa");
         Require(chest.isActiveAndEnabled && Session.Progress.State(10)==FloorState.Locked,"Disponibilidad del cofre o llave");
         MoveTo(chest.transform.position + Vector3.back * 1.7f - Vector3.up * .7f);
         string reward = Use(chest);
@@ -308,7 +314,7 @@ public static class VerifyOfficeMaze
         Require(Player.Stats.Money==money+Session.Current.money && Player.Stats.Experience==xp+Session.Current.experience,"Cobro único");
         var zone = Exit.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
         MoveTo(zone.transform.TransformPoint(new Vector3(1.45f,.1f,17.45f)));
-        Require(Use(Exit.transform.Find("Piso 0").GetComponent<FloorButton>())==null,"Solicitud de regreso");
+        Require(Use(returnButton)==null,"Solicitud de regreso");
         await WaitForFloor(0);
         var secretary=Object.FindAnyObjectByType<FloorSecretary>();
         MoveTo(secretary.transform.position+secretary.transform.forward*2.5f);
