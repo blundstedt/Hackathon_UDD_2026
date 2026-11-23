@@ -21,7 +21,7 @@ public static class VerifyFloorTravel
     private static TowerFloorPanel Panel => Object.FindAnyObjectByType<TowerFloorPanel>();
     private static FloorButton Button(int number) => Panel.transform.Find($"Piso {number}").GetComponent<FloorButton>();
     private static FloorSecretary Secretary => Object.FindAnyObjectByType<FloorSecretary>();
-    private static Text Hint => Session.Screen.GetComponentsInChildren<Text>().Single(t => t.name == "InteracciÃ³n");
+    private static Text Hint => Session.Screen.GetComponentsInChildren<Text>().Single(t => t.name == "Interacción");
     private static readonly List<string> checks = new();
 
     private static void Check(bool valid, string label)
@@ -105,8 +105,8 @@ public static class VerifyFloorTravel
     private static async Task Arrive(int number)
     {
         await Until(() => Session.Current.number == number && !Session.Traveling && Session.PlayerCount > 0,
-            "No se llegÃ³ al piso "+number);
-        Check(Object.FindObjectsByType<FloorSession>().Length == 1,"Una sesiÃ³n al llegar al piso "+number);
+            "No se llegó al piso "+number);
+        Check(Object.FindObjectsByType<FloorSession>().Length == 1,"Una sesión al llegar al piso "+number);
     }
 
     // Separate fresh session. This path drives the same E binding as a human player.
@@ -166,7 +166,7 @@ public static class VerifyFloorTravel
     {
         checks.Clear();
         Check(Session.Current.number==0 && Session.PlayerCount==1 && Local.GetComponent<PlayerInputReader>().enabled && Session.Progress.State(1)==FloorState.Available
-            && Session.Progress.State(2)==FloorState.Locked,"Inicio y exclusiÃ³n del muÃ±eco de prÃ¡ctica");
+            && Session.Progress.State(2)==FloorState.Locked,"Inicio y exclusión del muñeco de práctica");
         var authority = Session;
         var data = Session.Progress.Get(1);
         int initialMoney = Local.Stats.Money, initialXp = Local.Stats.Experience;
@@ -175,30 +175,30 @@ public static class VerifyFloorTravel
         var extras = new[]{Join("dos"),Join("tres"),Join("cuatro")};
         Board(extras[0]); Board(extras[1]);
         Press(Button(1)); Press(Button(1));
-        await Until(()=>Hint.text=="Esperando jugadores... 3/4","No se mostrÃ³ 3/4");
+        await Until(()=>Hint.text=="Esperando jugadores... 3/4","No se mostró 3/4");
         Check(!Session.Traveling,"Espera 3/4 sin carga duplicada");
-        var lateJoin = Join("incorporaciÃ³n");
-        await Until(() => Hint.text == "Esperando jugadores... 3/5", "No contÃ³ al jugador que se incorporÃ³ durante la espera");
+        var lateJoin = Join("incorporación");
+        await Until(() => Hint.text == "Esperando jugadores... 3/5", "No contó al jugador que se incorporó durante la espera");
         lateJoin.gameObject.SetActive(false);
-        await Until(() => Hint.text == "Esperando jugadores... 3/4", "No descontÃ³ la baja durante la espera");
+        await Until(() => Hint.text == "Esperando jugadores... 3/4", "No descontó la baja durante la espera");
         Check(!Session.Traveling, "Altas y bajas conservan la solicitud mientras falta un jugador");
         Move(Local, Panel.transform.TransformPoint(new Vector3(0,0.2f,9)));
-        await Until(()=>Hint.text!="Esperando jugadores... 3/4","No se cancelÃ³ la espera");
+        await Until(()=>Hint.text!="Esperando jugadores... 3/4","No se canceló la espera");
         Board(extras[2]); Board(Local);
         await Task.Yield();
         Check(!Session.Traveling && Session.Current.number==0,"Salir de la cabina cancela la solicitud");
         Move(extras[2],Panel.transform.TransformPoint(new Vector3(0,0.2f,9)));
         Press(Button(1));
-        await Until(()=>Hint.text=="Esperando jugadores... 3/4","Espera despuÃ©s de cancelar");
+        await Until(()=>Hint.text=="Esperando jugadores... 3/4","Espera después de cancelar");
         Board(extras[2]);
-        await Until(()=>Session.Traveling,"Cuarto jugador no iniciÃ³ el viaje");
+        await Until(()=>Session.Traveling,"Cuarto jugador no inició el viaje");
         Check(Session.Screen.GetComponentInChildren<CanvasGroup>(true).gameObject.activeSelf,"Cortina de carga activa");
         await Arrive(1);
-        Check(Session.TravelBlock(2)=="No disponible","Solo el botÃ³n 0 navega desde el nivel");
+        Check(Session.TravelBlock(2)=="No disponible","Solo el botón 0 navega desde el nivel");
         Board(Local);
         var other=Join("dos");
         Press(Button(0));
-        await Until(()=>Hint.text=="Esperando jugadores... 1/2","No esperÃ³ en el regreso");
+        await Until(()=>Hint.text=="Esperando jugadores... 1/2","No esperó en el regreso");
         other.gameObject.SetActive(false);
         await Arrive(0);
         Check(Session.Progress.State(1)==FloorState.Available && Local.Stats.Money==initialMoney &&
@@ -221,11 +221,11 @@ public static class VerifyFloorTravel
         offline.gameObject.SetActive(false);
         var objective = Object.FindAnyObjectByType<FloorObjective>();
         WalkToObjective(objective);
-        Check(Press(objective).Contains(data.rewardItem.displayName),"FinalizaciÃ³n mediante el objetivo");
+        Check(Press(objective).Contains(data.rewardItem.displayName),"Finalización mediante el objetivo");
         Check(Session.Progress.State(1)==FloorState.Completed && Session.Progress.State(2)==FloorState.Locked &&
             Local.Stats.Money==initialMoney+data.money && Local.Stats.Experience==initialXp+data.experience &&
             teammate.Stats.Money==data.money && teammate.Stats.Experience==data.experience,"Premios individuales y llave de equipo");
-        Check(Press(objective)=="Nivel completado" && teammate.Stats.Money==data.money,"Segunda finalizaciÃ³n sin duplicados");
+        Check(Press(objective)=="Nivel completado" && teammate.Stats.Money==data.money,"Segunda finalización sin duplicados");
         offline.gameObject.SetActive(true);
         Check(offline.Stats.Money==data.money && offline.Stats.Experience==data.experience,"Participante reconectado cobra una vez");
         offline.gameObject.SetActive(false);
@@ -240,11 +240,11 @@ public static class VerifyFloorTravel
         secretary=Secretary;
         Move(Local,secretary.transform.position+secretary.transform.forward*2.5f);
         Check(secretary.Prompt(Session)=="Presiona E para entregar el objeto","Llave pendiente de entrega");
-        Check(Press(secretary)=="Â¡Piso 2 desbloqueado!" && Session.Progress.State(2)==FloorState.Available,"Entrega efectiva");
-        Check(!Press(secretary).Contains("Â¡Piso") && Session.Progress.State(3)==FloorState.Locked,"Entrega duplicada rechazada");
+        Check(Press(secretary)=="¡Piso 2 desbloqueado!" && Session.Progress.State(2)==FloorState.Available,"Entrega efectiva");
+        Check(!Press(secretary).Contains("¡Piso") && Session.Progress.State(3)==FloorState.Locked,"Entrega duplicada rechazada");
         var serialized = new SerializedObject(Panel);
         var digit = (Renderer)serialized.FindProperty("digits").GetArrayElementAtIndex(2).objectReferenceValue;
-        Check(digit.sharedMaterial==serialized.FindProperty("illuminated").objectReferenceValue,"BotÃ³n 2 actualizado por evento");
+        Check(digit.sharedMaterial==serialized.FindProperty("illuminated").objectReferenceValue,"Botón 2 actualizado por evento");
         Board(Local);
         Press(Button(2)); await Arrive(2);
         var entry=GameObject.Find("Ascensor del atrio").GetComponent<TowerFloorPanel>();
@@ -276,12 +276,12 @@ public static class VerifyFloorTravel
         Check(Local.Stats.Money==beforeMoney+floor2.money && EarnedXp(Local.Stats)==beforeXp+floor2.experience,
             "Saldo y EXP del diamante de vuelta en el lobby");
         secretary=Secretary; Move(Local,secretary.transform.position+secretary.transform.forward*2.5f);
-        Check(Press(secretary).Contains("Â¡Piso 3") && Session.Progress.State(3)==FloorState.Available && Session.Progress.State(9)==FloorState.Locked,"La llave del piso 2 desbloquea el piso 3 en recepciÃ³n");
+        Check(Press(secretary).Contains("¡Piso 3") && Session.Progress.State(3)==FloorState.Available && Session.Progress.State(9)==FloorState.Locked,"La llave del piso 2 desbloquea el piso 3 en recepción");
         var next=Session.Progress.Get(3);
         Check(next.rewardItem && next.rewardItem==Session.Progress.Get(9).requiredItem &&
             Session.Progress.Get(9).prerequisite==next,"El piso 3 entrega la llave para ir al piso 9");
         if (string.IsNullOrEmpty(next.sceneName))
-            Check(Session.TravelBlock(3)=="Piso 3 aÃºn no implementado","Sin viaje a una escena pendiente");
+            Check(Session.TravelBlock(3)=="Piso 3 aún no implementado","Sin viaje a una escena pendiente");
         return string.Join("\n",checks);
     }
 }
