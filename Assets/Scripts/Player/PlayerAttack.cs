@@ -10,6 +10,8 @@ namespace Hackaton.Player
     {
         protected abstract float Cooldown { get; }
         private PlayerInputReader input;
+        private PlayerInventory inventory;
+        private bool HoldingWeapon => !inventory || inventory.Selected == 1;
         private CharacterController controller;
         protected abstract float ImpactTime { get; }
         protected PlayerView View { get; private set; }
@@ -21,6 +23,7 @@ namespace Hackaton.Player
 
         protected void Awake()
         {
+            inventory = GetComponent<PlayerInventory>();
             controller = GetComponent<CharacterController>();
             input = GetComponent<PlayerInputReader>();
             View = GetComponent<PlayerView>();
@@ -28,11 +31,12 @@ namespace Hackaton.Player
 
         protected void Update()
         {
-            if (input.AttackPressed) TryAttack();
+            if (HoldingWeapon && input.AttackPressed) TryAttack();
         }
 
         public bool TryAttack()
         {
+            if (!HoldingWeapon) return false;
             var peer = Hackaton.Multiplayer.NetworkTiza.Local;
             if (!peer || peer.View != View) return StartSwing();
             if (!isActiveAndEnabled || !controller.enabled || impactPending || Time.time < readyAt) return false;
@@ -42,7 +46,7 @@ namespace Hackaton.Player
 
         internal bool StartSwing()
         {
-            if (!isActiveAndEnabled || (controller != null && !controller.enabled) || impactPending || Time.time < readyAt) return false;
+            if (!HoldingWeapon || !isActiveAndEnabled || (controller != null && !controller.enabled) || impactPending || Time.time < readyAt) return false;
             startedAt = Time.time;
             OnAttackStarted();
             readyAt = startedAt + Cooldown;
@@ -58,7 +62,7 @@ namespace Hackaton.Player
         protected void LateUpdate()
         {
             if (!animating) return;
-            if (controller != null && !controller.enabled)
+            if (!HoldingWeapon || controller != null && !controller.enabled)
             {
                 animating = impactPending = false;
                 return;
