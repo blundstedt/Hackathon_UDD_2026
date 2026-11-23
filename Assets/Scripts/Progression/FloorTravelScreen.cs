@@ -16,7 +16,7 @@ namespace Hackaton.Progression
         public void Notice(string message)
         {
             feedback = message;
-            feedbackUntil = Time.unscaledTime + 2.4f;
+            feedbackUntil = string.IsNullOrEmpty(message) ? 0f : Time.unscaledTime + 2.4f;
         }
 
         public void WaitMessage(string message) => waiting = message;
