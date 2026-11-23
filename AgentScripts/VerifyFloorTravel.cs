@@ -107,6 +107,13 @@ public static class VerifyFloorTravel
         await Until(() => Session.Current.number == number && !Session.Traveling && Session.PlayerCount > 0,
             "No se llegó al piso "+number);
         Check(Object.FindObjectsByType<FloorSession>().Length == 1,"Una sesión al llegar al piso "+number);
+        if (number == 0)
+        {
+            var cabin = Panel.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
+            Check(cabin.bounds.Contains(Local.BodyCenter), "El jugador regresa dentro de la cabina del lobby");
+            Check(Vector3.Dot(Local.transform.forward, -cabin.transform.forward) > .95f,
+                "Al regresar, el jugador mira hacia la salida del ascensor");
+        }
     }
 
     // Separate fresh session. This path drives the same E binding as a human player.
