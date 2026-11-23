@@ -9,12 +9,15 @@ namespace Hackaton.Progression
         [SerializeField] private PlayerView defaultAvatar;
         [SerializeField] private string playerId = "local";
 
+        [SerializeField] private bool useSceneSkybox;
+
         private void Start()
         {
             var equipped = FloorSession.Instance.Equipment(playerId);
             var staging = new GameObject("Aparición");
             staging.SetActive(false);
             var avatar = Instantiate(equipped ? equipped : defaultAvatar, staging.transform);
+            if (useSceneSkybox) avatar.ViewCamera.clearFlags = CameraClearFlags.Skybox;
             avatar.GetComponent<FloorPlayer>().SetIdentity(playerId);
             avatar.transform.SetPositionAndRotation(transform.position, transform.rotation);
             avatar.transform.SetParent(null, true);

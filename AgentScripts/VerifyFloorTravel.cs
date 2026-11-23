@@ -49,6 +49,22 @@ public static class VerifyFloorTravel
         Physics.SyncTransforms();
     }
 
+    // The meadow puts its objective across the clearing. Walk the real capsule to interaction range.
+    private static void WalkToObjective(FloorObjective objective)
+    {
+        var controller = Local.GetComponent<CharacterController>();
+        var motion = new Hackaton.Combat.CharacterImpactMotion();
+        Vector3 target = objective.transform.position - Vector3.forward * 2f;
+        float vertical = 0f;
+        for (int i = 0; i < 900; i++)
+        {
+            Vector3 delta = Vector3.ProjectOnPlane(target - Local.transform.position, Vector3.up);
+            if (delta.magnitude < .15f) return;
+            motion.Move(controller, delta.normalized * 4.5f, ref vertical, 20f, 1f / 60f);
+        }
+        throw new Exception("El controlador no puede llegar a la caja por la pradera");
+    }
+
     private static void Board(FloorPlayer player)
     {
         var zone = Panel.transform.Find("Zona de embarque").GetComponent<BoxCollider>();
@@ -128,8 +144,9 @@ public static class VerifyFloorTravel
             await Use(Button(1));
             await Arrive(1);
             var objective = Object.FindAnyObjectByType<FloorObjective>();
+            WalkToObjective(objective);
             await Use(objective);
-            Check(Session.Progress.State(1) == FloorState.Completed, "E completa la prueba desde el spawn");
+            Check(Session.Progress.State(1) == FloorState.Completed, "E recoge la llave en la pradera");
             Board(Local);
             await Use(Button(0));
             await Arrive(0);
@@ -198,6 +215,7 @@ public static class VerifyFloorTravel
         var offline = Join("ausente");
         offline.gameObject.SetActive(false);
         var objective = Object.FindAnyObjectByType<FloorObjective>();
+        WalkToObjective(objective);
         Check(Press(objective).Contains(data.rewardItem.displayName),"Finalización mediante el objetivo");
         Check(Session.Progress.State(1)==FloorState.Completed && Session.Progress.State(2)==FloorState.Locked &&
             Local.Stats.Money==initialMoney+data.money && Local.Stats.Experience==initialXp+data.experience &&
