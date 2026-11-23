@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!28 &2800000
+Texture2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Muestras de granito
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 4
+  m_Width: 128
+  m_Height: 1
+  m_CompleteImageSize: 512
+  m_MipsStripped: 0
+  m_TextureFormat: 4
+  m_MipCount: 1
+  m_IsReadable: 1
+  m_IsPreProcessed: 0
+  m_IgnoreMipmapLimit: 1
+  m_MipmapLimitGroupName: 
+  m_StreamingMipmaps: 0
+  m_StreamingMipmapsPriority: 0
+  m_VTOnly: 0
+  m_AlphaIsTransparency: 0
+  m_ImageCount: 1
+  m_TextureDimension: 2
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 0
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_LightmapFormat: 0
+  m_ColorSpace: 1
+  m_PlatformBlob: 
+  image data: 512
+  _typelessdata: 5f3536ff7a2e3effc64649ffe18174ff836570ff2e2e54ff444374ff656391ffb4958afff7af5dffffc672fffab5afffdf6ea9ffe48db7ff98afbbff687298ff895d8fff7a7594ff8f88a3ffcbbcbaffa9aa9fff47455dff443457ff55516eff5e5a78ff686281ff6a6480ff5e5673ff83748cffa57995ffb67798ffd499b3ff744a4bff8a4452ffc8585bffde877eff92717aff4d4464ff5f557eff796f96ffb99890fff0ad6bfff6c07cfff2b2aeffdc78a9ffe191b4ffa3adb8ff7c7c9bff966a94ff8a7e98ff9b8da4ffccb7b6ffb0a9a1ff61576bff5f4966ff6d6179ff746881ff7c6e88ff7e7088ff74657dff927d91ffad8199ffbb7f9bffd49bb1ff654147ff7c3a4effbe4f58ffd6837dff856b79ff3a3a61ff4e4d7dff6a6996ffaf9490ffe9ab69fff0bf7bffecb0b0ffd473abffd98db7ff96abbbff6d769cff896394ff7c7999ff8f89a6ffc3b6baffa5a6a3ff504e69ff4e4063ff5d5977ff646180ff6d6888ff6f6a88ff645e7cff857792ffa27c9affb07a9cffcb98b4ff694244ff813c4bffc45155ffdc857bff896d77ff3e3c5fff524e7bff6f6a95ffb4978ffff0ae67fff7c279fff2b3afffda75a9ffdf8fb6ff9caebaff72789aff8e6593ff817b97ff948ba5ffc8b9b8ffaaa9a1ff555067ff524161ff615b75ff69637eff716a86ff736c86ff695f7aff897990ffa77e98ffb67c9affd19ab3ff
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 
