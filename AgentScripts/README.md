@@ -37,7 +37,7 @@ No se modifican SampleScene, Build Settings, paquetes ni ajustes globales. Los a
 
 ## Ascensor y progresión de la partida
 
-Para probar el recorrido, inicia Play en `UrbanLobby_new`, entra en la cabina y apunta al botón 1. Pulsa E para viajar. En `Piso1`, usa E sobre el pedestal y regresa con el botón 0. Entrega la llave a **Recepcionista - Tiza con peluca** y usa el botón 2 para llegar al atrio de Paraíso Celestial. En el templo, apunta al diamante y pulsa E para cobrar dinero y EXP. Reúne al grupo en la cabina de salida y usa el botón 0. El piso 3 queda habilitado tras completar el piso 2. Hasta integrar la nueva escena, el botón 3 informa de que el piso está pendiente.
+Para probar el recorrido, inicia Play en `UrbanLobby_new`, entra en la cabina y apunta al botón 1. Pulsa E para viajar. En `Piso1`, supera las tres oleadas de 12, 16 y 19 enemigos, abre el cofre del Coloso con E y regresa con el botón 0. Entrega la llave a **Recepcionista - Tiza con peluca** y usa el botón 2 para llegar al atrio de Paraíso Celestial. En el templo, apunta al diamante y pulsa E para cobrar dinero y EXP. Reúne al grupo en la cabina de salida y usa el botón 0. El piso 3 queda habilitado tras completar el piso 2. Hasta integrar la nueva escena, el botón 3 informa de que el piso está pendiente.
 
 ### Añadir un piso desde el Inspector
 

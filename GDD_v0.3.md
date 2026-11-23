@@ -87,7 +87,7 @@ El botón 2 conduce a **Paraíso Celestial** al entregar la llave del piso 1 en 
 
 1. **Preparar la escena.** Colocar la cabina existente (`Assets/Progression/Ascensor.prefab`) y un punto de aparición seguro con `FloorSpawn` y el avatar habitual en primera persona. Añadir la escena a la lista de escenas del perfil de compilación.
 2. **Vincular el destino.** En `Assets/Progression/Piso2.asset`, asignar a `Scene Name` el nombre exacto de la escena. Para pisos posteriores, crear un `FloorData` con número único y añadirlo a `Floors` en `FloorSession.prefab`. Los botones existentes consultan el progreso por número de piso.
-3. **Conectar el objetivo del mapa.** El encuentro o desafío llama a `FloorSession.Instance.CompleteCurrent(participante)` cuando se cumple su condición de victoria. El pedestal de `Piso1` usa esta misma operación. El ascensor permite volver al lobby antes o después de cumplir el objetivo.
+3. **Conectar el objetivo del mapa.** El encuentro o desafío llama a `FloorSession.Instance.CompleteCurrent(participante)` cuando se cumple su condición de victoria. El cofre de `Piso1` usa esta operación después de la última oleada. El ascensor permite volver al lobby antes o después de cumplir el objetivo.
 4. **Configurar la recompensa y el siguiente acceso.** En el piso que se completa, definir `Experience`, `Money` y el objeto de equipo en `Reward Item`. En el destino que abrirá la secretaria, asignar el piso anterior en `Prerequisite`, ese mismo objeto en `Required Item` y dejar desmarcado `Initially Available`.
 
 Para probar el mapa, hacer dos recorridos desde el lobby. En el primero, volver antes de completar el objetivo y comprobar que se puede reingresar sin haber cobrado la recompensa. En el segundo, completarlo y comprobar que la recompensa se recibe una sola vez, que el piso queda cerrado y que el siguiente botón se habilita al entregar el objeto en recepción.
@@ -181,7 +181,17 @@ Este sistema será diferente de la compra directa de armas y permitirá fortalec
 
 ### 6.4. Recompensas y llave de equipo en el prototipo
 
-En la escena temporal `Piso1`, el jugador apunta al pedestal «Completar nivel (prueba)» y pulsa **E**. Cada participante recibe **60 EXP y 30 de dinero**. El equipo recibe **una** `LlavePiso2`. Estos valores se editan por nivel. El primer cumplimiento registra el premio y bloquea la repetición del piso.
+En `Piso1`, el Bosque Mágico Corrupto ocupa un único claro. Tras seis segundos de preparación, los portales periféricos invocan estas oleadas. El descanso entre oleadas dura cinco segundos.
+
+| Oleada | Duendes | Guardianes | Coloso |
+|---|---:|---:|---:|
+| Invasión de duendes | 12 | 0 | 0 |
+| Despertar de los guardianes | 12 | 4 | 0 |
+| Despertar del Coloso | 12 | 6 | 1 |
+
+Los tres enemigos son variantes de `EnemyBase.prefab`. Sus extremidades y el visor se animan por estado. El Coloso marca el radio del golpe de suelo durante la preparación. En el Inspector de **Bosque Mágico Corrupto** se configuran grupos, portales, cantidades, radios, intervalos y límites de enemigos activos. El piso usa el equipamiento del lobby y el bastón como arma de entrada cuando no hay una selección registrada.
+
+Al caer el Coloso aparece el cofre en el claro. Cuando se ha derrotado a toda la oleada, cualquier participante puede apuntar al cofre y pulsar **E**. Cada participante recibe **60 EXP y 30 de dinero**. El equipo recibe **una** `LlavePiso2`. Estos valores se editan por nivel. El primer cumplimiento registra el premio y bloquea la repetición del piso.
 
 De vuelta en el lobby, cualquier participante puede acercarse a **Recepcionista - Tiza con peluca**, apuntarle y pulsar **E**. La secretaria comprueba el inventario compartido, consume la llave y habilita el piso 2. El panel refleja el cambio de inmediato. Una segunda interacción confirma que el piso ya está desbloqueado.
 
