@@ -46,3 +46,17 @@ Si los cambios están en GitHub y quieres generar el ejecutable tú mismo:
 2. Abre la revisión con la versión de Unity indicada en `ProjectVersion.txt`. En **File → Build Profiles**, selecciona **Windows** para **Intel 64-bit (x64)**. Comprueba que la lista de escenas habilitadas empiece por `MenuPrincipal` e incluya el lobby y los pisos de esa versión.
 3. Pulsa **Build** y elige una carpeta nueva, por ejemplo `Builds\Campana-<commit>\`, sustituyendo `<commit>` por el identificador que imprimió Git. Abre el `.exe` generado o usa **Build and Run** para iniciarlo directamente.
 4. Para compartirla, comprime el ejecutable con su carpeta `*_Data`, las DLL y las demás dependencias que dejó Unity. Puedes excluir la carpeta de respaldo cuyo nombre termina en `_BackUpThisFolder_ButDontShipItWithYourGame`.
+
+## Capturas del juego
+
+### Lobby
+
+![Vista de la torre desde el lobby](docs/screenshots/lobby.png)
+
+### Nivel 1
+
+![El Coloso de Raíces en la tercera oleada del nivel 1](docs/screenshots/nivel-1.png)
+
+### Nivel 9
+
+![El Corruptor entre los cubículos del nivel 9](docs/screenshots/nivel-9.png)
